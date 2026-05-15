@@ -15,9 +15,21 @@ permissions:
   contents: write
   pull-requests: write
 
+# Only one sync run at a time. Push and workflow_dispatch can both fire near
+# each other (initial commit, manual trigger, etc.); racing runs end up with
+# git push conflicts. Wait, don't cancel — we want every trigger to actually
+# produce a sync.
+concurrency:
+  group: dragnet-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    # Engine has its own 5-min per-module deadline plus 90s per source, but a
+    # workflow-level cap is the last line of defence in case something gets
+    # stuck below the engine layer (network, disk, runner).
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
