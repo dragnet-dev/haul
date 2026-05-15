@@ -1,0 +1,85 @@
+name: Auto-merge Draft Incidents
+
+on:
+  pull_request:
+    types: [opened]
+    paths:
+      - 'supply/incidents/drafts/**'
+      - 'malware/incidents/drafts/**'
+      - 'ransomware/incidents/drafts/**'
+      - 'cve/incidents/drafts/**'
+  schedule:
+    - cron: '15 * * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  label-and-queue:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse tier from PR body
+        id: parse
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch body via API rather than interpolating the expression into shell
+          PR_BODY=$(gh pr view "$PR_NUMBER" --json body --jq '.body')
+          TIER=$(echo "$PR_BODY" | grep -oP '(?<=<!-- dragnet-tier: )[\w]+(?= -->)' || echo "")
+          echo "tier=${TIER}" >> "$GITHUB_OUTPUT"
+
+      - name: Check author trust
+        id: trust
+        env:
+          ASSOC: ${{ github.event.pull_request.author_association }}
+        run: |
+          # Only allow auto-merge for PRs from authors with write access.
+          # Fork PRs (FIRST_TIME_CONTRIBUTOR, NONE, etc.) cannot self-promote
+          # by including a `dragnet-tier: auto` marker in the body.
+          case "$ASSOC" in
+            OWNER|MEMBER|COLLABORATOR) echo "trusted=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "trusted=false" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Label auto-merge
+        if: steps.parse.outputs.tier == 'auto' && steps.trust.outputs.trusted == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr edit "$PR_NUMBER" --add-label "auto-merge"
+
+      - name: Label needs-review
+        if: steps.parse.outputs.tier != 'auto' || steps.trust.outputs.trusted != 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr edit "$PR_NUMBER" --add-label "needs-review"
+
+  merge-eligible:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+
+      - name: Merge aged auto-merge PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list \
+            --label "auto-merge" \
+            --state open \
+            --json number,createdAt,body \
+          | jq -r '.[] |
+              . as $pr |
+              (.body | capture("dragnet-delay-minutes: (?P<d>[0-9]+)").d // "60") as $delay |
+              (now - (.createdAt | fromdateiso8601)) as $age |
+              select($age > ($delay | tonumber) * 60) |
+              $pr.number
+            ' \
+          | while read -r pr; do
+              gh pr merge "$pr" --squash --delete-branch \
+                --subject "[dragnet-bot] auto-merge draft #${pr}"
+            done

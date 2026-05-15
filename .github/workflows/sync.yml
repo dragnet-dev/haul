@@ -1,0 +1,102 @@
+name: Dragnet Sync
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'supply/incidents/**'
+      - 'malware/incidents/**'
+      - 'ransomware/incidents/**'
+      - 'cve/incidents/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download latest Dragnet binary
+        run: |
+          gh release download \
+            --repo dragnet-dev/dragnet \
+            --pattern dragnet-linux-amd64 \
+            --output dragnet
+          chmod +x dragnet
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get week for cache key rotation
+        id: week
+        run: echo "value=$(date -u +'%Y-%U')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache OSSF malicious-packages repo
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4
+        with:
+          path: state/ossf-cache
+          key: ossf-packages-${{ runner.os }}-${{ steps.week.outputs.value }}
+          restore-keys: |
+            ossf-packages-${{ runner.os }}-
+
+      - run: ./dragnet validate --module all
+
+      - run: ./dragnet sync --module supply
+      - run: ./dragnet sync --module malware
+      - run: ./dragnet sync --module ransomware
+      - run: ./dragnet sync --module cve
+
+      - run: ./dragnet enrich --cross-domain
+
+      - run: ./dragnet generate --module all --backends all --layers all
+
+      - name: Commit
+        run: |
+          git config user.name "dragnet-bot"
+          git config user.email "dragnet-bot@users.noreply.github.com"
+          git add supply/ malware/ ransomware/ cve/ feeds/ state/
+          # Unstage draft incidents — they belong on their own branches, not main.
+          git restore --staged -- '*/incidents/drafts/' 2>/dev/null || true
+          git diff --staged --quiet && echo "No changes" || \
+            git commit -m "[dragnet-bot] sync $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
+
+      - name: Open draft PRs
+        run: |
+          for module in supply malware ransomware cve; do
+            for draft in "${module}/incidents/drafts/"*.yaml; do
+              [ -f "$draft" ] || continue
+              incident_name="$(basename "$draft" .yaml | tr -cd "[:alnum:]-")"
+              branch="draft-${incident_name}"
+
+              if git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+                echo "Branch $branch already exists — skipping"
+                continue
+              fi
+
+              if gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null | grep -q '^[0-9]'; then
+                echo "Open PR for $branch already exists — skipping"
+                continue
+              fi
+
+              git checkout -b "$branch"
+              git add "$draft"
+              git commit -m "[dragnet-bot] draft: ${incident_name}"
+              git push origin "$branch"
+              pr_body="$(./dragnet pr-body "$draft" 2>/dev/null || echo 'Auto-generated from blog intel. Review IOCs before merging.')"
+              gh pr create \
+                --title "Draft [${module}]: ${incident_name}" \
+                --body "$pr_body" \
+                --label "pending-triage,${module}" \
+                --base main
+              git checkout main
+            done
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
