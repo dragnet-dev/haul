@@ -57,6 +57,19 @@ jobs:
           restore-keys: |
             ossf-packages-${{ runner.os }}-
 
+      # Pre-clone OSSF malicious-packages so the engine's OSSF source finds
+      # the .git dir already present and skips straight to the fast walk.
+      # Without this, the clone (225k+ files, ~2 min) gets killed by the
+      # engine's 90s per-source ctx, leaving no OSSF data in the output.
+      - name: Pre-clone OSSF malicious-packages (primes the cache)
+        run: |
+          if [ ! -d state/ossf-cache/.git ]; then
+            mkdir -p state
+            git clone --depth 1 https://github.com/ossf/malicious-packages state/ossf-cache
+          else
+            echo "OSSF cache restored — skipping clone."
+          fi
+
       - run: ./dragnet validate --module all
 
       - run: ./dragnet sync --module supply
