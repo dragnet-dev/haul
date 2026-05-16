@@ -118,6 +118,42 @@ cross_enrichment:
 
 multi_domain_sources:
 
+  # Common marketing / fluff terms reused across vendor blogs via YAML anchor.
+  # Posts whose title or categories contain any of these are dropped before
+  # routing. Keep this list conservative — anything here blocks ALL routing for
+  # the post, not just one module. Aim for terms that have zero legitimate
+  # threat-intel value (webinar invitations, product launches, "thought
+  # leadership" posts).
+  _shared_marketing_exclude: &marketing_exclude
+    - webinar
+    - "[webinar]"
+    - sponsored
+    - whitepaper
+    - "white paper"
+    - ebook
+    - "e-book"
+    - "case study"
+    - "tune in"
+    - "the future of"
+    - "unlock the"
+    - "unlock new"
+    - "unlocking the"
+    - "convergence of"
+    - "introducing "
+    - "skills and"
+    - "one solution"
+    - "you can't trust"
+    - "now available"
+    - "is now available"
+    - "platform update"
+    - "product update"
+    - "new feature"
+    - "powered by ai"
+    - "ai-powered"
+    - "join us"
+    - "register now"
+    - "live demo"
+
   bleepingcomputer:
     feed: https://www.bleepingcomputer.com/feed/
     global_exclude: [webinar, sponsored, "patch tuesday", "weekly recap",
@@ -174,7 +210,7 @@ multi_domain_sources:
 
   unit42:
     feed: https://unit42.paloaltonetworks.com/feed/
-    global_exclude: [webinar, sponsored]
+    global_exclude: *marketing_exclude
     routing:
       - module: malware
         include: [malware, trojan, infostealer, RAT, backdoor, campaign]
@@ -184,7 +220,11 @@ multi_domain_sources:
 
   microsoft_sec:
     feed: https://www.microsoft.com/en-us/security/blog/feed/
-    global_exclude: [webinar, sponsored, "passkey day", "world password day", "awareness day"]
+    global_exclude:
+      - *marketing_exclude
+      - "passkey day"
+      - "world password day"
+      - "awareness day"
     routing:
       - module: malware
         include: [malware, trojan, infostealer, campaign, threat actor]
@@ -196,7 +236,7 @@ multi_domain_sources:
 
   mandiant:
     feed: https://www.mandiant.com/resources/blog/rss.xml
-    global_exclude: [webinar, sponsored]
+    global_exclude: *marketing_exclude
     routing:
       - module: malware
         include: [malware, APT, campaign, backdoor, espionage]
@@ -224,24 +264,26 @@ multi_domain_sources:
 
   crowdstrike:
     feed: https://www.crowdstrike.com/en-us/blog/feed
-    global_exclude: [webinar, sponsored]
+    global_exclude: *marketing_exclude
     routing:
       - module: malware
         include: ["threat hunting", adversary, malware, backdoor, campaign, infostealer,
                   SPIDER, BEAR, PANDA, KITTEN, CHOLLIMA, "from the front lines", APT]
-        exclude: [ransomware]
+        exclude: [ransomware, "Falcon Shield", "Falcon Complete", "Falcon Cloud"]
       - module: ransomware
         include: [ransomware, extortion, LockBit, ALPHV, SPIDER]
+        exclude: ["Falcon Shield", "Falcon Complete"]
       - module: cve
         include: ["CVE-", "patch tuesday", "zero-day", vulnerability,
                   "remote code execution", "actively exploited"]
 
   sentinelone:
     feed: https://www.sentinelone.com/blog/feed/
-    global_exclude: [webinar, sponsored, "singularity platform", "product update"]
+    global_exclude: *marketing_exclude
     routing:
       - module: supply
-        include: ["supply chain attack", "CI/CD", npm, pypi, "open source", "package registry"]
+        include: ["supply chain attack", "malicious package",
+                  "npm package", "pypi package", "package registry", typosquat]
       - module: malware
         include: [malware, APT, backdoor, infostealer, RAT, "credentials theft",
                   campaign, trojan, wiper]
@@ -253,18 +295,20 @@ multi_domain_sources:
 
   jfrog:
     feed: https://jfrog.com/blog/feed/
-    global_exclude: [webinar, sponsored]
+    global_exclude: *marketing_exclude
     routing:
       - module: supply
-        include: [hugging face, HuggingFace, "model poisoning", "malicious model",
-                  safetensors, transformers, "AI supply chain", "ML security", huntr,
-                  npm, pypi, "supply chain", "malicious package", "open source"]
+        include: ["hugging face", HuggingFace, "model poisoning", "malicious model",
+                  safetensors, "AI supply chain", "ML security", huntr,
+                  "npm package", "pypi package", "supply chain attack", "malicious package",
+                  typosquat, "dependency confusion"]
 
   protectai:
     feed: https://protectai.com/blog/feed
-    global_exclude: [webinar, sponsored]
+    global_exclude: *marketing_exclude
     routing:
       - module: supply
-        include: [hugging face, "model security", "ML supply chain",
+        include: ["hugging face", "model security", "ML supply chain",
                   "model poisoning", "AI security", safetensors, huntr,
-                  npm, pypi, "supply chain", "malicious package"]
+                  "npm package", "pypi package", "supply chain attack",
+                  "malicious package"]
