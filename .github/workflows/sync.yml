@@ -135,7 +135,15 @@ jobs:
         run: |
           git config user.name "dragnet-bot"
           git config user.email "dragnet-bot@users.noreply.github.com"
-          git add supply/ malware/ ransomware/ cve/ container/ feeds/ state/ actors/
+          # Per-module + per-feeds add — if one module has a runaway diff or
+          # an unexpectedly-large file, we can isolate it from the others
+          # rather than chasing it through one mega-stage. Cheaper than
+          # one big `git add .` because we never touch gitignored caches.
+          for d in supply malware ransomware cve container actors feeds state; do
+            if [ -d "$d" ]; then
+              git add "$d/" || echo "[commit] git add $d failed (continuing)"
+            fi
+          done
           # Unstage draft incidents — they belong on their own branches, not main.
           git restore --staged -- '*/incidents/drafts/' 2>/dev/null || true
           git diff --staged --quiet && echo "No changes" || \
