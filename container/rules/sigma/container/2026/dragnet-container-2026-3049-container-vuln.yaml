@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3049 — Vulnerable Base Image Pull'
+id: 67b6a586-1ae2-57ed-86da-7bf80aeca090
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3049 (Tier 2, CVSS 10)
+  When executing a program via the bubblewrap sandbox, the nonpriv session can escape to the parent session by using the TIOCSTI ioctl to push characters into the terminal's input buffer, allowing an attacker to escape the sandbox.
+references:
+  - http://www.openwall.com/lists/oss-security/2020/07/10/1
+  - http://www.openwall.com/lists/oss-security/2023/03/17/1
+  - http://www.securityfocus.com/bid/97260
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1411811
+  - https://github.com/projectatomic/bubblewrap/commit/d7fc532c42f0e9bf427923bab85433282b3e5117
+  - https://github.com/projectatomic/bubblewrap/issues/142
+  - https://www.openwall.com/lists/oss-security/2023/03/14/2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,62 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4599 — Vulnerable Base Image Pull'
+id: 2620f68e-e1db-56c6-b316-77523b2921a8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4599 (Tier 2, CVSS 9.8)
+  The olm_session_describe function in Matrix libolm before 3.2.7 is vulnerable to a buffer overflow. The Olm session object represents a cryptographic channel between two parties. Therefore, its state is partially controllable by the remote party of the channel. Attackers can construct a crafted sequence of messages to manipulate the state of the receiver's session in such a way that, for some buffer sizes, a buffer overflow happens on a call to olm_session_describe. Furthermore, safe buffer sizes were undocumented. The overflow content is partially controllable by the attacker and limited to ASCII spaces and digits. The known affected products are Element Web And SchildiChat Web.
+references:
+  - https://gitlab.matrix.org/matrix-org/olm/-/tags
+  - https://lists.debian.org/debian-lts-announce/2022/01/msg00001.html
+  - https://matrix.org/blog/2021/12/13/disclosure-buffer-overflow-in-libolm-and-matrix-js-sdk
+  - https://matrix.org/blog/2021/12/13/disclosure-buffer-overflow-in-libolm-and-matrix-js-sdk/
+  - https://ubuntu.com/security/notices/USN-5246-1
+  - https://ubuntu.com/security/notices/USN-5248-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-44538
+  - https://www.debian.org/security/2022/dsa-5034
+  - https://www.mozilla.org/en-US/security/advisories/mfsa2021-55/#CVE-2021-44538
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:18.04'
+      - 'ubuntu:20.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

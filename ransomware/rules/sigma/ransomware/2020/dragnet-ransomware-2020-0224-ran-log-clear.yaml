@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0224 — Event Log Clearing (revil)'
+id: 9280f178-17ab-53a2-acd8-fd644f3cb3d2
+status: deprecated
+description: |
+  Detects event log clearing associated with revil ransomware.
+  Incident: dragnet-ransomware-2020-0224
+  Ransomware victim claim by revil: Insport (sports store); country: AU; sector: Consumer Services
+  First observed: 2020-05-16.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

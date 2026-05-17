@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-1424 — Event Log Clearing (cactus)'
+id: b2261992-863c-5ee7-ab10-3f283149ca28
+status: deprecated
+description: |
+  Detects event log clearing associated with cactus ransomware.
+  Incident: dragnet-ransomware-2023-1424
+  Ransomware victim claim by cactus: Astro Lighting; sector: Consumer Services
+  First observed: 2023-09-02.
+references:
+  - https://cactusbloguuodvqjmnzlwetjlpj6aggc6iocwhuupb47laukux7ckid.onion/posts/ASTROLIGHTING
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

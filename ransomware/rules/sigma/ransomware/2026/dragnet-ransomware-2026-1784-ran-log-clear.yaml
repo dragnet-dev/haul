@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1784 — Event Log Clearing (nightspire)'
+id: 3afcb995-0bdf-5a4d-962f-c4d9201b4e64
+status: deprecated
+description: |
+  Detects event log clearing associated with nightspire ransomware.
+  Incident: dragnet-ransomware-2026-1784
+  Ransomware victim claim by nightspire: American Piping & Boiler Co; country: US; sector: Construction
+  First observed: 2026-02-14.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6690 — Event Log Clearing (safepay)'
+id: e11e659f-9997-5d7a-b960-36e6ea5b06b8
+status: deprecated
+description: |
+  Detects event log clearing associated with safepay ransomware.
+  Incident: dragnet-ransomware-2025-6690
+  Ransomware victim claim by safepay: blueridgesl.com; country: US; sector: Healthcare
+  First observed: 2025-05-19.
+references:
+  - http://j3dp6okmaklajrsk6zljl5sfa2vpui7j2w6cwmhmmqhab6frdfbphhid.onion#blueridgesl
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

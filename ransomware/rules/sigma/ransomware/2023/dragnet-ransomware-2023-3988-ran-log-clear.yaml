@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3988 — Event Log Clearing (monti)'
+id: 24fa9454-8a2f-5395-8a02-5675f2d38a78
+status: deprecated
+description: |
+  Detects event log clearing associated with monti ransomware.
+  Incident: dragnet-ransomware-2023-3988
+  Ransomware victim claim by monti: ASL 1 - Avezzano Sulmona L'Aquila *first 10gb upload*; sector: Healthcare
+  First observed: 2023-05-08.
+references:
+  - http://mblogci3rudehaagbryjznltdp33ojwzkq6hn2pckvjq33rycmzczpid.onion/blog/59817f58a05bc6e9720a72bfca2c7857539f7a9ee0e56f52b937752d26bde155/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

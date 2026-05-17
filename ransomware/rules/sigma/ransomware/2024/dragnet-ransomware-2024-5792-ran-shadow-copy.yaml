@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5792 — Shadow Copy Deletion (shinyhunters)'
+id: 91697aaf-a56a-54b0-aff2-12e93445ec7c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with shinyhunters ransomware.
+  Incident: dragnet-ransomware-2024-5792
+  Ransomware victim claim by shinyhunters: Adidas; country: DE; sector: Consumer Services
+  First observed: 2024-05-02.
+references:
+  - https://breachforums.hn//adidas.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

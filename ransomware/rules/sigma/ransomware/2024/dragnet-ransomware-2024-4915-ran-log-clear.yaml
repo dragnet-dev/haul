@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4915 — Event Log Clearing (ransomhub)'
+id: 9c28e16c-b5e0-5026-b359-267c50f852d7
+status: deprecated
+description: |
+  Detects event log clearing associated with ransomhub ransomware.
+  Incident: dragnet-ransomware-2024-4915
+  Ransomware victim claim by ransomhub: bitquail.com; country: NL; sector: Technology
+  First observed: 2024-11-05.
+references:
+  - http://ransomxifxwc5eteopdobynonjctkxxvap77yqifu2emfbecgbqdw6qd.onion/54942cb4-90c1-418c-b01e-2440e0df29d1/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

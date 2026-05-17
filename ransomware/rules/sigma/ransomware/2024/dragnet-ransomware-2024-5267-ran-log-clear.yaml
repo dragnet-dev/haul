@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5267 — Event Log Clearing (ransomhub)'
+id: a9d10618-bbb1-5445-bd88-04f8c8525a3e
+status: deprecated
+description: |
+  Detects event log clearing associated with ransomhub ransomware.
+  Incident: dragnet-ransomware-2024-5267
+  Ransomware victim claim by ransomhub: www.banhampoultry.co.uk; country: GB; sector: Agriculture and Food Production
+  First observed: 2024-08-21.
+references:
+  - http://ransomxifxwc5eteopdobynonjctkxxvap77yqifu2emfbecgbqdw6qd.onion/caf75e36-491b-49f9-b7ec-e7bac6f33276/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0579 — Event Log Clearing (egregor)'
+id: a3e0b351-12f3-56b5-9f67-0f3c34555ef2
+status: deprecated
+description: |
+  Detects event log clearing associated with egregor ransomware.
+  Incident: dragnet-ransomware-2021-0579
+  Ransomware victim claim by egregor: Center Hospitalier de Dax-Côte d’Argent; country: FR; sector: Healthcare
+  First observed: 2021-02-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

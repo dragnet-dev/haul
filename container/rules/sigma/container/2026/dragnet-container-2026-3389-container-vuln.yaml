@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3389 — Vulnerable Base Image Pull'
+id: 53572bea-b45d-5f09-90c5-49efe4abc703
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3389 (Tier 2, CVSS 9.8)
+  An issue was discovered in MP4Box in GPAC 0.7.1. The function urn_Read in isomedia/box_code_base.c has a heap-based buffer over-read.
+references:
+  - https://github.com/gpac/gpac/issues/1088
+  - https://lists.debian.org/debian-lts-announce/2018/07/msg00024.html
+  - https://ubuntu.com/security/notices/USN-3926-1
+  - https://usn.ubuntu.com/3926-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-13005
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

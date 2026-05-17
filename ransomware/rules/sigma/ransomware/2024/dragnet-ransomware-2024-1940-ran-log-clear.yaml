@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1940 — Event Log Clearing (dragonransomware)'
+id: 0725344c-4a6d-56b4-889c-5f517e190b49
+status: deprecated
+description: |
+  Detects event log clearing associated with dragonransomware ransomware.
+  Incident: dragnet-ransomware-2024-1940
+  Ransomware victim claim by dragonransomware: cafunesol.in; country: IN; sector: Energy
+  First observed: 2024-12-06.
+references:
+  - https://t.me/DragonRansom/422
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

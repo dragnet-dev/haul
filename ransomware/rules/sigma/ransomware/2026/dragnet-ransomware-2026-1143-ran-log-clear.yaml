@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1143 — Event Log Clearing (handala)'
+id: 8dccbf6e-0f25-5a3e-9ade-713673903572
+status: deprecated
+description: |
+  Detects event log clearing associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1143
+  Ransomware victim claim by handala: Passover Wiped Clean: 22TB of Data Gone from 14 Companies; sector: Not Found
+  First observed: 2026-04-02.
+references:
+  - https://handala-hack.tw/passover-wiped-clean-22tb-of-data-gone-from-14-zionist-companies/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

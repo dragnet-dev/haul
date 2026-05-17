@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5271 — Vulnerable Base Image Pull'
+id: 8a0a7f3e-ff65-5669-9cf4-fca60fee2cd0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5271 (Tier 2, CVSS 9.8)
+  A memory corruption vulnerability in Fluent Bit versions 2.0.7 thru 3.0.3. This issue lies in the embedded http server’s parsing of trace requests and may result in denial of service conditions, information disclosure, or remote code execution.
+references:
+  - https://fluentbit.io/announcements/v3.0.4/
+  - https://fluentbit.io/blog/2024/05/21/statement-on-cve-2024-4323-and-its-fix/
+  - https://github.com/fluent/fluent-bit/commit/9311b43a258352797af40749ab31a63c32acfd04
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-4323
+  - https://tenable.com/security/research/tra-2024-17
+  - https://www.vicarius.io/vsociety/posts/linguistic-lumberjack-memory-corruption-in-fluent-bit-cve-2024-4323
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

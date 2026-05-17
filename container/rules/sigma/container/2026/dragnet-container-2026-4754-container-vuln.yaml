@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4754 — Vulnerable Base Image Pull'
+id: 282b7e95-b3ca-597f-9ab2-e80628da96f2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4754 (Tier 2, CVSS 9.8)
+  An issue in provider/libserver/ECKrbAuth.cpp of Kopano Core <= v11.0.2.51 contains an issue which allows attackers to authenticate even if the user account or password is expired. It also exists in the predecessor Zarafa Collaboration Platform (ZCP) in provider/libserver/ECPamAuth.cpp of Zarafa >= 6.30 (introduced between 6.30.0 RC1e and 6.30.8 final).
+references:
+  - https://bodhi.fedoraproject.org/updates/FEDORA-EPEL-2023-342b96903b
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2192126
+  - https://github.com/Kopano-dev/kopano-core/blob/master/provider/libserver/ECKrbAuth.cpp#L137
+  - https://jira.kopano.io/browse/KC-2021
+  - https://kopano.com/
+  - https://lists.debian.org/debian-lts-announce/2023/03/msg00006.html
+  - https://src.fedoraproject.org/rpms/zarafa/c/a5a8366ccf07f248fae6edffb5123cfda579bfdb?branch=epel7
+  - https://stash.kopano.io/projects/KC/repos/kopanocore/browse/provider/libserver/ECKrbAuth.cpp#137
+  - https://ubuntu.com/security/notices/USN-6876-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-26562
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

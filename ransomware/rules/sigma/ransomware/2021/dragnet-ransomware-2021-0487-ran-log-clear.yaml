@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0487 — Event Log Clearing (cryp70n1c0d3)'
+id: 3e91b64c-2c01-520a-9225-41e8899cfc04
+status: deprecated
+description: |
+  Detects event log clearing associated with cryp70n1c0d3 ransomware.
+  Incident: dragnet-ransomware-2021-0487
+  Ransomware victim claim by cryp70n1c0d3: oppodigital.in; country: IN; sector: Technology
+  First observed: 2021-12-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

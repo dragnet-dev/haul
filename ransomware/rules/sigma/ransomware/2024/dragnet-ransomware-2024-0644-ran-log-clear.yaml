@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0644 — Event Log Clearing (apt73)'
+id: f77c2560-6e43-5cd1-b5a2-623f1d205851
+status: deprecated
+description: |
+  Detects event log clearing associated with apt73 ransomware.
+  Incident: dragnet-ransomware-2024-0644
+  Ransomware victim claim by apt73: Susan Fischgrund; country: US; sector: Healthcare
+  First observed: 2024-10-21.
+references:
+  - http://bashe4aec32kr6zbifwd5x6xgjsmhg4tbowrbx4pneqhc5mqooyifpid.onion/page_company.php?id=56
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

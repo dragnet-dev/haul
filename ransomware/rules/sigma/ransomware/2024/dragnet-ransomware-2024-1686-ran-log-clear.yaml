@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1686 — Event Log Clearing (cuba)'
+id: 9f52f737-d31f-5bb4-a6aa-3086a0d50c67
+status: deprecated
+description: |
+  Detects event log clearing associated with cuba ransomware.
+  Incident: dragnet-ransomware-2024-1686
+  Ransomware victim claim by cuba: deknudtframes.be; country: BE; sector: Manufacturing
+  First observed: 2024-01-18.
+references:
+  - http://cuba4ikm4jakjgmkezytyawtdgr2xymvy6nvzgw5cglswg3si76icnqd.onion/company/deknudtframes.be
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

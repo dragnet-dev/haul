@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0113 — Event Log Clearing (maze)'
+id: 4b100079-d572-5b0e-b15f-7818afb6763b
+status: deprecated
+description: |
+  Detects event log clearing associated with maze ransomware.
+  Incident: dragnet-ransomware-2020-0113
+  Ransomware victim claim by maze: Strata Plus (strata management firm); country: AU; sector: Business Services
+  First observed: 2020-07-25.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3062 — Recovery Inhibition (tengu)'
+id: 021a1b2d-01e2-5a7e-bfc2-f6e85535dfc9
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with tengu ransomware.
+  Incident: dragnet-ransomware-2026-3062
+  Ransomware victim claim by tengu: Nordstrom Rack; country: US; sector: Consumer Services
+  First observed: 2026-01-15.
+references:
+  - http://longcc4fqrfcqt5lzceutylaxir6h66fp6df3oin6mvwvz6pfdbxc6qd.onion/blog/9ed049f13a6c03647605778e699066649aea5265c7351bff6fd5e509a294ba2e/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

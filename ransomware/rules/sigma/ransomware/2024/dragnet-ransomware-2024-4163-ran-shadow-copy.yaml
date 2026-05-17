@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4163 — Shadow Copy Deletion (nitrogen)'
+id: 19512e11-400c-5269-8408-4dc625651f0e
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with nitrogen ransomware.
+  Incident: dragnet-ransomware-2024-4163
+  Ransomware victim claim by nitrogen: Ottawa Valley Handrailing Company Ltd; country: CA; sector: Business Services
+  First observed: 2024-10-25.
+references:
+  - http://nitrogenczslprh3xyw6lh5xyjvmsz7ciljoqxxknd7uymkfetfhgvqd.onion/posts/671bb4c2ace0d87756fe6911
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

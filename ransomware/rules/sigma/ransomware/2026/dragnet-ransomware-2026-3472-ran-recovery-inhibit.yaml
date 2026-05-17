@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3472 — Recovery Inhibition (worldleaks)'
+id: 3771ba0e-a227-57fd-a6c6-be2c6f36b301
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with worldleaks ransomware.
+  Incident: dragnet-ransomware-2026-3472
+  Ransomware victim claim by worldleaks: Thames Valley Chamber of Commerce; country: GB; sector: Business Services
+  First observed: 2026-02-16.
+references:
+  - https://worldleaksartrjm3c6vasllvgacbi5u3mgzkluehrzhk2jz4taufuid.onion/companies/1772015470
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

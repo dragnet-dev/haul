@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4571 — Event Log Clearing (nightspire)'
+id: eac473ea-62b0-5941-adb9-c7ff1c264cdd
+status: deprecated
+description: |
+  Detects event log clearing associated with nightspire ransomware.
+  Incident: dragnet-ransomware-2025-4571
+  Ransomware victim claim by nightspire: TeamLease; country: IN; sector: Business Services
+  First observed: 2025-05-21.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

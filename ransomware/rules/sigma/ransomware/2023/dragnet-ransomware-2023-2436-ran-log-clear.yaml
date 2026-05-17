@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2436 — Event Log Clearing (knight)'
+id: e79fe64f-23e7-5bab-81ce-4f99462cb685
+status: deprecated
+description: |
+  Detects event log clearing associated with knight ransomware.
+  Incident: dragnet-ransomware-2023-2436
+  Ransomware victim claim by knight: Mario de Cecco - Workwear & Corporate Wear IT; sector: Consumer Services
+  First observed: 2023-10-31.
+references:
+  - http://knight3xppu263m7g4ag3xlit2qxpryjwueobh7vjdc3zrscqlfu3pqd.onion/5ec6ea52-8f28-42dc-b239-e293fd648210/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

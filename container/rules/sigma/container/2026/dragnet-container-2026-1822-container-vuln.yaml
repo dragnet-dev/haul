@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1822 — Vulnerable Base Image Pull'
+id: 3c7092fc-a26d-5bfc-8f46-ecf6176f94ed
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1822 (Tier 2, CVSS 9.8)
+  ihex.c in GNU Binutils before 2.26 contains a stack buffer overflow when printing bad bytes in Intel Hex objects.
+references:
+  - http://www.openwall.com/lists/oss-security/2015/07/31/6
+  - https://access.redhat.com/security/cve/CVE-2014-9939
+  - https://nvd.nist.gov/vuln/detail/CVE-2014-9939
+  - https://sourceware.org/bugzilla/show_bug.cgi?id=18750
+  - https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git%3Bh=7e27a9d5f22f9f7ead11738b1546d0b5c737266b
+  - https://ubuntu.com/security/notices/USN-3367-1
+  - https://www.cve.org/CVERecord?id=CVE-2014-9939
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

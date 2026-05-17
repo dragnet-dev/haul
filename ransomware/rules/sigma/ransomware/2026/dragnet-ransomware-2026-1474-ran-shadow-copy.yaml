@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1474 — Shadow Copy Deletion (lamashtu)'
+id: 837223ee-dfad-58a6-a3a6-fa0996321323
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with lamashtu ransomware.
+  Incident: dragnet-ransomware-2026-1474
+  Ransomware victim claim by lamashtu: FILAIR; country: FR; sector: Transportation/Logistics
+  First observed: 2026-04-11.
+references:
+  - http://lamashtux5j74mcm7lwwgn5yrvuwtrpxjoyendif3v3hrztjesfoyayd.onion/post/4af9050a6c429cabdf7aec064397ed34
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

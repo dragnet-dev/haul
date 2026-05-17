@@ -1,0 +1,77 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4890 — Vulnerable Base Image Pull'
+id: 939c9277-b983-5c4d-8f39-7ef4e40d02a6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4890 (Tier 2, CVSS 9.1)
+  A read buffer overrun can be triggered in X.509 certificate verification,
+specifically in name constraint checking. Note that this occurs
+after certificate chain signature verification and requires either a
+CA to have signed the malicious certificate or for the application to
+continue certificate verification despite failure to construct a path
+to a trusted issuer.
+
+The read buffer overrun might result in a crash which could lead to
+a denial of service attack. In theory it could also result in the disclosure
+of private memory contents (such as private keys, or sensitive plaintext)
+although we are not aware of any working exploit leading to memory
+contents disclosure as of the time of release of this advisory.
+
+In a TLS client, this can be triggered by connecting to a malicious
+server. In a TLS server, this can be triggered if the server requests
+client authentication and a malicious client connects.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-4203
+  - https://access.redhat.com/errata/RHSA-2023:0946
+  - https://access.redhat.com/security/cve/CVE-2022-4203
+  - https://bugzilla.redhat.com/2164440
+  - https://bugzilla.redhat.com/2164487
+  - https://bugzilla.redhat.com/2164488
+  - https://bugzilla.redhat.com/2164492
+  - https://bugzilla.redhat.com/2164494
+  - https://bugzilla.redhat.com/2164497
+  - https://bugzilla.redhat.com/2164499
+  - https://bugzilla.redhat.com/2164500
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2144000
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2144003
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2144006
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2144008
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'chainguard:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

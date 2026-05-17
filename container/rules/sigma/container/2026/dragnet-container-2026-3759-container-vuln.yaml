@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3759 — Vulnerable Base Image Pull'
+id: 90aab837-d9d9-557d-bb88-95f269844d78
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3759 (Tier 2, CVSS 9.8)
+  Multiple integer overflows exist in MATIO before 1.5.16, related to mat.c, mat4.c, mat5.c, mat73.c, and matvar_struct.c
+references:
+  - https://github.com/tbeu/matio/compare/f8cd397...fabac6c
+  - https://github.com/tbeu/matio/pull/118
+  - https://github.com/tbeu/matio/releases/tag/v1.5.16
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/N7AE25FWDBPC7KLVMPLHT4G64O4GISQQ/
+  - https://www.cve.org/CVERecord?id=CVE-2019-13107
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

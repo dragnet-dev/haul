@@ -1,0 +1,34 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1132 — Event Log Clearing (benzona)'
+id: 5160f406-297d-5d79-a11c-8ab6575a11d6
+status: deprecated
+description: |
+  Detects event log clearing associated with benzona ransomware.
+  Incident: dragnet-ransomware-2025-1132
+  Associated with PLATINUM.
+  Ransomware victim claim by benzona: platinumone.in; country: IN; sector: Technology
+  First observed: 2025-12-06.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.platinum
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

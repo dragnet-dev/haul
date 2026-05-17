@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5460 — Vulnerable Base Image Pull'
+id: 5513b4ae-fc9a-5c81-8f3c-eed9734d2a56
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5460 (Tier 2, CVSS 9.1)
+  In libavif before 1.3.0, makeRoom in stream.c has an integer overflow and resultant buffer overflow in stream->offset+size.
+references:
+  - https://github.com/AOMediaCodec/libavif/commit/50a743062938a3828581d725facc9c2b92a1d109
+  - https://github.com/AOMediaCodec/libavif/commit/c9f1bea437f21cb78f9919c332922a3b0ba65e11
+  - https://github.com/AOMediaCodec/libavif/commit/e5fdefe7d1776e6c4cf1703c163a8c0535599029
+  - https://github.com/AOMediaCodec/libavif/pull/2768
+  - https://github.com/advisories/GHSA-f6x7-5x3c-j3rg
+  - https://lists.debian.org/debian-lts-announce/2025/05/msg00031.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-48174
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

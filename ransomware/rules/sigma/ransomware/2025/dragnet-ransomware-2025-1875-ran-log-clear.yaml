@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1875 — Event Log Clearing (clop)'
+id: 91f203af-4192-5fb5-9c64-0f9c7f850d5f
+status: deprecated
+description: |
+  Detects event log clearing associated with clop ransomware.
+  Incident: dragnet-ransomware-2025-1875
+  Ransomware victim claim by clop: P2ENERGYSERVICES.COM; country: US; sector: Energy
+  First observed: 2025-11-13.
+references:
+  - http://santat7kpllt6iyvqbr7q4amdv6dzrh6paatvyrzl7ry3zm72zigf4ad.onion/p2energyservices-com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

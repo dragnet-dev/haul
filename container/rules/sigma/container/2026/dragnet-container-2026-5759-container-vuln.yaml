@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5759 — Vulnerable Base Image Pull'
+id: 213bd9c2-e4fb-5450-ad92-54458004dfee
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5759 (Tier 2, CVSS 10)
+  openvpn-auth-oauth2 is a plugin/management interface client for OpenVPN server to handle an OIDC based single sign-on (SSO) auth flows. From version 1.26.3 to before version 1.27.3, when openvpn-auth-oauth2 is deployed in the experimental plugin mode (shared library loaded by OpenVPN via the plugin directive), clients that do not support WebAuth/SSO (e.g., the openvpn CLI on Linux) are incorrectly admitted to the VPN despite being denied by the authentication logic. The default management-interface mode is not affected because it does not use the OpenVPN plugin return-code mechanism. This issue has been patched in version 1.27.3.
+references:
+  - https://github.com/OpenVPN/openvpn/blob/master/include/openvpn-plugin.h.in
+  - https://github.com/OpenVPN/openvpn3/blob/master/doc/webauth.md
+  - https://github.com/jkroepke/openvpn-auth-oauth2
+  - https://github.com/jkroepke/openvpn-auth-oauth2/commit/36f69a6c67c1054da7cbfa04ced3f0555127c8f2
+  - https://github.com/jkroepke/openvpn-auth-oauth2/pull/829
+  - https://github.com/jkroepke/openvpn-auth-oauth2/releases/tag/v1.27.3
+  - https://github.com/jkroepke/openvpn-auth-oauth2/security/advisories/GHSA-246w-jgmq-88fg
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-41070
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

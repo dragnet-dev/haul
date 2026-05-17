@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1118 — Vulnerable Base Image Pull'
+id: 9c98a803-8e43-58f9-b259-a4dce1a2a69d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1118 (Tier 2, CVSS 9.3)
+  munin-cgi-graph in Munin before 2.0.6, when running as a CGI module under Apache, allows remote attackers to load new configurations and create files in arbitrary directories via the logdir command.
+references:
+  - http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=684076
+  - http://www.munin-monitoring.org/ticket/1238
+  - http://www.openwall.com/lists/oss-security/2012/08/21/1
+  - http://www.ubuntu.com/usn/USN-1622-1
+  - https://ubuntu.com/security/notices/USN-1622-1
+  - https://www.cve.org/CVERecord?id=CVE-2012-3513
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:12.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

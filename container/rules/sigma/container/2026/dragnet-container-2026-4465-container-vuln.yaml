@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4465 — Vulnerable Base Image Pull'
+id: f451ebe1-9823-556b-8149-128baca26e47
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4465 (Tier 2, CVSS 9.1)
+  hyper is an HTTP library for Rust. In versions prior to 0.14.10, hyper's HTTP server and client code had a flaw that could trigger an integer overflow when decoding chunk sizes that are too big. This allows possible data loss, or if combined with an upstream HTTP proxy that allows chunk sizes larger than hyper does, can result in "request smuggling" or "desync attacks." The vulnerability is patched in version 0.14.10. Two possible workarounds exist. One may reject requests manually that contain a `Transfer-Encoding` header or ensure any upstream proxy rejects `Transfer-Encoding` chunk sizes greater than what fits in 64-bit unsigned integers.
+references:
+  - https://github.com/hyperium/hyper
+  - https://github.com/hyperium/hyper/security/advisories/GHSA-5h46-h7hh-c6x9
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-32714
+  - https://rustsec.org/advisories/RUSTSEC-2021-0079.html
+  - https://www.cve.org/CVERecord?id=CVE-2021-32714
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'chainguard:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

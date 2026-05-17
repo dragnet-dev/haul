@@ -1,0 +1,59 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5302 — Vulnerable Base Image Pull'
+id: 09820a8a-7c60-5798-acb0-1dabbafc4611
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5302 (Tier 2, CVSS 9.1)
+  GStreamer is a library for constructing graphs of media-handling components. An OOB-read vulnerability has been identified in the gst_avi_subtitle_parse_gab2_chunk function within gstavisubtitle.c. The function reads the name_length value directly from the input file without checking it properly. Then, the a condition, does not properly handle cases where name_length is greater than 0xFFFFFFFF - 17, causing an integer overflow. In such scenario, the function attempts to access memory beyond the buffer leading to an OOB-read. This vulnerability is fixed in 1.24.10.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-47774
+  - https://securitylab.github.com/advisories/GHSL-2024-262_Gstreamer/
+  - https://github.com/github/securitylab-vulnerabilities/issues/1826
+  - https://access.redhat.com/errata/RHSA-2025:7242
+  - https://access.redhat.com/security/cve/CVE-2024-47774
+  - https://bugzilla.redhat.com/2331723
+  - https://bugzilla.redhat.com/2331739
+  - https://bugzilla.redhat.com/2331741
+  - https://bugzilla.redhat.com/2331743
+  - https://bugzilla.redhat.com/2331744
+  - https://bugzilla.redhat.com/2331747
+  - https://bugzilla.redhat.com/2331748
+  - https://bugzilla.redhat.com/2331749
+  - https://bugzilla.redhat.com/2331750
+  - https://bugzilla.redhat.com/2331751
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

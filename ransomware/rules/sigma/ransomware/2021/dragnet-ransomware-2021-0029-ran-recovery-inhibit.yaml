@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0029 — Recovery Inhibition (atomsilo)'
+id: 84252b29-7603-5d8d-8851-18b7d166efeb
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with atomsilo ransomware.
+  Incident: dragnet-ransomware-2021-0029
+  Ransomware victim claim by atomsilo: Cristália - Indústria Farmacêutica; country: BR; sector: Healthcare
+  First observed: 2021-12-21.
+references:
+  - http://npmh5ahrgakbniuntyc7io4adm6ietbdbuejrfonowqtyqn24or556qd.onion/leaks.html/post.html?id=cristalia
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

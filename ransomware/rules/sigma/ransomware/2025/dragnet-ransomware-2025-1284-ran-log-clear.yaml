@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1284 — Event Log Clearing (bqtlock)'
+id: 8132cffd-4827-5f29-ac04-d41a2d8880a3
+status: deprecated
+description: |
+  Detects event log clearing associated with bqtlock ransomware.
+  Incident: dragnet-ransomware-2025-1284
+  Ransomware victim claim by bqtlock: USA Military Alumni Networks; country: US; sector: Public Sector
+  First observed: 2025-07-31.
+references:
+  - http://yywhylvqeqynzik6ibocb53o2nat7lmzn5ynjpar3stndzcgmy6dkgid.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3701 — Recovery Inhibition (lynx)'
+id: 812baa8b-d329-58d7-8af5-757029703b26
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3701
+  Ransomware victim claim by lynx: WimCoCorp; country: US; sector: Education
+  First observed: 2024-10-17.
+references:
+  - http://lynxblog.net/leaks/672f171fdab69e0ba2cdd890
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5284 — Event Log Clearing (trigona)'
+id: 6c28bb69-b7ed-582a-a6e7-62128bb47dcf
+status: deprecated
+description: |
+  Detects event log clearing associated with trigona ransomware.
+  Incident: dragnet-ransomware-2023-5284
+  Ransomware victim claim by trigona: Marshall Construction Ltd; sector: Construction
+  First observed: 2023-05-26.
+references:
+  - http://aeey7hxzgl6zowiwhteo5xjbf6sb36tkbn5hptykgmbsjrbiygv4c4id.onion/?id=GetOMLxJ
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

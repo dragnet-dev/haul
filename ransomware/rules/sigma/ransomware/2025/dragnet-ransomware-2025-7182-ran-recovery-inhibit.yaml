@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7182 — Recovery Inhibition (silent)'
+id: f79010d4-0568-5c5f-8545-838aec9d0f0c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with silent ransomware.
+  Incident: dragnet-ransomware-2025-7182
+  Ransomware victim claim by silent: Fleet Canada; country: CA; sector: Manufacturing
+  First observed: 2025-04-24.
+references:
+  - http://silentbgdghp3zeldwpumnwabglreql7jcffhx5vqkvtf2lshc4n5zid.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

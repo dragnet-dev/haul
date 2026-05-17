@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4199 — Vulnerable Base Image Pull'
+id: 181a7510-f893-55e1-a69b-e4dfe32fb517
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4199 (Tier 2, CVSS 9.8)
+  The cache action in action/cache.py in MoinMoin through 1.9.10 allows directory traversal through a crafted HTTP request. An attacker who can upload attachments to the wiki can use this to achieve remote code execution.
+references:
+  - http://moinmo.in/SecurityFixes
+  - https://github.com/moinwiki/moin
+  - https://github.com/moinwiki/moin-1.9/commit/6b96a9060069302996b5af47fd4a388fc80172b7
+  - https://github.com/moinwiki/moin-1.9/commit/d1e5fc7d3708d877353ca64dd4aa7cfd1cde4cb4 (1.9.11)
+  - https://github.com/moinwiki/moin-1.9/security/advisories/GHSA-52q8-877j-gghq
+  - https://github.com/pypa/advisory-database/tree/main/vulns/moin/PYSEC-2020-67.yaml
+  - https://lists.debian.org/debian-lts-announce/2020/11/msg00020.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-25074
+  - https://pypi.org/project/moin
+  - https://ubuntu.com/security/notices/USN-4629-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-25074
+  - https://www.debian.org/security/2020/dsa-4787
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:9'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

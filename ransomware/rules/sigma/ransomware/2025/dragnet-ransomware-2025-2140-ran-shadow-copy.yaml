@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2140 — Shadow Copy Deletion (d4rk4rmy)'
+id: cf957485-e71d-5e05-b973-c90e3a6e2b5d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with d4rk4rmy ransomware.
+  Incident: dragnet-ransomware-2025-2140
+  Ransomware victim claim by d4rk4rmy: CASINO DE MONTE-CARLO; country: MC; sector: Hospitality and Tourism
+  First observed: 2025-08-03.
+references:
+  - http://d4rkd2fybtclo44hss2dpqpw7gmofboxhruax2az3uejw7puxxbpkvqd.onion/?p=265
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

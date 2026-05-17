@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4037 — Recovery Inhibition (meow)'
+id: 67ef0f2f-2db4-5757-9c5a-358c76e8db18
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with meow ransomware.
+  Incident: dragnet-ransomware-2024-4037
+  Ransomware victim claim by meow: Modulkit; country: ES; sector: Manufacturing
+  First observed: 2024-08-27.
+references:
+  - http://meow6xanhzfci2gbkn3lmbqq7xjjufskkdfocqdngt3ltvzgqpsg5mid.onion/product/62
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

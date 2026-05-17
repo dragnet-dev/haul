@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5717 — Vulnerable Base Image Pull'
+id: 39d6bc0c-c9f6-57f5-baae-1cdddc75b4f8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5717 (Tier 2, CVSS 9.1)
+  A flaw was found in the X.Org X server. This vulnerability, an out-of-bounds read, affects the XKB (X Keyboard Extension) modifier map handling. An attacker with access to the X11 server can exploit this by sending a malformed request, which causes the server to read beyond its intended memory boundaries. This can lead to the exposure of sensitive information or cause the server to crash, resulting in a denial of service.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-34002
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2451112
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-34002
+  - https://www.cve.org/CVERecord?id=CVE-2026-34002
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

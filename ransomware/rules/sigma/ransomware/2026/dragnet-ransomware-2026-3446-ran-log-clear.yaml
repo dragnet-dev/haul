@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3446 — Event Log Clearing (worldleaks)'
+id: f16fefa8-78d8-5cbb-accf-a238e2290062
+status: deprecated
+description: |
+  Detects event log clearing associated with worldleaks ransomware.
+  Incident: dragnet-ransomware-2026-3446
+  Ransomware victim claim by worldleaks: City of Los Angeles (LA); country: US; sector: Public Sector
+  First observed: 2026-03-20.
+references:
+  - https://worldleaksartrjm3c6vasllvgacbi5u3mgzkluehrzhk2jz4taufuid.onion/companies/6948521802
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

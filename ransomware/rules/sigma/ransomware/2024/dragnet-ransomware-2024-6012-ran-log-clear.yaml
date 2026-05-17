@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-6012 — Event Log Clearing (underground)'
+id: fd30f733-74a8-552d-ad7a-300775f5f703
+status: deprecated
+description: |
+  Detects event log clearing associated with underground ransomware.
+  Incident: dragnet-ransomware-2024-6012
+  Ransomware victim claim by underground: Casio Computer Co., Ltd; country: JP; sector: Technology
+  First observed: 2024-10-09.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packages/86454fab-3c15-4a88-bde9-a62778117c44
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

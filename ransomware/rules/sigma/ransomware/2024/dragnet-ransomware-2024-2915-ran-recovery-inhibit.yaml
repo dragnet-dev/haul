@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2915 — Recovery Inhibition (interlock)'
+id: ea550df6-97dd-5a10-929b-53caded9a6f9
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2024-2915
+  Ransomware victim claim by interlock: Legacy Treatment Services; country: US; sector: Healthcare
+  First observed: 2024-10-26.
+references:
+  - http://ebhmkoohccl45qesdbvrjqtyro2hmhkmh6vkyfyjjzfllm3ix72aqaid.onion/Legacy_Treatment_Services.php
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

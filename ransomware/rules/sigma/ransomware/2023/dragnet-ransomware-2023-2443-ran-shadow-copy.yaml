@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2443 — Shadow Copy Deletion (knight)'
+id: 5eb0a01b-1a20-5691-a6db-1c730d6bb723
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with knight ransomware.
+  Incident: dragnet-ransomware-2023-2443
+  Ransomware victim claim by knight: Solano-Napa Pet Emergency Clinic; sector: Consumer Services
+  First observed: 2023-09-06.
+references:
+  - http://knight3xppu263m7g4ag3xlit2qxpryjwueobh7vjdc3zrscqlfu3pqd.onion/blogs/c908de09-33a2-4b04-9f76-ec3e0f21556b/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

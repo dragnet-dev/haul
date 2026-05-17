@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0845 — Shadow Copy Deletion (anubis)'
+id: 95a2b1ab-1b0f-52e4-8292-5f7b6172c5ac
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with anubis ransomware.
+  Incident: dragnet-ransomware-2025-0845
+  Ransomware victim claim by anubis: TRAF Industrial Products Inc; country: CA; sector: Manufacturing
+  First observed: 2025-08-28.
+references:
+  - http://om6q4a6cyipxvt7ioudxt24cw4oqu4yodmqzl25mqd2hgllymrgu4aqd.onion/r/W07Z3fHiCrQnuxtcI6+OeUyKUE+zjZxPbOeWqYeRUNZzfARcNo9zJSFasId0IgfxssIH7R0Dn5xSPwdUEwBRFZ1Z0hNM3Bz
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

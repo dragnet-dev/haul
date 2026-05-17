@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6254 — Recovery Inhibition (ralord)'
+id: 27dc4f6f-9d7d-5b22-9074-85622a9f0b88
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with ralord ransomware.
+  Incident: dragnet-ransomware-2025-6254
+  Ransomware victim claim by ralord: HELUKABEL company; country: DE; sector: Manufacturing
+  First observed: 2025-04-23.
+references:
+  - http://ralord3htj7v2dkavss2hjzviviwgsf4anfdnihn5qcjl6eb5if3cuqd.onion/HELUKABEL
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

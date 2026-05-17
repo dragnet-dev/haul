@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1122 — Event Log Clearing (lv)'
+id: a4212c70-2075-5d3b-bd20-f4ceb8939f58
+status: deprecated
+description: |
+  Detects event log clearing associated with lv ransomware.
+  Incident: dragnet-ransomware-2021-1122
+  Ransomware victim claim by lv: agrofair.nl; country: NL; sector: Agriculture and Food Production
+  First observed: 2021-12-16.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

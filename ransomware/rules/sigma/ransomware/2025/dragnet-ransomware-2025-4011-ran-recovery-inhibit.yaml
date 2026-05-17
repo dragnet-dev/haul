@@ -1,0 +1,30 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4011 — Recovery Inhibition (lockbit5)'
+id: 80047e7a-95fd-5929-9e00-c201a8554cf4
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lockbit5 ransomware.
+  Incident: dragnet-ransomware-2025-4011
+  Associated with PLATINUM.
+  Ransomware victim claim by lockbit5: platinumpws.com; country: MY; sector: Consumer Services
+  First observed: 2025-10-19.
+references:
+  - http://lockbitapt67g6rwzjbcxnww5efpg4qok6vpfeth7wx3okj52ks4wtad.onion/post/d093683506d2cc9c55c5b01c1d298069
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+  - dragnet.actor.platinum
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

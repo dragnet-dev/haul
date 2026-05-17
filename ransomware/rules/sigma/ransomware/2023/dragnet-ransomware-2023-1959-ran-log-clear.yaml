@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-1959 — Event Log Clearing (crosslock)'
+id: 0f6e703a-a8ba-5f8e-866e-9416b21ef41e
+status: deprecated
+description: |
+  Detects event log clearing associated with crosslock ransomware.
+  Incident: dragnet-ransomware-2023-1959
+  Ransomware victim claim by crosslock: validcertificadora.com.br; country: BR; sector: Agriculture and Food Production
+  First observed: 2023-04-17.
+references:
+  - http://crosslock5cwfljbw4v37zuzq4talxxhyavjm2lufmjwgbpfjdsh56yd.onion/view.php?id=3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

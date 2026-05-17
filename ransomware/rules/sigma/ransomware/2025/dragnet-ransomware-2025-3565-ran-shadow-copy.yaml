@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3565 — Shadow Copy Deletion (interlock)'
+id: 5f5d94d7-9ec5-58e1-b7c8-9f65faa3dea3
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3565
+  Ransomware victim claim by interlock: Cherokee County School District; country: US; sector: Education
+  First observed: 2025-03-16.
+references:
+  - http://ebhmkoohccl45qesdbvrjqtyro2hmhkmh6vkyfyjjzfllm3ix72aqaid.onion/leaks.phphttp://e762chqol5savlrfqljepxwtozrxxwarkuyhqps2n34tm3rliff4beqd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

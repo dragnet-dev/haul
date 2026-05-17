@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5244 — Event Log Clearing (toufan)'
+id: b0ea0607-0624-58ef-b40e-460f318e9114
+status: deprecated
+description: |
+  Detects event log clearing associated with toufan ransomware.
+  Incident: dragnet-ransomware-2023-5244
+  Ransomware victim claim by toufan: sys-cspartners.caesarstone.com.au; country: AU; sector: Manufacturing
+  First observed: 2023-12-19.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

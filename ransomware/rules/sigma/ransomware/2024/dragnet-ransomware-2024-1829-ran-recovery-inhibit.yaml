@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1829 — Recovery Inhibition (donex)'
+id: 3eb685b0-f24d-529b-a6c8-327dcd4d307a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with donex ransomware.
+  Incident: dragnet-ransomware-2024-1829
+  Ransomware victim claim by donex: mirel; country: BE; sector: Business Services
+  First observed: 2024-02-27.
+references:
+  - http://g3h3klsev3eiofxhykmtenmdpi67wzmaixredk5pjuttbx7okcfkftqd.onion/f9ee69df8ca2/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

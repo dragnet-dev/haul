@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5542 — Event Log Clearing (raworld)'
+id: 58713d95-c717-5ca7-810d-0b23524c5efb
+status: deprecated
+description: |
+  Detects event log clearing associated with raworld ransomware.
+  Incident: dragnet-ransomware-2024-5542
+  Ransomware victim claim by raworld: Pascoe International; country: GB; sector: Healthcare
+  First observed: 2024-03-23.
+references:
+  - http://raworldw32b2qxevn3gp63pvibgixr4v75z62etlptg3u3pmajwra4ad.onion/post/105010.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

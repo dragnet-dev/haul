@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3370 — Vulnerable Base Image Pull'
+id: 9d2b867e-6e02-568e-95fa-e98e892dc7eb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3370 (Tier 2, CVSS 9.8)
+  The ConnectionBase::preparseNewBytes function in resip/stack/ConnectionBase.cxx in reSIProcate through 1.10.2 allows remote attackers to cause a denial of service (buffer overflow) or possibly execute arbitrary code when TLS communication is enabled.
+references:
+  - http://joachimdezutter.webredirect.org/advisory.html
+  - http://seclists.org/bugtraq/2018/Aug/14
+  - https://github.com/resiprocate/resiprocate/commit/2cb291191c93c7c4e371e22cb89805a5b31d6608
+  - https://lists.debian.org/debian-lts-announce/2018/07/msg00031.html
+  - https://lists.debian.org/debian-lts-announce/2021/12/msg00029.html
+  - https://packetstormsecurity.com/files/148856/reSIProcate-1.10.2-Heap-Overflow.html
+  - https://www.cve.org/CVERecord?id=CVE-2018-12584
+  - https://www.exploit-db.com/exploits/45174/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

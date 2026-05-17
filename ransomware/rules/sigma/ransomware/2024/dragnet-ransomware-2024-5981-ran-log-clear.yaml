@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5981 — Event Log Clearing (trigona)'
+id: bbee6372-2db4-5ffb-83cc-5ef6e2f9f5fd
+status: deprecated
+description: |
+  Detects event log clearing associated with trigona ransomware.
+  Incident: dragnet-ransomware-2024-5981
+  Ransomware victim claim by trigona: CMG Drainage Engineering; country: US; sector: Business Services
+  First observed: 2024-01-30.
+references:
+  - http://krsbhaxbki6jr4zvwblvkaqzjkircj7cxf46qt3na5o5sj2hpikbupqd.onion/leak/b95231e2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

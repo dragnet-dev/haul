@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3576 — Event Log Clearing (interlock)'
+id: f78fbba2-3494-59af-b347-b780d8dae031
+status: deprecated
+description: |
+  Detects event log clearing associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3576
+  Ransomware victim claim by interlock: Epperson Law Group; country: US; sector: Business Services
+  First observed: 2025-08-12.
+references:
+  - http://dnyyuk3nevegj37tnv3xav57c5twomc7uqsfbjlkwto3p4spzfop47qd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

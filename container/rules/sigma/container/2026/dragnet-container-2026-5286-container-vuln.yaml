@@ -1,0 +1,68 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5286 — Vulnerable Base Image Pull'
+id: 747d3434-32ac-5a63-9852-eb571c49a0c4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5286 (Tier 2, CVSS 9.8)
+  Redis is an open source, in-memory database that persists on disk. An authenticated user may use a specially crafted Lua script to manipulate the garbage collector and potentially lead to remote code execution. The problem is fixed in 7.4.2, 7.2.7, and 6.2.17. An additional workaround to mitigate the problem without patching the redis-server executable is to prevent users from executing Lua scripts. This can be done using ACL to restrict EVAL and EVALSHA commands.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-46981
+  - https://github.com/redis/redis/commit/e344b2b5879aa52870e6838212dfb78b7968fcbf (7.2.7)
+  - https://github.com/redis/redis/releases/tag/6.2.17
+  - https://github.com/redis/redis/releases/tag/7.2.7
+  - https://github.com/redis/redis/releases/tag/7.4.2
+  - https://github.com/redis/redis/security/advisories/GHSA-39h2-x6c4-6w4c
+  - https://github.com/valkey-io/valkey/commit/4ffd3ebdeb028d0b9e50cf5986e9f1b6a2e1c031
+  - https://github.com/valkey-io/valkey/releases/tag/8.0.2
+  - https://access.redhat.com/errata/RHSA-2025:0693
+  - https://access.redhat.com/security/cve/CVE-2024-46981
+  - https://bugzilla.redhat.com/2221662
+  - https://bugzilla.redhat.com/2244940
+  - https://bugzilla.redhat.com/2317056
+  - https://bugzilla.redhat.com/2317058
+  - https://bugzilla.redhat.com/2336004
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.15'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

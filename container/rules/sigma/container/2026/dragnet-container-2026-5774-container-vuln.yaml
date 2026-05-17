@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5774 — Vulnerable Base Image Pull'
+id: 53414af2-b1db-52ed-bc35-9cf33d1d4a4f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5774 (Tier 2, CVSS 9.8)
+  rust-openssl provides OpenSSL bindings for the Rust programming language.  From 0.9.27 to before 0.10.78, Deriver::derive (and PkeyCtxRef::derive) sets len = buf.len() and passes it as the in/out length to EVP_PKEY_derive, relying on OpenSSL to honor it. On OpenSSL 1.1.x, X25519, X448, DH and HKDF-extract ignore the incoming *keylen, unconditionally writing the full shared secret (32/56/prime-size bytes). A caller passing a short slice gets a heap/stack overflow from safe code. OpenSSL 3.x providers do check, so this only impacts older OpenSSL. This vulnerability is fixed in 0.10.78.
+references:
+  - https://github.com/rust-openssl/rust-openssl
+  - https://github.com/rust-openssl/rust-openssl/commit/09b425e5f59a2466d806e71a83a9a449c914c596
+  - https://github.com/rust-openssl/rust-openssl/pull/2606
+  - https://github.com/rust-openssl/rust-openssl/releases/tag/openssl-v0.10.78
+  - https://github.com/rust-openssl/rust-openssl/security/advisories/GHSA-pqf5-4pqq-29f5
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-41676
+  - https://www.cve.org/CVERecord?id=CVE-2026-41676
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

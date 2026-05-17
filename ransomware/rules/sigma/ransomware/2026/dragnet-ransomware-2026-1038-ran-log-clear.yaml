@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1038 — Event Log Clearing (fulcrumsec)'
+id: 60a5a714-b644-540c-8fdd-06b535b87665
+status: deprecated
+description: |
+  Detects event log clearing associated with fulcrumsec ransomware.
+  Incident: dragnet-ransomware-2026-1038
+  Ransomware victim claim by fulcrumsec: youX / Drive IQ; country: AU; sector: Technology
+  First observed: 2026-05-01.
+references:
+  - http://4e3p3in2bl67hxchuwza7qvnpe7pyeloyztr5fnh257fxkovfhappjyd.onion/youx/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

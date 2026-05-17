@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4799 — Recovery Inhibition (qiulong)'
+id: e654c53f-b6a2-529f-93c9-9e8a11a93b69
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with qiulong ransomware.
+  Incident: dragnet-ransomware-2024-4799
+  Ransomware victim claim by qiulong: hospitalescultural.com.br; country: BR; sector: Healthcare
+  First observed: 2024-04-26.
+references:
+  - http://62brsjf2w77ihz5paods33cdgqnon54gjns5nmag3hmqv6fcwamtkmad.onion/?p=153
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

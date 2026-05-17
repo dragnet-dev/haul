@@ -1,0 +1,71 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4467 — Vulnerable Base Image Pull'
+id: 15487073-7467-5298-a414-8728617e47b4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4467 (Tier 2, CVSS 9.8)
+  crossbeam-deque is a package of work-stealing deques for building task schedulers when programming in Rust. In versions prior to 0.7.4 and 0.8.0, the result of the race condition is that one or more tasks in the worker queue can be popped twice instead of other tasks that are forgotten and never popped. If tasks are allocated on the heap, this can cause double free and a memory leak. If not, this still can cause a logical bug. Crates using `Stealer::steal`, `Stealer::steal_batch`, or `Stealer::steal_batch_and_pop` are affected by this issue. This has been fixed in crossbeam-deque 0.8.1 and 0.7.4.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-32810
+  - https://github.com/crossbeam-rs/crossbeam
+  - https://github.com/crossbeam-rs/crossbeam/security/advisories/GHSA-pqqp-xmhj-wgcw
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-32810.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-38496.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-38497.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-38498.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-38500.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-38501.json
+  - https://access.redhat.com/security/cve/CVE-2021-32810
+  - https://linux.oracle.com/cve/CVE-2021-32810.html
+  - https://linux.oracle.com/errata/ELSA-2021-3841.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/7EZILHZDRGDPOBQ4KTW3E5PPMKLHGH5N/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AWHNNBJCU4EHA2X5ZAMJMGLDUYS5FEPP/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AYBSLIYFANZLCYWOGTIYZUM26TJRH7WU/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04'
+      - 'ubuntu:20.04'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

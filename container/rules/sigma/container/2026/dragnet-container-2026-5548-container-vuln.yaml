@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5548 — Vulnerable Base Image Pull'
+id: 0d85982e-507b-5154-b1e8-a104bf637954
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5548 (Tier 2, CVSS 9.8)
+  ImageMagick is free and open-source software used for editing and manipulating digital images. The BilateralBlurImage method will allocate a set of double buffers inside AcquireBilateralTLS. But, in versions prior to 7.1.2-13, the last element in the set is not properly initialized. This will result in a release of an invalid pointer inside DestroyBilateralTLS when the memory allocation fails. Version 7.1.2-13 contains a patch for the issue.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-22770
+  - https://github.com/ImageMagick/ImageMagick
+  - https://github.com/ImageMagick/ImageMagick/commit/3e0330721020e0c5bb52e4b77c347527dd71658e
+  - https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-39h3-g67r-7g3c
+  - https://github.com/dlemstra/Magick.NET/releases/tag/14.10.2
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-22770
+  - https://www.cve.org/CVERecord?id=CVE-2026-22770
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

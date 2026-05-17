@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6243 — Event Log Clearing (radiant)'
+id: 4d9b4c89-75c3-5335-bcfc-dd358fba63eb
+status: deprecated
+description: |
+  Detects event log clearing associated with radiant ransomware.
+  Incident: dragnet-ransomware-2025-6243
+  Ransomware victim claim by radiant: Spijkermat; country: NL; sector: Consumer Services
+  First observed: 2025-10-29.
+references:
+  - http://trfqksm6peaeyz4q6egxbij5n2ih6zrg65of4kwasrejc7hnw2jtxryd.onion/spijkermat
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

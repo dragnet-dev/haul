@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2747 — Event Log Clearing (ragnarlocker)'
+id: 96901971-4c9a-5734-8d2e-e3db2c30cd1c
+status: deprecated
+description: |
+  Detects event log clearing associated with ragnarlocker ransomware.
+  Incident: dragnet-ransomware-2022-2747
+  Ransomware victim claim by ragnarlocker: ITONCLOUD - LEAKED; sector: Not Found
+  First observed: 2022-12-13.
+references:
+  - http://rgleaktxuey67yrgspmhvtnrqtgogur35lwdrup4d3igtbm3pupc4lyd.onion/?TzTnf4smrFINa
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

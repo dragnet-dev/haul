@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5377 — Shadow Copy Deletion (werewolves)'
+id: fc57e3fb-d4d3-5c8a-b3e3-c8748d210b90
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with werewolves ransomware.
+  Incident: dragnet-ransomware-2023-5377
+  Ransomware victim claim by werewolves: vasexperts.ru; country: RU; sector: Technology
+  First observed: 2023-12-17.
+references:
+  - https://weerwolven.biz/en/forabank-ru.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

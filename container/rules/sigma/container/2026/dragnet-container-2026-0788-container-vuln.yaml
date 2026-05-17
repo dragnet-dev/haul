@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0788 — Vulnerable Base Image Pull'
+id: bc1610d2-a9c7-5d80-9e37-60776fd6c627
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0788 (Tier 2, CVSS 9.8)
+  libpoe-component-irc-perl before v6.32 does not remove carriage returns and line feeds. This can be used to execute arbitrary IRC commands by passing an argument such as "some text\rQUIT" to the 'privmsg' handler, which would cause the client to disconnect from the server.
+references:
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=581194
+  - https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2010-3438
+  - https://security-tracker.debian.org/tracker/CVE-2010-3438
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

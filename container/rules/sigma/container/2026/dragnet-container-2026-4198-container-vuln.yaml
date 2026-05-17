@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4198 — Vulnerable Base Image Pull'
+id: 5c8cf07e-9fea-5fd4-b6d8-c7526a509b8f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4198 (Tier 2, CVSS 9.1)
+  A safety violation was discovered in the rgb crate before 0.8.20 for Rust, leading to (for example) dereferencing of arbitrary pointers or disclosure of uninitialized memory. This occurs because structs can be treated as bytes for read and write operations.
+references:
+  - https://github.com/kornelski/rust-rgb
+  - https://github.com/kornelski/rust-rgb/issues/35
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-25016
+  - https://rustsec.org/advisories/RUSTSEC-2020-0029.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5975 — Recovery Inhibition (threeam)'
+id: 35a686fb-6200-56b0-8992-c85d6316dc8e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with threeam ransomware.
+  Incident: dragnet-ransomware-2024-5975
+  Ransomware victim claim by threeam: verco.co.uk; country: GB; sector: Manufacturing
+  First observed: 2024-09-30.
+references:
+  - http://threeamkelxicjsaf2czjyz2lc4q3ngqkxhhlexyfcp2o6raw4rphyad.onionpost.php?id=40
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

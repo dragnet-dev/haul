@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1158 — Event Log Clearing (blackout)'
+id: 0505a087-d6e5-586a-b3d3-9d5d771bda0a
+status: deprecated
+description: |
+  Detects event log clearing associated with blackout ransomware.
+  Incident: dragnet-ransomware-2024-1158
+  Ransomware victim claim by blackout: badel1862.hr; country: HR; sector: Business Services
+  First observed: 2024-07-03.
+references:
+  - http://black3gnkizshuynieigw6ejgpblb53mpasftzd6pydqpmq2vn2xf6yd.onion/post/725ad78b-b1bf-4187-8a5d-d24c04f1345c/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

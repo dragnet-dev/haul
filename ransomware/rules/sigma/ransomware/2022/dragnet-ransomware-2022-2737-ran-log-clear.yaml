@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2737 — Event Log Clearing (ragnarlocker)'
+id: ad717a7f-3189-5233-875b-caf4dd7cfd50
+status: deprecated
+description: |
+  Detects event log clearing associated with ragnarlocker ransomware.
+  Incident: dragnet-ransomware-2022-2737
+  Ransomware victim claim by ragnarlocker: File-tree of Tang Capital; sector: Financial Services
+  First observed: 2022-08-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

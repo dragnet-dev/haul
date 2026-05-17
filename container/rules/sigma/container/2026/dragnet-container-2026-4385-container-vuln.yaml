@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4385 — Vulnerable Base Image Pull'
+id: 491f0731-05a8-5d5a-b380-657f29144e2b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4385 (Tier 2, CVSS 9.8)
+  A flaw was found in htmldoc in v1.9.12. Double-free in function pspdf_export(),in ps-pdf.cxx may result in a write-what-where condition, allowing an attacker to execute arbitrary code and denial of service.
+references:
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1967018
+  - https://github.com/michaelrsweet/htmldoc/commit/369b2ea1fd0d0537ba707f20a2f047b6afd2fbdc
+  - https://github.com/michaelrsweet/htmldoc/issues/414
+  - https://ubuntu.com/security/notices/USN-7189-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-23158
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

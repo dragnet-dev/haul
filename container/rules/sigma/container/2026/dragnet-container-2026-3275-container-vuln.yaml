@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3275 — Vulnerable Base Image Pull'
+id: a80a7ada-735d-5b7d-a941-7af59099a834
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3275 (Tier 2, CVSS 9.8)
+  Document Liberation Project libmwaw before 2017-04-08 has an out-of-bounds write caused by a heap-based buffer overflow related to the MsWrd1Parser::readFootnoteCorrespondance function in lib/MsWrd1Parser.cxx.
+references:
+  - http://www.debian.org/security/2017/dsa-3875
+  - https://access.redhat.com/security/cve/CVE-2017-9433
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=1037
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-9433
+  - https://sourceforge.net/p/libmwaw/libmwaw/ci/68b3b74569881248bfb6cbb4266177cc253b292f/
+  - https://ubuntu.com/security/notices/USN-3319-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-9433
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

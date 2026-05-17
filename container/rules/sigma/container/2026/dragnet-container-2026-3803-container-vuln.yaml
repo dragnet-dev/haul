@@ -1,0 +1,60 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3803 — Vulnerable Base Image Pull'
+id: 8ca8308e-3450-5346-a0c1-8f9ae3817ba6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3803 (Tier 2, CVSS 9.8)
+  musl libc through 1.1.23 has an x87 floating-point stack adjustment imbalance, related to the math/i386/ directory. In some cases, use of this library could introduce out-of-bounds writes that are not present in an application's source code.
+references:
+  - http://www.openwall.com/lists/oss-security/2019/08/06/4
+  - https://git.musl-libc.org/cgit/musl/patch/?id=6818c31c9bc4bbad5357f1de14bedf781e5b349e
+  - https://git.musl-libc.org/cgit/musl/patch/?id=f3ed8bfe8a82af1870ddc8696ed4cc1d5aa6b441
+  - https://security.gentoo.org/glsa/202003-13
+  - https://ubuntu.com/security/notices/USN-5990-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-14697
+  - https://www.openwall.com/lists/musl/2019/08/06/1
+  - https://www.openwall.com/lists/oss-security/2019/08/06/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

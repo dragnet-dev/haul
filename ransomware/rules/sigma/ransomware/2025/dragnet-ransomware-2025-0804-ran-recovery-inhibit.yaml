@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0804 — Recovery Inhibition (alphalocker)'
+id: 35b8b873-de08-5a77-8dc5-1922ee7ee7c1
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with alphalocker ransomware.
+  Incident: dragnet-ransomware-2025-0804
+  Ransomware victim claim by alphalocker: www.myriversidedentaloffice.com; country: US; sector: Healthcare
+  First observed: 2025-11-03.
+references:
+  - http://mydatae2d63il5oaxxangwnid5loq2qmtsol2ozr6vtb7yfm5ypzo6id.onion/blog_1-26
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

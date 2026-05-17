@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4647 — Event Log Clearing (ransomed)'
+id: 67303e26-8d3a-56a8-85d1-3c42a73b42f3
+status: deprecated
+description: |
+  Detects event log clearing associated with ransomed ransomware.
+  Incident: dragnet-ransomware-2023-4647
+  Ransomware victim claim by ransomed: NTT Docomo - Japan 1st Mobile Operator; country: JP; sector: Telecommunication
+  First observed: 2023-09-26.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

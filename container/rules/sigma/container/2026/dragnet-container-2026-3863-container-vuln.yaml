@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3863 — Vulnerable Base Image Pull'
+id: d934b3a4-bfa4-56fc-8550-179509ca5161
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3863 (Tier 2, CVSS 9.1)
+  Amphora Images in OpenStack Octavia >=0.10.0 <2.1.2, >=3.0.0 <3.2.0, >=4.0.0 <4.1.0 allows anyone with access to the management network to bypass client-certificate based authentication and retrieve information or issue configuration commands via simple HTTP requests to the Agent on port https/9443, because the cmd/agent.py gunicorn cert_reqs option is True but is supposed to be ssl.CERT_REQUIRED.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-17134
+  - https://github.com/openstack/octavia
+  - https://github.com/openstack/octavia/commit/1725517d1d209f26b2275306d83e49c099dcbe1a
+  - https://github.com/openstack/octavia/commit/2976a7f0f109e17930db8a61136526ead44ea7e5
+  - https://github.com/openstack/octavia/commit/624ff08f27bcb73788663cbe6d35cbe29c537844
+  - https://github.com/openstack/octavia/commit/89a2f6e0136ad49d928eb65b4cf555af2a2b8ab1
+  - https://github.com/openstack/octavia/commit/b0c2cd7b4c835c391cfedf12cf9f9ff8a0aabd17
+  - https://github.com/openstack/octavia/commit/c2fdffc3b748f8007c72e52df257e38756923b40
+  - https://access.redhat.com/errata/RHSA-2019:3743
+  - https://access.redhat.com/errata/RHSA-2019:3788
+  - https://access.redhat.com/errata/RHSA-2020:0721
+  - https://access.redhat.com/security/cve/CVE-2019-17134
+  - https://review.opendev.org/686541
+  - https://review.opendev.org/686543
+  - https://review.opendev.org/686544
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:19.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

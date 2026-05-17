@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0990 — Event Log Clearing (daixin)'
+id: de42f70b-a8fe-5868-a169-04f1e3fe7b0d
+status: deprecated
+description: |
+  Detects event log clearing associated with daixin ransomware.
+  Incident: dragnet-ransomware-2022-0990
+  Ransomware victim claim by daixin: AirAsia Group; country: MY; sector: Hospitality and Tourism
+  First observed: 2022-11-19.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4187 — Recovery Inhibition (lynx)'
+id: e10d8796-fe75-55a4-bb41-17549c51cfd0
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4187
+  Ransomware victim claim by lynx: pacresmortgage.com; country: US; sector: Financial Services
+  First observed: 2025-02-09.
+references:
+  - http://lynxblog.net/leaks/67bd141d44fac8dca1525178
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

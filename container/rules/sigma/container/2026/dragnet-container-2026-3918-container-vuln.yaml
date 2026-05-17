@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3918 — Vulnerable Base Image Pull'
+id: 6b6c844d-1e3f-5efe-8d85-d0cccf408702
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3918 (Tier 2, CVSS 9.8)
+  In LemonLDAP::NG (aka lemonldap-ng) before 2.0.7, the default Apache HTTP Server configuration does not properly restrict access to SOAP/REST endpoints (when some LemonLDAP::NG setup options are used). For example, an attacker can insert index.fcgi/index.fcgi into a URL to bypass a Require directive.
+references:
+  - https://gitlab.ow2.org/lemonldap-ng/lemonldap-ng/issues/1943
+  - https://projects.ow2.org/view/lemonldap-ng/lemonldap-ng-2-0-7-is-out
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2260 — Vulnerable Base Image Pull'
+id: a80b3804-24c0-5d8e-9563-1c4a296ee0c0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2260 (Tier 2, CVSS 9.8)
+  The User::randomPassword function in MediaWiki before 1.23.12, 1.24.x before 1.24.5, 1.25.x before 1.25.4, and 1.26.x before 1.26.1 generates passwords smaller than $wgMinimalPasswordLength, which makes it easier for remote attackers to obtain access via a brute-force attack.
+references:
+  - http://www.openwall.com/lists/oss-security/2015/12/21/8
+  - http://www.openwall.com/lists/oss-security/2015/12/23/7
+  - https://lists.wikimedia.org/pipermail/mediawiki-announce/2015-December/000186.html
+  - https://phabricator.wikimedia.org/T115522
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

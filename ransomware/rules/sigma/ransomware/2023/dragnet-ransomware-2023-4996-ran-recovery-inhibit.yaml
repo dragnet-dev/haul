@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4996 — Recovery Inhibition (siegedsec)'
+id: cebb7183-12c2-5ee6-9177-cfc4ff902d2d
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with siegedsec ransomware.
+  Incident: dragnet-ransomware-2023-4996
+  Ransomware victim claim by siegedsec: Grupo Televisa; sector: Consumer Services
+  First observed: 2023-11-26.
+references:
+  - http://nv5p2mmpctvyqdyyi5zwh4gnifq2uxdx4etvnmaheqlrw6ordrjwxryd.onion/post/1.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

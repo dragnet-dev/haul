@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0994 — Event Log Clearing (daixin)'
+id: 33c40c16-c4b7-5d01-bfd6-9072a09c6c0d
+status: deprecated
+description: |
+  Detects event log clearing associated with daixin ransomware.
+  Incident: dragnet-ransomware-2022-0994
+  Ransomware victim claim by daixin: OakBend Medical; country: US; sector: Healthcare
+  First observed: 2022-09-13.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

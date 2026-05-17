@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1751 — Recovery Inhibition (medusalocker)'
+id: 5d1babff-0ac2-5929-ad39-ff19e647a1f4
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with medusalocker ransomware.
+  Incident: dragnet-ransomware-2026-1751
+  Ransomware victim claim by medusalocker: Raycolighting; country: GB; sector: Manufacturing
+  First observed: 2026-05-05.
+references:
+  - http://t33zoj4qwv455fog7qnb2azi5xcdxkixughmmduzbw2rtdgryqfbh6id.onion/company/raycolighting/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

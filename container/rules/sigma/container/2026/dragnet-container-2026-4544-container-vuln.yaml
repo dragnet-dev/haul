@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4544 — Vulnerable Base Image Pull'
+id: 746b9162-a5e3-5fbe-90dd-74c1fd29890e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4544 (Tier 2, CVSS 9.8)
+  ulfius_uri_logger in Ulfius HTTP Framework before 2.7.4 omits con_info initialization and a con_info->request NULL check for certain malformed HTTP requests.
+references:
+  - http://packetstormsecurity.com/files/164152/Ulfius-Web-Framework-Remote-Memory-Corruption.html
+  - https://github.com/babelouest/ulfius/commit/c83f564c184a27145e07c274b305cabe943bbfaa
+  - https://github.com/babelouest/ulfius/compare/v2.7.3...v2.7.4
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

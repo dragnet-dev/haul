@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0645 — Event Log Clearing (apt73)'
+id: dfeae680-ce30-5815-9d55-07e63e1125d2
+status: deprecated
+description: |
+  Detects event log clearing associated with apt73 ransomware.
+  Incident: dragnet-ransomware-2024-0645
+  Ransomware victim claim by apt73: thebeautyclick.co.uk; country: GB; sector: Business Services
+  First observed: 2024-10-21.
+references:
+  - http://bashe4aec32kr6zbifwd5x6xgjsmhg4tbowrbx4pneqhc5mqooyifpid.onion/page_company.php?id=60
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

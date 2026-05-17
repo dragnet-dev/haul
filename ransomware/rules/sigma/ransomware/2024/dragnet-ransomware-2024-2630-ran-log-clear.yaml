@@ -1,0 +1,35 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2630 — Event Log Clearing (hunters)'
+id: 98eca7d2-a3df-5b75-b63a-d1bae9237062
+status: deprecated
+description: |
+  Detects event log clearing associated with hunters ransomware.
+  Incident: dragnet-ransomware-2024-2630
+  Associated with MuddyWater.
+  Ransomware victim claim by hunters: Mercury Theatre; country: GB; sector: Hospitality and Tourism
+  First observed: 2024-07-15.
+references:
+  - https://hunters55rdxciehoqzwv7vgyv6nt37tbwax2reroyzxhou7my5ejyid.onion/companies/0566420714
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.muddywater
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

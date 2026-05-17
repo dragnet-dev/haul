@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0913 — Event Log Clearing (conti)'
+id: 659888e2-7e05-5de7-b38c-31e2d090bb5c
+status: deprecated
+description: |
+  Detects event log clearing associated with conti ransomware.
+  Incident: dragnet-ransomware-2022-0913
+  Ransomware victim claim by conti: Zamil Industrial; sector: Manufacturing
+  First observed: 2022-02-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

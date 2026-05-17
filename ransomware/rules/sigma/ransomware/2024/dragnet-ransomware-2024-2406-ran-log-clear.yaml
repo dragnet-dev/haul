@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2406 — Event Log Clearing (handala)'
+id: 3857f637-de38-5c19-9cbd-294efcde65bf
+status: deprecated
+description: |
+  Detects event log clearing associated with handala ransomware.
+  Incident: dragnet-ransomware-2024-2406
+  Ransomware victim claim by handala: IM Cannabis; country: IL; sector: Agriculture and Food Production
+  First observed: 2024-10-30.
+references:
+  - http://vmjfieomxhnfjba57sd6jjws2ogvowjgxhhfglsikqvvrnrajbmpxqqd.onion/?p=262
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

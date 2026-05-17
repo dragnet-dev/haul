@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3128 — Vulnerable Base Image Pull'
+id: 347ee190-be93-5734-94a7-95c04dd3dbe4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3128 (Tier 2, CVSS 9.1)
+  The pe_ILF_object_p function in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.28, is vulnerable to a heap-based buffer over-read of size 4049 because it uses the strlen function instead of strnlen, leading to program crashes in several utilities such as addr2line, size, and strings. It could lead to information disclosure as well.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-7226
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-7226
+  - https://sourceware.org/bugzilla/show_bug.cgi?id=20905
+  - https://ubuntu.com/security/notices/USN-4336-2
+  - https://www.cve.org/CVERecord?id=CVE-2017-7226
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

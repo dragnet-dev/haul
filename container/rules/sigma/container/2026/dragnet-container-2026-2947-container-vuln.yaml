@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2947 — Vulnerable Base Image Pull'
+id: 560a4548-3c1e-5017-a094-c6ec7348943a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2947 (Tier 2, CVSS 9.8)
+  The glob function in glob.c in the GNU C Library (aka glibc or libc6) before 2.27 contains a buffer overflow during unescaping of user names with the ~ operator.
+references:
+  - http://www.securityfocus.com/bid/101535
+  - https://access.redhat.com/errata/RHSA-2018:0805
+  - https://access.redhat.com/errata/RHSA-2018:1879
+  - https://access.redhat.com/security/cve/CVE-2017-15804
+  - https://linux.oracle.com/cve/CVE-2017-15804.html
+  - https://linux.oracle.com/errata/ELSA-2018-1879.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-15804
+  - https://sourceware.org/bugzilla/show_bug.cgi?id=22332
+  - https://sourceware.org/git/gitweb.cgi?p=glibc.git%3Ba=commit%3Bh=a159b53fa059947cc2548e3b0d5bdcf7b9630ba8
+  - https://ubuntu.com/security/notices/USN-3534-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-15804
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:9'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

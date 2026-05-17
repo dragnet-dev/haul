@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4671 — Vulnerable Base Image Pull'
+id: b9562ea4-bff2-5ec2-8e35-8d410156b9d8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4671 (Tier 2, CVSS 9.1)
+  PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE. In versions 2.11.1 and prior, parsing an incoming SIP message that contains a malformed multipart can potentially cause out-of-bound read access. This issue affects all PJSIP users that accept SIP multipart. The patch is available as commit in the `master` branch. There are no known workarounds.
+references:
+  - http://packetstormsecurity.com/files/166227/Asterisk-Project-Security-Advisory-AST-2022-006.html
+  - http://seclists.org/fulldisclosure/2022/Mar/2
+  - https://github.com/pjsip/pjproject/commit/077b465c33f0aec05a49cd2ca456f9a1b112e896
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-7fw8-54cv-r7pm
+  - https://lists.debian.org/debian-lts-announce/2022/03/msg00035.html
+  - https://lists.debian.org/debian-lts-announce/2022/11/msg00021.html
+  - https://lists.debian.org/debian-lts-announce/2023/08/msg00038.html
+  - https://lists.debian.org/debian-lts-announce/2024/09/msg00030.html
+  - https://security.gentoo.org/glsa/202210-37
+  - https://ubuntu.com/security/notices/USN-6422-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-21723
+  - https://www.debian.org/security/2022/dsa-5285
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

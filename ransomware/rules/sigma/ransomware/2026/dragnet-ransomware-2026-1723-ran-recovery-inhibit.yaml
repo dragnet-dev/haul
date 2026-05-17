@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1723 — Recovery Inhibition (m3rx)'
+id: 6ec0ef96-556c-5935-9d46-23bcf1f53387
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with m3rx ransomware.
+  Incident: dragnet-ransomware-2026-1723
+  Ransomware victim claim by m3rx: it-freitag.de; country: DE; sector: Technology
+  First observed: 2026-05-03.
+references:
+  - http://4k6plf4h2cm2nco6ae3inrsxnmqgl6lllmwefydhnlcq4tuhwbj4qpad.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

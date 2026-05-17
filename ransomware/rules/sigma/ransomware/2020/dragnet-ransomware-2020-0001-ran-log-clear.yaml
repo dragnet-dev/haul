@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0001 — Event Log Clearing (agelocker)'
+id: ded3d010-b6e3-530d-a4c4-d4b86731d064
+status: deprecated
+description: |
+  Detects event log clearing associated with agelocker ransomware.
+  Incident: dragnet-ransomware-2020-0001
+  Ransomware victim claim by agelocker: QNAP; sector: Technology
+  First observed: 2020-08-30.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

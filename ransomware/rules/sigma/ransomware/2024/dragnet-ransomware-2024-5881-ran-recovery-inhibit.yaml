@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5881 — Recovery Inhibition (spacebears)'
+id: 1d11dbbd-56bd-5413-9692-fc19c80db6ad
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with spacebears ransomware.
+  Incident: dragnet-ransomware-2024-5881
+  Ransomware victim claim by spacebears: SM EMBALLAGE; country: MA; sector: Manufacturing
+  First observed: 2024-04-25.
+references:
+  - http://5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid.onion/companies/5/sm-emballage
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

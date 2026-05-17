@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2743 — Vulnerable Base Image Pull'
+id: 2454ca2d-6ea2-5b38-a003-7ec469c3b746
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2743 (Tier 2, CVSS 9.8)
+  The DBD::mysql module through 4.043 for Perl allows remote attackers to cause a denial of service (use-after-free and application crash) or possibly have unspecified other impact by triggering (1) certain error responses from a MySQL server or (2) a loss of a network connection to a MySQL server. The use-after-free defect was introduced by relying on incorrect Oracle mysql_stmt_close documentation and code examples.
+references:
+  - http://seclists.org/oss-sec/2017/q2/443
+  - http://www.securityfocus.com/bid/99374
+  - https://access.redhat.com/security/cve/CVE-2017-10788
+  - https://github.com/perl5-dbi/DBD-mysql/issues/120
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-10788
+  - https://ubuntu.com/security/notices/USN-5344-1
+  - https://ubuntu.com/security/notices/USN-7417-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-10788
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

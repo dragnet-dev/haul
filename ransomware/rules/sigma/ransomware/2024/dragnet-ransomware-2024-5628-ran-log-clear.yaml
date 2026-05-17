@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5628 — Event Log Clearing (rhysida)'
+id: 831de7a7-3131-5170-be01-a6cef3f0321f
+status: deprecated
+description: |
+  Detects event log clearing associated with rhysida ransomware.
+  Incident: dragnet-ransomware-2024-5628
+  Ransomware victim claim by rhysida: ICC; country: US; sector: Manufacturing
+  First observed: 2024-05-22.
+references:
+  - archive.php?company=95
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

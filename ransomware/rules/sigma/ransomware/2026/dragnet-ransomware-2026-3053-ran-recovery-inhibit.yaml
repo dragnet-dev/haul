@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3053 — Recovery Inhibition (tengu)'
+id: 49157e34-ce59-5f4e-b26f-89a22e34222e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with tengu ransomware.
+  Incident: dragnet-ransomware-2026-3053
+  Ransomware victim claim by tengu: https://seha.org.sa; country: SA; sector: Healthcare
+  First observed: 2026-01-14.
+references:
+  - http://longcc4fqrfcqt5lzceutylaxir6h66fp6df3oin6mvwvz6pfdbxc6qd.onion/blog/9194b5bee0d8552e9421cd7003d82a7861469b78856b501259d0c881519df3cf/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

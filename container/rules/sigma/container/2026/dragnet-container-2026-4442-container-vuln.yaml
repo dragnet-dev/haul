@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4442 — Vulnerable Base Image Pull'
+id: c6fcee37-a320-5a4b-b86d-64c2aaf66167
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4442 (Tier 2, CVSS 9.8)
+  aom_dsp/grain_table.c in libaom in AOMedia before 2021-03-30 has a use-after-free.
+references:
+  - https://aomedia.googlesource.com/aom/+/6e31957b6dc62dbc7d1bb70cd84902dd14c4bf2e
+  - https://bugs.chromium.org/p/aomedia/issues/detail?id=3000
+  - https://lists.debian.org/debian-lts-announce/2023/09/msg00003.html
+  - https://security.gentoo.org/glsa/202401-32
+  - https://ubuntu.com/security/notices/USN-6447-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-30474
+  - https://www.debian.org/security/2023/dsa-5490
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

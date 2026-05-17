@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5076 — Vulnerable Base Image Pull'
+id: 36f739a8-6d81-51e5-829f-c42800e2e7be
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5076 (Tier 2, CVSS 9.1)
+  FreeRDP is a free implementation of the Remote Desktop Protocol (RDP), released under the Apache license. Affected versions are subject to an Out-Of-Bounds Read in the `general_LumaToYUV444` function. This Out-Of-Bounds Read occurs because processing is done on the `in` variable without checking if it contains data of sufficient length. Insufficient data for the `in` variable may cause errors or crashes. This issue has been addressed in versions 2.11.0 and 3.0.0-beta3. Users are advised to upgrade. There are no known workarounds for this issue.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-40188
+  - https://github.com/FreeRDP/FreeRDP/blob/5be5553e0da72178a4b94cc1ffbdace9ceb153e5/libfreerdp/codec/nsc.c#L115-L175
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-9w28-wwj5-p4xq
+  - https://access.redhat.com/errata/RHSA-2024:2208
+  - https://access.redhat.com/security/cve/CVE-2023-40188
+  - https://bugzilla.redhat.com/2236606
+  - https://bugzilla.redhat.com/2236650
+  - https://bugzilla.redhat.com/2236656
+  - https://bugzilla.redhat.com/2236669
+  - https://bugzilla.redhat.com/2236730
+  - https://bugzilla.redhat.com/2236750
+  - https://bugzilla.redhat.com/2236759
+  - https://bugzilla.redhat.com/2236763
+  - https://bugzilla.redhat.com/2236766
+  - https://bugzilla.redhat.com/2236774
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0975 — Shadow Copy Deletion (blackbasta)'
+id: 32a8e7d1-ef44-565f-8c20-8668d43f2c4d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blackbasta ransomware.
+  Incident: dragnet-ransomware-2024-0975
+  Ransomware victim claim by blackbasta: duvel.com | boulevard.com; country: BE; sector: Agriculture and Food Production
+  First observed: 2024-03-12.
+references:
+  - http://stniiomyjliimcgkvdszvgen3eaaoz55hreqqx6o77yvmpwt7gklffqd.onion/?id=duvel.com%20|%20boulevard.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

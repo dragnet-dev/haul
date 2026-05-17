@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4743 — Event Log Clearing (raworld)'
+id: 39ab0ca7-c32b-5fca-b6f3-d10984bc7e7c
+status: deprecated
+description: |
+  Detects event log clearing associated with raworld ransomware.
+  Incident: dragnet-ransomware-2023-4743
+  Ransomware victim claim by raworld: 24/7 Express Logistics (Unpay-Start Leaking); sector: Transportation/Logistics
+  First observed: 2023-09-11.
+references:
+  - http://pa32ymaeu62yo5th5mraikgw5fcvznnsiiwti42carjliarodltmqcqd.onion/post/7585.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

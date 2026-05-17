@@ -1,0 +1,65 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3804 — Vulnerable Base Image Pull'
+id: f9371aae-a981-53f9-aaeb-bb604f13fab6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3804 (Tier 2, CVSS 9.8)
+  net/url in Go before 1.11.13 and 1.12.x before 1.12.8 mishandles malformed hosts in URLs, leading to an authorization bypass in some applications. This is related to a Host field with a suffix appearing in neither Hostname() nor Port(), and is related to a non-numeric port number. For example, an attacker can compose a crafted javascript:// URL that results in a hostname of google.com.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-14809
+  - https://github.com/golang/go/commit/3226f2d492963d361af9dfc6714ef141ba606713 (golang-1.12)
+  - https://github.com/golang/go/commit/61bb56ad63992a3199acc55b2537c8355ef887b6
+  - https://github.com/golang/go/commit/c1d9ca70995dc232a2145e3214f94e03409f6fcc (golang-1.11)
+  - https://github.com/golang/go/issues/29098
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00076.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00002.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00011.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00021.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00038.html
+  - https://access.redhat.com/errata/RHSA-2019:3433
+  - https://access.redhat.com/security/cve/CVE-2019-14809
+  - https://go.dev/cl/189258
+  - https://go.dev/issue/29098
+  - https://go.googlesource.com/go/+/61bb56ad63992a3199acc55b2537c8355ef887b6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:8'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

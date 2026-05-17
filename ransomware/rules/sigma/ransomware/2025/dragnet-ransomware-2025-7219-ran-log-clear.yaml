@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7219 — Event Log Clearing (SilentRansomGroup)'
+id: 80b95eaf-2cd1-53d6-ad14-b7277b3ebb16
+status: deprecated
+description: |
+  Detects event log clearing associated with SilentRansomGroup ransomware.
+  Incident: dragnet-ransomware-2025-7219
+  Ransomware victim claim by SilentRansomGroup: Miller Canfield; country: US; sector: Business Services
+  First observed: 2025-03-19.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

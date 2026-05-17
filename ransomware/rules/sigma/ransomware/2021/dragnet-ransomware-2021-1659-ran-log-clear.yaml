@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1659 — Event Log Clearing (revil)'
+id: fca36015-27a8-547a-afa9-286059d34996
+status: deprecated
+description: |
+  Detects event log clearing associated with revil ransomware.
+  Incident: dragnet-ransomware-2021-1659
+  Ransomware victim claim by revil: Brazil's Tribunal de Justiça do Estado do Rio Grande do Sul; country: BR; sector: Public Sector
+  First observed: 2021-04-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

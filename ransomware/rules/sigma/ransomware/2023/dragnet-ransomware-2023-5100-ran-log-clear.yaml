@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5100 — Event Log Clearing (stormous)'
+id: 55e2db76-e64a-5e04-a041-4a43e4e5dc5a
+status: deprecated
+description: |
+  Detects event log clearing associated with stormous ransomware.
+  Incident: dragnet-ransomware-2023-5100
+  Ransomware victim claim by stormous: Mambo; country: TZ; sector: Hospitality and Tourism
+  First observed: 2023-08-23.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

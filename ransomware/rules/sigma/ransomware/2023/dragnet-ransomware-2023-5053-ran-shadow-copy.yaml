@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5053 — Shadow Copy Deletion (snatch)'
+id: 0f211482-6250-5cdc-b592-9c1f37552c6b
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with snatch ransomware.
+  Incident: dragnet-ransomware-2023-5053
+  Ransomware victim claim by snatch: Museum für Naturkunde; sector: Consumer Services
+  First observed: 2023-11-13.
+references:
+  - http://hl66646wtlp2naoqnhattngigjp5palgqmbwixepcjyq5i534acgqyad.onion/news.php?id=a06e75ae-a675-4c1c-9d94-f498f68cc6b9
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

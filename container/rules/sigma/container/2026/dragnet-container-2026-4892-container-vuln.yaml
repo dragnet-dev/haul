@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4892 — Vulnerable Base Image Pull'
+id: e84d180d-4711-52d1-be59-769187e627b2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4892 (Tier 2, CVSS 9.1)
+  In wolfSSL before 5.5.2, if callback functions are enabled (via the WOLFSSL_CALLBACKS flag), then a malicious TLS 1.3 client or network attacker can trigger a buffer over-read on the heap of 5 bytes. (WOLFSSL_CALLBACKS is only intended for debugging.)
+references:
+  - http://packetstormsecurity.com/files/170610/wolfSSL-WOLFSSL_CALLBACKS-Heap-Buffer-Over-Read.html
+  - http://seclists.org/fulldisclosure/2023/Jan/11
+  - https://blog.trailofbits.com/2023/01/12/wolfssl-vulnerabilities-tlspuffin-fuzzing-ssh/
+  - https://github.com/wolfSSL/wolfssl/releases
+  - https://github.com/wolfSSL/wolfssl/releases/tag/v5.5.2-stable
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-42905
+  - https://www.wolfssl.com/docs/security-vulnerabilities/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

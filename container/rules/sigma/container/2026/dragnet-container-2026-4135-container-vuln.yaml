@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4135 — Vulnerable Base Image Pull'
+id: 49cc7cd3-002a-5225-9ad6-b073d37ed382
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4135 (Tier 2, CVSS 9.1)
+  In nDPI through 3.2, the OpenVPN dissector is vulnerable to a heap-based buffer over-read in ndpi_search_openvpn in lib/protocols/openvpn.c.
+references:
+  - https://github.com/fuzzing2026/CVE-PoCs/tree/main/ndpi-CVE-2020-15473
+  - https://github.com/ntop/nDPI/commit/8e7b1ea7a136cc4e4aa9880072ec2d69900a825e
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

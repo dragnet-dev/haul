@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3911 — Vulnerable Base Image Pull'
+id: 35c0871e-4876-5673-a38d-023235c4fc20
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3911 (Tier 2, CVSS 9.8)
+  phpMyAdmin before 4.9.2 does not escape certain Git information, related to libraries/classes/Display/GitRevision.php and libraries/classes/Footer.php.
+references:
+  - https://github.com/phpmyadmin/composer
+  - https://github.com/phpmyadmin/phpmyadmin/commit/1119de642b136d20e810bb20f545069a01dd7cc9
+  - https://github.com/phpmyadmin/phpmyadmin/compare/RELEASE_4_9_1...RELEASE_4_9_2
+  - https://lists.debian.org/debian-lts-announce/2019/12/msg00006.html
+  - https://lists.debian.org/debian-lts-announce/2020/10/msg00024.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-19617
+  - https://ubuntu.com/security/notices/USN-4639-1
+  - https://ubuntu.com/security/notices/USN-4843-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-19617
+  - https://www.phpmyadmin.net/news/2019/11/22/phpmyadmin-492-released
+  - https://www.phpmyadmin.net/news/2019/11/22/phpmyadmin-492-released/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

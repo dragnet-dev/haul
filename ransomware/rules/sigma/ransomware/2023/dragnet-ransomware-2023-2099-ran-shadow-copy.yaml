@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2099 — Shadow Copy Deletion (dispossessor)'
+id: bc1094bb-68c1-56a2-9712-bf0c00a991fb
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with dispossessor ransomware.
+  Incident: dragnet-ransomware-2023-2099
+  Ransomware victim claim by dispossessor: greenbriersportingclub.com; sector: Hospitality and Tourism
+  First observed: 2023-12-11.
+references:
+  - https://dispossessor.com/blogs/1212
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

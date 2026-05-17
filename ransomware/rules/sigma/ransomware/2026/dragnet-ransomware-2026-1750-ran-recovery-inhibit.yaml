@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1750 — Recovery Inhibition (medusalocker)'
+id: 562937c3-3d6f-5b99-8b28-cd1bb6fa3630
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with medusalocker ransomware.
+  Incident: dragnet-ransomware-2026-1750
+  Ransomware victim claim by medusalocker: Palmers Relocations; country: GB; sector: Transportation/Logistics
+  First observed: 2026-05-05.
+references:
+  - http://t33zoj4qwv455fog7qnb2azi5xcdxkixughmmduzbw2rtdgryqfbh6id.onion/company/palmers-relocations/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

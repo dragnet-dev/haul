@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4039 — Event Log Clearing (lunalock)'
+id: 134e410b-22ab-5bf1-bd29-ace0d9bb980d
+status: deprecated
+description: |
+  Detects event log clearing associated with lunalock ransomware.
+  Incident: dragnet-ransomware-2025-4039
+  Ransomware victim claim by lunalock: JAFICA Telecomunicaciones; country: MX; sector: Telecommunication
+  First observed: 2025-09-13.
+references:
+  - http://lunalockcccxzkpfovwzifwxcytqkiuak6wzybnniqwxcmpsetpbetid.onion/victim/jafica/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

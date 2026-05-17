@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0641 — Recovery Inhibition (coinbasecartel)'
+id: e042e759-58f9-53c8-bfab-b95bc1ac49ff
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with coinbasecartel ransomware.
+  Incident: dragnet-ransomware-2026-0641
+  Ransomware victim claim by coinbasecartel: Epoch Times; country: US; sector: Consumer Services
+  First observed: 2026-04-15.
+references:
+  - http://fjg4zi4opkxkvdz7mvwp7h6goe4tcby3hhkrz43pht4j3vakhy75znyd.onion/companies/epoch
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

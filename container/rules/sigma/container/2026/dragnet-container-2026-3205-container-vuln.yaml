@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3205 — Vulnerable Base Image Pull'
+id: fce62cc6-c92f-5dad-b9c7-9b710f8219f4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3205 (Tier 2, CVSS 9.1)
+  Debian ftpsync before 20171017 does not use the rsync --safe-links option, which allows remote attackers to conduct directory traversal attacks via a crafted upstream mirror.
+references:
+  - http://www.openwall.com/lists/oss-security/2017/10/17/2
+  - https://anonscm.debian.org/cgit/mirror/archvsync.git/commit/?id=d1ca2ab2210990b6dfb664cd6776a41b71c48016
+  - https://lists.debian.org/debian-mirrors/2017/10/msg00017.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

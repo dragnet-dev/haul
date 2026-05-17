@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4699 — Event Log Clearing (obscura)'
+id: 84239ae1-4cc2-5f06-a8b6-97702024e932
+status: deprecated
+description: |
+  Detects event log clearing associated with obscura ransomware.
+  Incident: dragnet-ransomware-2025-4699
+  Ransomware victim claim by obscura: MeamarGroup; country: EG; sector: Construction
+  First observed: 2025-08-27.
+references:
+  - http://obscurad3aphckihv7wptdxvdnl5emma6t3vikcf3c5oiiqndq6y6xad.onion/company.html?company=meamar
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

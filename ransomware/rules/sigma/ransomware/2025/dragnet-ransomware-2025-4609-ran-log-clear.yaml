@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4609 — Event Log Clearing (nova)'
+id: a9561f3a-85a3-5bba-8b40-6ee9206798e6
+status: deprecated
+description: |
+  Detects event log clearing associated with nova ransomware.
+  Incident: dragnet-ransomware-2025-4609
+  Ransomware victim claim by nova: ANG BROTHERS (M&E) PTE. LTD. (P1); country: SG; sector: Construction
+  First observed: 2025-11-15.
+references:
+  - http://pifk3xu3vad6cuxsjll4qjomyaaaoyvnyqppro75pazadzctrrvpdnyd.onion/#ang-brothers-m-e-pte-ltd-p1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

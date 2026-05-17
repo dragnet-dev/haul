@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1448 — Recovery Inhibition (krybit)'
+id: eaf91eb4-e887-5b80-8fd2-2dd5dcafb6be
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with krybit ransomware.
+  Incident: dragnet-ransomware-2026-1448
+  Ransomware victim claim by krybit: Gerald Zisser GmbH; country: DE; sector: Business Services
+  First observed: 2026-04-08.
+references:
+  - http://krybitqsdzwmhnitvwuhvsntfgf2wrhxveyxroxpc44c6gkft2cqldyd.onion/blog/3483b78af6ee44881238e7fc60509b54c0e83edce7687f606c2682e60ab9b981/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

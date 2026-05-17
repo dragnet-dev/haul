@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1441 — Recovery Inhibition (krybit)'
+id: 18e1af05-4d69-5975-a31b-5fca2dfbb98f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with krybit ransomware.
+  Incident: dragnet-ransomware-2026-1441
+  Ransomware victim claim by krybit: bomuhospital.org; country: KE; sector: Healthcare
+  First observed: 2026-05-01.
+references:
+  - http://krybitqsdzwmhnitvwuhvsntfgf2wrhxveyxroxpc44c6gkft2cqldyd.onion/blog/00b2166002a46d2c1f0677b1e0da903b062734a5166c18de1d2d4e01ad295e23/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

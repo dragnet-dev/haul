@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4208 — Vulnerable Base Image Pull'
+id: 653597e2-b3d3-5981-8309-5cb422798695
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4208 (Tier 2, CVSS 9.8)
+  HashiCorp Vault and Vault Enterprise versions 1.0 and newer allowed leases created with a batch token to outlive their TTL because expiration time was not scheduled correctly. Fixed in 1.4.7 and 1.5.4.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-25816
+  - https://discuss.hashicorp.com/t/hcsec-2020-20-vault-leases-created-with-batch-tokens-have-invalid-expiration/18105
+  - https://github.com/hashicorp/vault
+  - https://github.com/hashicorp/vault/blob/master/CHANGELOG.md#147
+  - https://github.com/hashicorp/vault/blob/master/CHANGELOG.md#154
+  - https://github.com/hashicorp/vault/pull/10020/commits/f192878110fe93eb13da914b2bee28caa7866a29
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-25816
+  - https://www.cve.org/CVERecord?id=CVE-2020-25816
+  - https://www.hashicorp.com/blog/category/vault
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

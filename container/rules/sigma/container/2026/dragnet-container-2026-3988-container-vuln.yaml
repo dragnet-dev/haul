@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3988 — Vulnerable Base Image Pull'
+id: 44694c93-62bb-50fa-b603-2c265dcc3a41
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3988 (Tier 2, CVSS 9.8)
+  SchedMD Slurm before 17.11.13 and 18.x before 18.08.5 mishandles 32-bit systems.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-04/msg00090.html
+  - https://github.com/SchedMD/slurm/commit/750cc23edcc6fddfff21d33bdaf4fb7deb28cfda
+  - https://lists.debian.org/debian-lts-announce/2020/03/msg00016.html
+  - https://lists.schedmd.com/pipermail/slurm-announce/2019/000018.html
+  - https://ubuntu.com/security/notices/USN-4781-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-6438
+  - https://www.schedmd.com/news.php?id=213
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4738 — Vulnerable Base Image Pull'
+id: 10ed1fee-df6f-5092-bc00-f0a4f7204e94
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4738 (Tier 2, CVSS 9.1)
+  Atheme IRC Services before 7.2.12, when used in conjunction with InspIRCd, allows authentication bypass by ending an IRC handshake at a certain point during a challenge-response login sequence.
+references:
+  - https://github.com/atheme/atheme/commit/4e664c75d0b280a052eb8b5e81aa41944e593c52
+  - https://github.com/atheme/atheme/compare/v7.2.11...v7.2.12
+  - https://www.openwall.com/lists/oss-security/2022/01/30/4
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

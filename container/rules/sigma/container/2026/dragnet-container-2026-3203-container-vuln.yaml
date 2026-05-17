@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3203 — Vulnerable Base Image Pull'
+id: 1ed38743-f604-59fb-aa75-cba5cc3b4539
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3203 (Tier 2, CVSS 9.8)
+  pcre2test.c in PCRE2 10.23 allows remote attackers to cause a denial of service (heap-based buffer overflow) or possibly have unspecified other impact via a crafted regular expression.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-8786
+  - https://blogs.gentoo.org/ago/2017/04/29/libpcre-heap-based-buffer-overflow-write-in-pcre2test-c/
+  - https://bugs.exim.org/show_bug.cgi?id=2079
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-8786
+  - https://security.gentoo.org/glsa/201710-09
+  - https://vcs.pcre.org/pcre2?view=revision&revision=696
+  - https://vcs.pcre.org/pcre2?view=revision&revision=697
+  - https://www.cve.org/CVERecord?id=CVE-2017-8786
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

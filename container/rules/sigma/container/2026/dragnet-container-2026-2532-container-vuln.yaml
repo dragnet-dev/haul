@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2532 — Vulnerable Base Image Pull'
+id: 10b6269d-dee5-565a-a4f8-c0a7576f8d80
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2532 (Tier 2, CVSS 9.8)
+  The locale_accept_from_http function in ext/intl/locale/locale_methods.c in PHP before 5.5.38, 5.6.x before 5.6.24, and 7.x before 7.0.9 does not properly restrict calls to the ICU uloc_acceptLanguageFromHTTP function, which allows remote attackers to cause a denial of service (out-of-bounds read) or possibly have unspecified other impact via a call with a long argument.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-6294
+  - http://git.php.net/?p=php-src.git%3Ba=commit%3Bh=aa82e99ed8003c01f1ef4f0940e56b85c5b032d4
+  - http://lists.apple.com/archives/security-announce/2016/Sep/msg00006.html
+  - http://openwall.com/lists/oss-security/2016/07/24/2
+  - http://php.net/ChangeLog-5.php
+  - http://php.net/ChangeLog-7.php
+  - http://rhn.redhat.com/errata/RHSA-2016-2750.html
+  - http://www.debian.org/security/2016/dsa-3631
+  - http://www.securityfocus.com/bid/92115
+  - http://www.securitytracker.com/id/1036430
+  - https://access.redhat.com/security/cve/CVE-2016-6294
+  - https://bugs.php.net/72533
+  - https://security.gentoo.org/glsa/201611-22
+  - https://support.apple.com/HT207170
+  - https://ubuntu.com/security/notices/USN-3045-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

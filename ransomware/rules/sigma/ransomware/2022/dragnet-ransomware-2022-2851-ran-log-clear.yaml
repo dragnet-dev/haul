@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2851 — Event Log Clearing (royal)'
+id: 91d35362-5b62-5e90-968b-25a201121727
+status: deprecated
+description: |
+  Detects event log clearing associated with royal ransomware.
+  Incident: dragnet-ransomware-2022-2851
+  Ransomware victim claim by royal: http://www.veroni.it; sector: Manufacturing
+  First observed: 2022-11-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

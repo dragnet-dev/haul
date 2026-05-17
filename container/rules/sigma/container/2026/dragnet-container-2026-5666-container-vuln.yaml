@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5666 — Vulnerable Base Image Pull'
+id: e986e6a0-51e1-579d-87b9-99a138e886d9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5666 (Tier 2, CVSS 9.8)
+  Incorrect Authorization vulnerability in Erlang OTP (inets modules) allows unauthenticated access to CGI scripts protected by directory rules when served via script_alias.
+
+When script_alias maps a URL prefix to a directory outside DocumentRoot, mod_auth evaluates directory-based access controls against the DocumentRoot-relative path while mod_cgi executes the script at the ScriptAlias-resolved path. This path mismatch allows unauthenticated access to CGI scripts that directory rules were meant to protect.
+
+This vulnerability is associated with program files lib/inets/src/http_server/mod_alias.erl, lib/inets/src/http_server/mod_auth.erl, and lib/inets/src/http_server/mod_cgi.erl.
+
+This issue affects OTP from OTP 17.0 until OTP 28.4.2, 27.3.4.10 and 26.2.5.19 corresponding to inets from 5.10 until 9.6.2, 9.3.2.4 and 9.1.0.6.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-28808
+  - https://cna.erlef.org/cves/CVE-2026-28808.html
+  - https://github.com/erlang/otp/commit/8fc71ac6af4fbcc54103bec2983ef22e82942688
+  - https://github.com/erlang/otp/commit/9dfa0c51eac97866078e808dec2183cb7871ff7c
+  - https://github.com/erlang/otp/security/advisories/GHSA-3vhp-h532-mc3f
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-28808
+  - https://osv.dev/vulnerability/EEF-CVE-2026-28808
+  - https://www.cve.org/CVERecord?id=CVE-2026-28808
+  - https://www.erlang.org/doc/system/versions.html#order-of-versions
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,56 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4893 — Vulnerable Base Image Pull'
+id: a723053f-7c7e-5d54-bdd6-7d10691e7438
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4893 (Tier 2, CVSS 9.8)
+  Apache Commons BCEL has a number of APIs that would normally only allow changing specific class characteristics. However, due to an out-of-bounds writing issue, these APIs can be used to produce arbitrary bytecode. This could be abused in applications that pass attacker-controllable data to those APIs, giving the attacker more control over the resulting bytecode than otherwise expected. Update to Apache Commons BCEL 6.6.0.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-42920
+  - https://github.com/apache/commons-bcel
+  - https://github.com/apache/commons-bcel/commit/f3267cbcc900f80851d561bdd16b239d936947f5
+  - https://github.com/apache/commons-bcel/pull/147
+  - http://www.openwall.com/lists/oss-security/2022/11/07/2
+  - https://access.redhat.com/errata/RHSA-2023:0005
+  - https://access.redhat.com/security/cve/CVE-2022-42920
+  - https://bugzilla.redhat.com/2142707
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2142707
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-42920
+  - https://errata.almalinux.org/9/ALSA-2023-0005.html
+  - https://errata.rockylinux.org/RLSA-2023:0005
+  - https://issues.apache.org/jira/browse/BCEL-363
+  - https://linux.oracle.com/cve/CVE-2022-42920.html
+  - https://linux.oracle.com/errata/ELSA-2023-0005.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2022'
+      - 'amazonlinux:2023'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

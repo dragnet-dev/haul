@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0926 — Shadow Copy Deletion (lockbit2)'
+id: 64f8b29a-f77f-5ac6-82fd-60cb60e3c69d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with lockbit2 ransomware.
+  Incident: dragnet-ransomware-2021-0926
+  Ransomware victim claim by lockbit2: mtradeasia.com; sector: Agriculture and Food Production
+  First observed: 2021-11-23.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

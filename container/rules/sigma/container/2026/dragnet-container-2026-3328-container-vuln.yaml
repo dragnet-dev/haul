@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3328 — Vulnerable Base Image Pull'
+id: eed4f8d6-c68a-5686-94f2-97fed2d25974
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3328 (Tier 2, CVSS 9.8)
+  In Long Range Zip (aka lrzip) 0.631, there is a use-after-free in the lzma_decompress_buf function of stream.c, which allows remote attackers to cause a denial of service (application crash) or possibly have unspecified other impact.
+references:
+  - https://github.com/ckolivas/lrzip/issues/95
+  - https://lists.debian.org/debian-lts-announce/2021/08/msg00001.html
+  - https://ubuntu.com/security/notices/USN-5171-1
+  - https://ubuntu.com/security/notices/USN-5171-2
+  - https://www.cve.org/CVERecord?id=CVE-2018-10685
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

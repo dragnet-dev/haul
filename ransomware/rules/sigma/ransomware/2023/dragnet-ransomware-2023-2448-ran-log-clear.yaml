@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2448 — Event Log Clearing (knight)'
+id: df0b977d-dafe-5ba1-a519-4254eed847e9
+status: deprecated
+description: |
+  Detects event log clearing associated with knight ransomware.
+  Incident: dragnet-ransomware-2023-2448
+  Ransomware victim claim by knight: Wakefield & Associates; country: US; sector: Business Services
+  First observed: 2023-11-30.
+references:
+  - http://knight3xppu263m7g4ag3xlit2qxpryjwueobh7vjdc3zrscqlfu3pqd.onion/bbdc8734-aad4-4eac-9594-71988c6c6029/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4735 — Vulnerable Base Image Pull'
+id: 6d4dc135-baa9-5210-bbae-e121d46ab592
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4735 (Tier 2, CVSS 10)
+  Flux is an open and extensible continuous delivery solution for Kubernetes. Path Traversal in the kustomize-controller via a malicious `kustomization.yaml` allows an attacker to expose sensitive data from the controller’s pod filesystem and possibly privilege escalation in multi-tenancy deployments. Workarounds include automated tooling in the user's CI/CD pipeline to validate `kustomization.yaml` files conform with specific policies. This vulnerability is fixed in kustomize-controller v0.24.0 and included in flux2 v0.29.0.
+references:
+  - github.com/fluxcd/kustomize-controller
+  - https://github.com/fluxcd/flux2/security/advisories/GHSA-j77r-2fxf-5jrw
+  - https://github.com/fluxcd/kustomize-controller/commit/f4528fb25d611da94e491346bea056d5c5c3611f
+  - https://github.com/fluxcd/pkg/commit/0ec014baf417fd3879d366a45503a548b9267d2a
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-24877
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

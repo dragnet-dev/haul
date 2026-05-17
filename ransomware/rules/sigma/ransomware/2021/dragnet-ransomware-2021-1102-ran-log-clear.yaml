@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1102 — Event Log Clearing (lorenz)'
+id: 19d312e6-eff9-5c57-a224-6cf3fade9eca
+status: deprecated
+description: |
+  Detects event log clearing associated with lorenz ransomware.
+  Incident: dragnet-ransomware-2021-1102
+  Ransomware victim claim by lorenz: Airtech Advanced Materials Group; sector: Manufacturing
+  First observed: 2021-04-29.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

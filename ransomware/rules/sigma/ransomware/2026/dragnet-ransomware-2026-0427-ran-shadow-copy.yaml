@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0427 — Shadow Copy Deletion (blackwater)'
+id: d5679585-d662-586e-9a81-aeb35f0f829c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0427
+  Ransomware victim claim by blackwater: Shenzhen Gongjin Electronics; country: CN; sector: Manufacturing
+  First observed: 2026-04-29.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=b822ef9f-7d60-358d-814f-b6e21815bf05
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

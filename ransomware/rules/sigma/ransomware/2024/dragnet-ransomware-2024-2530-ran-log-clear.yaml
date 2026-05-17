@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2530 — Event Log Clearing (hunters)'
+id: d7dc2e32-6bba-5d71-891a-78f3d02c1321
+status: deprecated
+description: |
+  Detects event log clearing associated with hunters ransomware.
+  Incident: dragnet-ransomware-2024-2530
+  Ransomware victim claim by hunters: CaleyWray; country: CA; sector: Business Services
+  First observed: 2024-10-03.
+references:
+  - https://hunters55rdxciehoqzwv7vgyv6nt37tbwax2reroyzxhou7my5ejyid.onion/companies/3266767304
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

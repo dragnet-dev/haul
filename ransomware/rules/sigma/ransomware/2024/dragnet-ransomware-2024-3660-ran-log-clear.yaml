@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3660 — Event Log Clearing (lynx)'
+id: c19a4080-b3a4-5e19-a7a9-2122c93b2c7e
+status: deprecated
+description: |
+  Detects event log clearing associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3660
+  Ransomware victim claim by lynx: NSK Group ROTA; country: JP; sector: Manufacturing
+  First observed: 2024-09-20.
+references:
+  - http://lynxblog.net/leaks/67464807e42beed9ed35e6ff
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2331 — Vulnerable Base Image Pull'
+id: bb4269a4-20ef-503f-a699-22da0303dd14
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2331 (Tier 2, CVSS 9.8)
+  Use-after-free vulnerability in bitlbee-libpurple before 3.5 allows remote servers to cause a denial of service (crash) or possibly execute arbitrary code by causing a file transfer connection to expire.
+references:
+  - http://www.debian.org/security/2017/dsa-3853
+  - http://www.openwall.com/lists/oss-security/2017/01/30/4
+  - http://www.openwall.com/lists/oss-security/2017/01/31/11
+  - http://www.securityfocus.com/bid/95935
+  - https://bugs.bitlbee.org/ticket/1281
+  - https://www.cve.org/CVERecord?id=CVE-2016-10188
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

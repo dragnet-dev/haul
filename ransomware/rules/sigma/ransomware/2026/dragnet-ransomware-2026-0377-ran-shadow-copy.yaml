@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0377 — Shadow Copy Deletion (AuditTeam)'
+id: 78434124-9bcc-5a89-939a-af599b2d0db8
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with AuditTeam ransomware.
+  Incident: dragnet-ransomware-2026-0377
+  Ransomware victim claim by AuditTeam: Paid Victim CCD233FEE92FFA2D; country: HK; sector: Not Found
+  First observed: 2026-04-08.
+references:
+  - http://6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad.onion/entity/CCD233FEE92FFA2D
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2015-0001 — Event Log Clearing (AiLock)'
+id: 1c3f56fc-1c6d-56a8-8979-b3cb1792d0f3
+status: deprecated
+description: |
+  Detects event log clearing associated with AiLock ransomware.
+  Incident: dragnet-ransomware-2015-0001
+  Ransomware victim claim by AiLock: Revival Animal Health; country: US; sector: Consumer Services
+  First observed: 2015-04-29.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

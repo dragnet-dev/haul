@@ -1,0 +1,60 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0231 — Vulnerable Base Image Pull'
+id: 58d7db8d-bec2-56c2-9155-92f7891652c6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0231 (Tier 2, CVSS 9.8)
+  XML::Parser versions through 2.47 for Perl has an off-by-one heap buffer overflow in st_serial_stack.
+
+In the case (stackptr == stacksize - 1), the stack will NOT be expanded. Then the new value will be written at location (++stackptr), which equals stacksize and therefore falls just outside the allocated buffer.
+
+The bug can be observed when parsing an XML file with very deep element nesting
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2006-10003
+  - https://github.com/cpan-authors/XML-Parser/commit/3eb9cc95420fa0c3f76947c4708962546bf27cfd.patch
+  - https://github.com/cpan-authors/XML-Parser/issues/39
+  - http://www.openwall.com/lists/oss-security/2026/03/19/2
+  - https://access.redhat.com/errata/RHSA-2026:7679
+  - https://access.redhat.com/security/cve/CVE-2006-10003
+  - https://bugzilla.redhat.com/2448999
+  - https://bugzilla.redhat.com/2449001
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2448999
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2449001
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-10002
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-10003
+  - https://errata.almalinux.org/9/ALSA-2026-7679.html
+  - https://errata.rockylinux.org/RLSA-2026:7679
+  - https://linux.oracle.com/cve/CVE-2006-10003.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

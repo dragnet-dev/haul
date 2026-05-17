@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3925 — Vulnerable Base Image Pull'
+id: 75bd46c7-23ef-5d1f-bf0c-53e3b83f475d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3925 (Tier 2, CVSS 9.8)
+  In GraphicsMagick 1.4 snapshot-20190403 Q8, there is a use-after-free in ThrowException and ThrowLoggedException of magick/error.c.
+references:
+  - http://hg.graphicsmagick.org/hg/GraphicsMagick/rev/44ab7f6c20b4
+  - http://lists.opensuse.org/opensuse-security-announce/2020-01/msg00026.html
+  - http://lists.opensuse.org/opensuse-security-announce/2020-01/msg00064.html
+  - https://lists.debian.org/debian-lts-announce/2020/01/msg00029.html
+  - https://sourceforge.net/p/graphicsmagick/bugs/603/
+  - https://ubuntu.com/security/notices/USN-5190-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-19950
+  - https://www.debian.org/security/2020/dsa-4640
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

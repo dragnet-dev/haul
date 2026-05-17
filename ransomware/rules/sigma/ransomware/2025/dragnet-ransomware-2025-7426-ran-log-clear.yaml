@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7426 — Event Log Clearing (skira)'
+id: 73fbc5f9-b268-5785-b7fc-5018f809d317
+status: deprecated
+description: |
+  Detects event log clearing associated with skira ransomware.
+  Incident: dragnet-ransomware-2025-7426
+  Ransomware victim claim by skira: Independent Title Agency, LLC; country: US; sector: Financial Services
+  First observed: 2025-04-18.
+references:
+  - http://mtgc3qvyedjnfu7cen2zsupdppi5ys5g2hm6xwujvoepw25p4dy6huid.onion/news/ita.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5062 — Vulnerable Base Image Pull'
+id: ae5ba49f-2610-5c8b-88b5-a0f5aa5a9c44
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5062 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C with high level API in C, C++, Java, C#, and Python languages. SRTP is a higher level media transport which is stacked upon a lower level media transport such as UDP and ICE. Currently a higher level transport is not synchronized with its lower level transport that may introduce use-after-free issue. This vulnerability affects applications that have SRTP capability (`PJMEDIA_HAS_SRTP` is set) and use underlying media transport other than UDP. This vulnerability’s impact may range from unexpected application termination to control flow hijack/memory corruption. The patch is available as a commit in the master branch.
+references:
+  - https://github.com/pjsip/pjproject/commit/6dc9b8c181aff39845f02b4626e0812820d4ef0d
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-f76w-fh7c-pc66
+  - https://lists.debian.org/debian-lts-announce/2023/12/msg00019.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

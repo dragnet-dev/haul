@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3962 — Recovery Inhibition (meow)'
+id: f42fb56e-bf3b-54b5-805d-bafcb2b66289
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with meow ransomware.
+  Incident: dragnet-ransomware-2024-3962
+  Ransomware victim claim by meow: Andersen Tax; country: US; sector: Financial Services
+  First observed: 2024-07-26.
+references:
+  - http://meow6xanhzfci2gbkn3lmbqq7xjjufskkdfocqdngt3ltvzgqpsg5mid.onion/product/25
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

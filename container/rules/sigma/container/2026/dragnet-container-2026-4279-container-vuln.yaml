@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4279 — Vulnerable Base Image Pull'
+id: 8e1d17bc-c25a-5156-91d9-6f7d958d8d1b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4279 (Tier 2, CVSS 9.8)
+  In NetHack before 3.6.5, detecting an unknown configuration file option can cause a buffer overflow resulting in a crash or remote code execution/privilege escalation. This vulnerability affects systems that have NetHack installed suid/sgid and shared systems that allow users to upload their own configuration files. Users should upgrade to NetHack 3.6.5.
+references:
+  - https://github.com/NetHack/NetHack/security/advisories/GHSA-p8fw-rq89-xqx6
+  - https://nethack.org/security/CVE-2020-5214.html
+  - https://www.cve.org/CVERecord?id=CVE-2020-5214
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

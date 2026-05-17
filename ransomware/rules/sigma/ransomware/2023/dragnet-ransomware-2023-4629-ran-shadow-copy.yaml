@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4629 — Shadow Copy Deletion (ransomed)'
+id: f005cec4-cdb4-5f4c-b527-e9b2e18965b9
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with ransomed ransomware.
+  Incident: dragnet-ransomware-2023-4629
+  Ransomware victim claim by ransomed: I&G Brokers; country: BG; sector: Financial Services
+  First observed: 2023-08-21.
+references:
+  - https://ransomed.vc/ig.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

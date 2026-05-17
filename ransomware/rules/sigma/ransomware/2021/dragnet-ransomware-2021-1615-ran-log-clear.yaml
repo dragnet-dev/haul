@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1615 — Event Log Clearing (ragnarok)'
+id: df42d9e2-e834-5d2f-9b75-73523e0706c5
+status: deprecated
+description: |
+  Detects event log clearing associated with ragnarok ransomware.
+  Incident: dragnet-ransomware-2021-1615
+  Ransomware victim claim by ragnarok: Decrypt; sector: Technology
+  First observed: 2021-09-09.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

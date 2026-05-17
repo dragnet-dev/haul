@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2462 — Vulnerable Base Image Pull'
+id: 6c36a548-7615-54ce-a7c4-15f8f273e0bb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2462 (Tier 2, CVSS 9.8)
+  xpointer.c in libxml2 before 2.9.5 (as used in Apple iOS before 10, OS X before 10.12, tvOS before 10, and watchOS before 3, and other products) does not forbid namespace nodes in XPointer ranges, which allows remote attackers to execute arbitrary code or cause a denial of service (use-after-free and memory corruption) via a crafted XML document.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-4658
+  - https://github.com/sparklemotion/nokogiri/issues/1615
+  - http://lists.apple.com/archives/security-announce/2016/Sep/msg00006.html
+  - http://lists.apple.com/archives/security-announce/2016/Sep/msg00008.html
+  - http://lists.apple.com/archives/security-announce/2016/Sep/msg00010.html
+  - http://lists.apple.com/archives/security-announce/2016/Sep/msg00011.html
+  - http://www.securityfocus.com/bid/93054
+  - http://www.securitytracker.com/id/1036858
+  - http://www.securitytracker.com/id/1038623
+  - https://access.redhat.com/security/cve/CVE-2016-4658
+  - https://git.gnome.org/browse/libxml2/commit/?id=c1d1f7121194036608bf555f08d3062a36fd344b
+  - https://linux.oracle.com/cve/CVE-2016-4658.html
+  - https://linux.oracle.com/errata/ELSA-2021-3810.html
+  - https://security.gentoo.org/glsa/201701-37
+  - https://support.apple.com/HT207141
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'oraclelinux:7'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

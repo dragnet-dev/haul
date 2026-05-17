@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4860 — Vulnerable Base Image Pull'
+id: 5c531689-750a-51a5-a94c-db77496ddf5b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4860 (Tier 2, CVSS 9.3)
+  Dex is an identity service that uses OpenID Connect to drive authentication for other apps. Dex instances with public clients (and by extension, clients accepting tokens issued by those Dex instances) are affected by this vulnerability if they are running a version prior to 2.35.0. An attacker can exploit this vulnerability by making a victim navigate to a malicious website and guiding them through the OIDC flow, stealing the OAuth authorization code in the process. The authorization code then can be exchanged by the attacker for a token, gaining access to applications accepting that token. Version 2.35.0 has introduced a fix for this issue. Users are advised to upgrade. There are no known workarounds for this issue.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-39222
+  - https://github.com/dexidp/dex
+  - https://github.com/dexidp/dex/commit/49471b14c8080ddb034d4855841123d378b7a634
+  - https://github.com/dexidp/dex/releases/tag/v2.35.0
+  - https://github.com/dexidp/dex/security/advisories/GHSA-vh7g-p26c-j2cw
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-39222
+  - https://www.cve.org/CVERecord?id=CVE-2022-39222
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

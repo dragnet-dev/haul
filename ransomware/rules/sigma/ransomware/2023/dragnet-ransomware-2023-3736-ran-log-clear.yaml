@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3736 — Event Log Clearing (malekteam)'
+id: 51ad2455-c849-56ae-bc9b-a001ba431ff7
+status: deprecated
+description: |
+  Detects event log clearing associated with malekteam ransomware.
+  Incident: dragnet-ransomware-2023-3736
+  Ransomware victim claim by malekteam: ZIV Hospital; country: IL; sector: Healthcare
+  First observed: 2023-12-24.
+references:
+  - http://195.14.123.2/ziv.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

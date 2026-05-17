@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2727 — Event Log Clearing (everest)'
+id: 95e871e7-3707-54b5-a383-eeefb793db0b
+status: deprecated
+description: |
+  Detects event log clearing associated with everest ransomware.
+  Incident: dragnet-ransomware-2025-2727
+  Ransomware victim claim by everest: Svenska Kraftnät; country: SE; sector: Energy
+  First observed: 2025-10-25.
+references:
+  - http://ransomocmou6mnbquqz44ewosbkjk3o5qjsl3orawojexfook2j7esad.onion/news/svk
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

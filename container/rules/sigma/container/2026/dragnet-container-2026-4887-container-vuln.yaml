@@ -1,0 +1,80 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4887 — Vulnerable Base Image Pull'
+id: b9847334-5828-59c8-b712-aa6fa5e6145e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4887 (Tier 2, CVSS 9.8)
+  Git is distributed revision control system. `git log` can display commits in an arbitrary format using its `--format` specifiers. This functionality is also exposed to `git archive` via the `export-subst` gitattribute. When processing the padding operators, there is a integer overflow in `pretty.c::format_and_pad_commit()` where a `size_t` is stored improperly as an `int`, and then added as an offset to a `memcpy()`. This overflow can be triggered directly by a user running a command which invokes the commit formatting machinery (e.g., `git log --format=...`). It may also be triggered indirectly through git archive via the export-subst mechanism, which expands format specifiers inside of files within the repository during a git archive. This integer overflow can result in arbitrary heap writes, which may result in arbitrary code execution. The problem has been patched in the versions published on 2023-01-17, going back to v2.30.7. Users are advised to upgrade. Users who are unable to upgrade should disable `git archive` in untrusted repositories. If you expose git archive via `git daemon`, disable it by running `git config --global daemon.uploadArch false`.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-41903
+  - https://github.com/git/git/commit/508386c6c5857b4faa2c3e491f422c98cc69ae76
+  - https://github.com/git/git/files/10430260/X41-OSTIF-Gitlab-Git-Security-Audit-20230117-public.pdf
+  - https://github.com/git/git/security/advisories/GHSA-475x-2q3q-hvwq
+  - https://access.redhat.com/errata/RHSA-2023:0611
+  - https://access.redhat.com/security/cve/CVE-2022-41903
+  - https://bugzilla.redhat.com/2162055
+  - https://bugzilla.redhat.com/2162056
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2162055
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2162056
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-23521
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41903
+  - https://errata.almalinux.org/9/ALSA-2023-0611.html
+  - https://errata.rockylinux.org/RLSA-2023:0611
+  - https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes#_export_subst
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

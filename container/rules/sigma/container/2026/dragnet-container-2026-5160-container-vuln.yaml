@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5160 — Vulnerable Base Image Pull'
+id: 2d9b7664-745f-592b-88f9-446d18fadeb7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5160 (Tier 2, CVSS 9.1)
+  Remotely executed SEGV and out of bounds read allows malicious packet sender to crash or cause an out of bounds read via sending a malformed packet with the correct length.
+
+references:
+  - https://github.com/wolfSSL/wolfssl/issues/7089
+  - https://github.com/wolfSSL/wolfssl/pull/7099
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-0901
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5283 — Vulnerable Base Image Pull'
+id: e2498f0e-7fa9-5417-b764-946a84bcdaf9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5283 (Tier 2, CVSS 9.8)
+  WeeChat before 4.4.2 has an integer overflow and resultant buffer overflow at core/core-string.c when there are more than two billion items in a list. This affects string_free_split_shared , string_free_split, string_free_split_command, and string_free_split_tags.
+references:
+  - https://github.com/weechat/weechat/issues/2178
+  - https://weechat.org/doc/weechat/security/WSA-2024-1/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3600 — Shadow Copy Deletion (interlock)'
+id: 99ace76d-710d-5754-af72-13ede9cb9c18
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3600
+  Ransomware victim claim by interlock: Pinto Coates Kyre & Bowers; country: AU; sector: Business Services
+  First observed: 2025-11-03.
+references:
+  - http://ycgykop5f4te6yaptg57ze75kgnqo6u2e3yyeo3hkjgjxakjx2g5ksqd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

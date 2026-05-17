@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2380 — Event Log Clearing (karakurt)'
+id: deace7cd-8d79-5bdb-9ef5-459903145723
+status: deprecated
+description: |
+  Detects event log clearing associated with karakurt ransomware.
+  Incident: dragnet-ransomware-2023-2380
+  Ransomware victim claim by karakurt: Beacon ABA Services; sector: Healthcare
+  First observed: 2023-06-05.
+references:
+  - https://3f7nxkjway3d223j27lyad7v5cgmyaifesycvmwq7i7cbs23lb6llryd.onion/companies/bad1ec09-1e39-41ad-9744-9bd9e2a2cb74
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

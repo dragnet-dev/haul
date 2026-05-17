@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3595 — Shadow Copy Deletion (interlock)'
+id: 3640cfd7-1bbd-5791-8496-b624f4eb9591
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3595
+  Ransomware victim claim by interlock: MBM Intellectual Property Law; country: CA; sector: Business Services
+  First observed: 2025-08-11.
+references:
+  - http://ir3oqafizlapipdyrebrfuk5bxd56zqjemljvfkeb42nzpxvkxwmqpqd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4891 — Vulnerable Base Image Pull'
+id: eb80c9bf-e652-5527-95ae-22ad5071cf48
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4891 (Tier 2, CVSS 9.8)
+  Apache Commons Text performs variable interpolation, allowing properties to be dynamically evaluated and expanded. The standard format for interpolation is "${prefix:name}", where "prefix" is used to locate an instance of org.apache.commons.text.lookup.StringLookup that performs the interpolation. Starting with version 1.5 and continuing through 1.9, the set of default Lookup instances included interpolators that could result in arbitrary code execution or contact with remote servers. These lookups are: - "script" - execute expressions using the JVM script execution engine (javax.script) - "dns" - resolve dns records - "url" - load values from urls, including from remote servers Applications using the interpolation defaults in the affected versions may be vulnerable to remote code execution or unintentional contact with remote servers if untrusted configuration values are used. Users are recommended to upgrade to Apache Commons Text 1.10.0, which disables the problematic interpolators by default.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-42889
+  - https://securitylab.github.com/advisories/GHSL-2022-018_Apache_Commons_Text
+  - https://github.com/apache/commons-text
+  - http://packetstormsecurity.com/files/171003/OX-App-Suite-Cross-Site-Scripting-Server-Side-Request-Forgery.html
+  - http://packetstormsecurity.com/files/176650/Apache-Commons-Text-1.9-Remote-Code-Execution.html
+  - http://seclists.org/fulldisclosure/2023/Feb/3
+  - http://www.openwall.com/lists/oss-security/2022/10/13/4
+  - http://www.openwall.com/lists/oss-security/2022/10/18/1
+  - https://access.redhat.com/security/cve/CVE-2022-42889
+  - https://arxiv.org/pdf/2306.05534
+  - https://blogs.apache.org/security/entry/cve-2022-42889
+  - https://lists.apache.org/thread/n2bd4vdsgkqh2tm14l1wyc3jyol7s1om
+  - https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0022
+  - https://seclists.org/oss-sec/2022/q4/22
+  - https://security.gentoo.org/glsa/202301-05
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4229 — Vulnerable Base Image Pull'
+id: a85e88bf-282d-5228-99c7-c455d7034454
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4229 (Tier 2, CVSS 9.1)
+  A double free issue was discovered in radare2 in cmd_info.c:cmd_info(). Successful exploitation could lead to modification of unexpected memory locations and potentially causing a crash.
+references:
+  - https://github.com/radareorg/radare2/commit/cb8b683758edddae2d2f62e8e63a738c39f92683
+  - https://github.com/radareorg/radare2/commit/cb8b683758edddae2d2f62e8e63a738c39f92683 (4.4.0)
+  - https://github.com/radareorg/radare2/issues/16303
+  - https://www.cve.org/CVERecord?id=CVE-2020-27794
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

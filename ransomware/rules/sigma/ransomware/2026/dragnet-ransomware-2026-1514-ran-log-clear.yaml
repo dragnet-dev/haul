@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1514 — Event Log Clearing (LeakBazaar)'
+id: 23ffd3da-1c52-5728-8342-b703d34d1162
+status: deprecated
+description: |
+  Detects event log clearing associated with LeakBazaar ransomware.
+  Incident: dragnet-ransomware-2026-1514
+  Ransomware victim claim by LeakBazaar: Katahdin Technology; country: US; sector: Technology
+  First observed: 2026-05-08.
+references:
+  - https://mes4qo4rd6t3biyrm6q4twkquspzd7r4kg7va765nbdfxqgnc2w3pead.onion/company?dataBlobId=64663dd4-075d-46d3-a058-aaf077ad36a6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

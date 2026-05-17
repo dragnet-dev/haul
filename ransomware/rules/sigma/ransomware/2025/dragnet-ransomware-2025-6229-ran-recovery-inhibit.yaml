@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6229 — Recovery Inhibition (radar)'
+id: b49759cd-b646-53b5-83a8-69668c476f6e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with radar ransomware.
+  Incident: dragnet-ransomware-2025-6229
+  Ransomware victim claim by radar: RG ELECTRIC COMPANY INC; country: US; sector: Construction
+  First observed: 2025-09-10.
+references:
+  - http://3bnusfu2lgk5at43ceu7cdok5yv4gfbono2jv57ho74ucjvc7czirfid.onion/leaked-data/?id=59
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

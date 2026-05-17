@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4806 — Event Log Clearing (pear)'
+id: 70c049f3-ba99-5ea7-b96f-e3bde967f322
+status: deprecated
+description: |
+  Detects event log clearing associated with pear ransomware.
+  Incident: dragnet-ransomware-2025-4806
+  Ransomware victim claim by pear: Preferred Homes Realty; country: US; sector: Consumer Services
+  First observed: 2025-07-09.
+references:
+  - http://peargxn3oki34c4savcbcfqofjjwjnnyrlrbszfv6ujlx36mhrh57did.onion/Companies/preferredhomesrealty
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

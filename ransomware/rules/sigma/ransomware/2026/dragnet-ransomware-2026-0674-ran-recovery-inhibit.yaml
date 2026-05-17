@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0674 — Recovery Inhibition (coinbasecartel)'
+id: 0b0d9eb9-8fa5-5458-a8ed-55bd06129d9c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with coinbasecartel ransomware.
+  Incident: dragnet-ransomware-2026-0674
+  Ransomware victim claim by coinbasecartel: PC SOFT FRANCE; country: FR; sector: Technology
+  First observed: 2026-03-19.
+references:
+  - http://fjg4zi4opkxkvdz7mvwp7h6goe4tcby3hhkrz43pht4j3vakhy75znyd.onion/companies/pcsoft
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

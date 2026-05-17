@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0309 — Event Log Clearing (avoslocker)'
+id: 1f5968d6-782a-53a0-b226-ed2a96edb506
+status: deprecated
+description: |
+  Detects event log clearing associated with avoslocker ransomware.
+  Incident: dragnet-ransomware-2022-0309
+  Ransomware victim claim by avoslocker: Truckslogic; country: GT; sector: Transportation/Logistics
+  First observed: 2022-12-26.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

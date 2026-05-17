@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2112 — Event Log Clearing (crypto24)'
+id: 1f65e2a7-216b-5cbd-858d-2297e321f3fe
+status: deprecated
+description: |
+  Detects event log clearing associated with crypto24 ransomware.
+  Incident: dragnet-ransomware-2025-2112
+  Ransomware victim claim by crypto24: Generali Group; country: IT; sector: Financial Services
+  First observed: 2025-09-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

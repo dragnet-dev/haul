@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2280 — Vulnerable Base Image Pull'
+id: 27bf5330-02dd-5be3-9086-0ffee5bd9605
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2280 (Tier 2, CVSS 9.6)
+  ext/libxml/libxml.c in PHP before 5.5.22 and 5.6.x before 5.6.6, when PHP-FPM is used, does not isolate each thread from libxml_disable_entity_loader changes in other threads, which allows remote attackers to conduct XML External Entity (XXE) and XML Entity Expansion (XEE) attacks via a crafted XML document, a related issue to CVE-2015-5161.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2015-8866
+  - http://framework.zend.com/security/advisory/ZF2015-06 -> Relation to CVE-2015-5161
+  - http://git.php.net/?p=php-src.git%3Ba=commit%3Bh=de31324c221c1791b26350ba106cc26bad23ace9
+  - http://lists.opensuse.org/opensuse-security-announce/2016-05/msg00031.html
+  - http://lists.opensuse.org/opensuse-security-announce/2016-05/msg00033.html
+  - http://lists.opensuse.org/opensuse-security-announce/2016-05/msg00056.html
+  - http://rhn.redhat.com/errata/RHSA-2016-2750.html
+  - http://www.openwall.com/lists/oss-security/2016/04/21/8
+  - http://www.openwall.com/lists/oss-security/2016/04/24/1
+  - http://www.php.net/ChangeLog-5.php
+  - http://www.securityfocus.com/bid/87470
+  - http://www.ubuntu.com/usn/USN-2952-1
+  - http://www.ubuntu.com/usn/USN-2952-2
+  - https://access.redhat.com/security/cve/CVE-2015-8866
+  - https://bugs.launchpad.net/ubuntu/+source/php5/+bug/1509817
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

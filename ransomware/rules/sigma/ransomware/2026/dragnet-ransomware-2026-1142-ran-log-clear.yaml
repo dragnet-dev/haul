@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1142 — Event Log Clearing (handala)'
+id: f8d6e867-e11f-57b8-b83d-089cee7b318f
+status: deprecated
+description: |
+  Detects event log clearing associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1142
+  Ransomware victim claim by handala: Official Statement by Handala Group in Response to Threats from the US and Its Allies; sector: Not Found
+  First observed: 2026-03-20.
+references:
+  - https://handala-team.to/official-statement-by-handala-group-in-response-to-threats-from-the-us-and-its-allies/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

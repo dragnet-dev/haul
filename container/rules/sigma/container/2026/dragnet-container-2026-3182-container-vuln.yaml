@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3182 — Vulnerable Base Image Pull'
+id: d1b5d053-9e38-5347-ac39-c5bcba9d2e3b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3182 (Tier 2, CVSS 9.8)
+  FFmpeg before 2017-02-07 has an out-of-bounds write caused by a heap-based buffer overflow related to the decode_frame function in libavcodec/pictordec.c.
+references:
+  - http://www.debian.org/security/2017/dsa-4012
+  - http://www.securityfocus.com/bid/97676
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=559
+  - https://github.com/FFmpeg/FFmpeg/commit/8c2ea3030af7b40a3c4275696fb5c76cdb80950a
+  - https://security.gentoo.org/glsa/201811-19
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

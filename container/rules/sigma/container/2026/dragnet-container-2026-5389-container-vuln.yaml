@@ -1,0 +1,88 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5389 — Vulnerable Base Image Pull'
+id: 440d01ca-4e22-5f13-a9ca-db67a99f7e4d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5389 (Tier 2, CVSS 9.8)
+  Issue summary: Parsing CMS AuthEnvelopedData or EnvelopedData message with
+maliciously crafted AEAD parameters can trigger a stack buffer overflow.
+
+Impact summary: A stack buffer overflow may lead to a crash, causing Denial
+of Service, or potentially remote code execution.
+
+When parsing CMS (Auth)EnvelopedData structures that use AEAD ciphers such as
+AES-GCM, the IV (Initialization Vector) encoded in the ASN.1 parameters is
+copied into a fixed-size stack buffer without verifying that its length fits
+the destination. An attacker can supply a crafted CMS message with an
+oversized IV, causing a stack-based out-of-bounds write before any
+authentication or tag verification occurs.
+
+Applications and services that parse untrusted CMS or PKCS#7 content using
+AEAD ciphers (e.g., S/MIME (Auth)EnvelopedData with AES-GCM) are vulnerable.
+Because the overflow occurs prior to authentication, no valid key material
+is required to trigger it. While exploitability to remote code execution
+depends on platform and toolchain mitigations, the stack-based write
+primitive represents a severe risk.
+
+The FIPS modules in 3.6, 3.5, 3.4, 3.3 and 3.0 are not affected by this
+issue, as the CMS implementation is outside the OpenSSL FIPS module
+boundary.
+
+OpenSSL 3.6, 3.5, 3.4, 3.3 and 3.0 are vulnerable to this issue.
+
+OpenSSL 1.1.1 and 1.0.2 are not affected by this issue.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-15467
+  - https://github.com/advisories/GHSA-wvhq-3h88-rf6g
+  - https://github.com/guiimoraes/CVE-2025-15467
+  - https://github.com/openssl/openssl/commit/2c8f0e5fa9b6ee5508a0349e4572ddb74db5a703
+  - https://github.com/openssl/openssl/commit/5f26d4202f5b89664c5c3f3c62086276026ba9a9
+  - https://github.com/openssl/openssl/commit/6ced0fe6b10faa560e410e3ee8d6c82f06c65ea3
+  - https://github.com/openssl/openssl/commit/ce39170276daec87f55c39dad1f629b56344429e
+  - https://github.com/openssl/openssl/commit/d0071a0799f20cc8101730145349ed4487c268dc
+  - http://www.openwall.com/lists/oss-security/2026/01/27/10
+  - http://www.openwall.com/lists/oss-security/2026/02/25/6
+  - https://access.redhat.com/errata/RHSA-2026:1473
+  - https://access.redhat.com/security/cve/CVE-2025-15467
+  - https://bugzilla.redhat.com/2430375
+  - https://bugzilla.redhat.com/2430376
+  - https://bugzilla.redhat.com/2430377
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:9'
+      - 'alpine:3.17'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'chainguard:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

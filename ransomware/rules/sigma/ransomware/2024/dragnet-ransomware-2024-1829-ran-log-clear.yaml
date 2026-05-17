@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1829 — Event Log Clearing (donex)'
+id: 98bafd8a-7e17-5b03-8e4e-59945aac8c5b
+status: deprecated
+description: |
+  Detects event log clearing associated with donex ransomware.
+  Incident: dragnet-ransomware-2024-1829
+  Ransomware victim claim by donex: mirel; country: BE; sector: Business Services
+  First observed: 2024-02-27.
+references:
+  - http://g3h3klsev3eiofxhykmtenmdpi67wzmaixredk5pjuttbx7okcfkftqd.onion/f9ee69df8ca2/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4548 — Vulnerable Base Image Pull'
+id: 7c320333-9d9b-5125-b9c8-d01dcdeb65f7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4548 (Tier 2, CVSS 9.8)
+  scheme/webauthn.c in Glewlwyd SSO server through 2.5.3 has a buffer overflow during FIDO2 signature validation in webauthn registration.
+references:
+  - https://bugs.debian.org/993867
+  - https://github.com/babelouest/glewlwyd/commit/0efd112bb62f566877750ad62ee828bff579b4e2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

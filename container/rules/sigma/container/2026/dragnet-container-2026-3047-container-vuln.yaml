@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3047 — Vulnerable Base Image Pull'
+id: 510cbe02-fd42-5dd5-8a2d-658844a02341
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3047 (Tier 2, CVSS 9.1)
+  The base64decode function in base64.c in libimobiledevice libplist through 1.12 allows attackers to obtain sensitive information from process memory or cause a denial of service (buffer over-read) via split encoded Apple Property List data.
+references:
+  - http://www.securityfocus.com/bid/95385
+  - https://access.redhat.com/security/cve/CVE-2017-5209
+  - https://github.com/libimobiledevice/libplist/commit/3a55ddd3c4c11ce75a86afbefd085d8d397ff957
+  - https://lists.debian.org/debian-lts-announce/2020/04/msg00002.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-5209
+  - https://www.cve.org/CVERecord?id=CVE-2017-5209
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

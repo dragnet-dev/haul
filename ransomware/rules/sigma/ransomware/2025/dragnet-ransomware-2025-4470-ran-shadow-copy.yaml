@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4470 — Shadow Copy Deletion (morpheus)'
+id: 42025166-d813-5b5a-95c3-99d084f8c210
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with morpheus ransomware.
+  Incident: dragnet-ransomware-2025-4470
+  Ransomware victim claim by morpheus: Arrotex Pharmaceuticals; country: AU; sector: Healthcare
+  First observed: 2025-01-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

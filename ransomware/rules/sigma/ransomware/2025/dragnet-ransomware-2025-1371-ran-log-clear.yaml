@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1371 — Event Log Clearing (cephalus)'
+id: e182a34b-edb9-5c2a-8bea-8be1a274e029
+status: deprecated
+description: |
+  Detects event log clearing associated with cephalus ransomware.
+  Incident: dragnet-ransomware-2025-1371
+  Ransomware victim claim by cephalus: CareSTL Health; country: US; sector: Healthcare
+  First observed: 2025-06-28.
+references:
+  - https://darkforums.st/Thread-CareSTL-Health-DATA-Leak-500-GB
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4068 — Vulnerable Base Image Pull'
+id: 1c0d0b85-c578-51b5-b25f-9321a824aa05
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4068 (Tier 2, CVSS 9.8)
+  An issue was discovered in Janus through 0.9.1. janus.c tries to use a string that doesn't actually exist during a "query_logger" Admin API request, because of a typo in the JSON validation.
+references:
+  - https://github.com/meetecho/janus-gateway/pull/1989
+  - https://www.cve.org/CVERecord?id=CVE-2020-10574
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

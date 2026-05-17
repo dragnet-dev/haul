@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3825 — Vulnerable Base Image Pull'
+id: 50facb7c-57e3-5b13-979b-b4962a5dda32
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3825 (Tier 2, CVSS 9.8)
+  An issue was discovered in the libflate crate before 0.1.25 for Rust. MultiDecoder::read has a use-after-free, leading to arbitrary code execution.
+references:
+  - https://github.com/sile/libflate
+  - https://github.com/sile/libflate/commit/ffeff7c65deac5a6f886db2a59bcae4e420e4706
+  - https://github.com/sile/libflate/issues/35
+  - https://github.com/sile/libflate/pull/37
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-15552
+  - https://rustsec.org/advisories/RUSTSEC-2019-0010.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

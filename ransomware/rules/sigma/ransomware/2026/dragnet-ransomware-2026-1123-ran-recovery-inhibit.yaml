@@ -1,0 +1,30 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1123 — Recovery Inhibition (handala)'
+id: 552dda11-4af3-59fb-af61-f725badde14c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1123
+  Associated with VOID MANTICORE.
+  Ransomware victim claim by handala: Handala Hack Strikes 27 Companies for Minab’s Innocents; sector: Not Found
+  First observed: 2026-04-05.
+references:
+  - https://handala-hack.tw/handala-hack-strikes-27-zionist-companies-for-minabs-innocents/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+  - dragnet.actor.void-manticore
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

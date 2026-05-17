@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1437 — Event Log Clearing (kittykatkrew)'
+id: fcc457b3-ee8c-5f58-ab2c-f97c7ebce5cb
+status: deprecated
+description: |
+  Detects event log clearing associated with kittykatkrew ransomware.
+  Incident: dragnet-ransomware-2026-1437
+  Ransomware victim claim by kittykatkrew: test; sector: Not Found
+  First observed: 2026-02-23.
+references:
+  - http://vs6ccwled72hwmescxr2e32mmfrm6vbqbo7gbmmkxnu7g5fps7ndeeyd.onion/post/test
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

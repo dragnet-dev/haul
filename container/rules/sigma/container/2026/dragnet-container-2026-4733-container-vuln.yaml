@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4733 — Vulnerable Base Image Pull'
+id: 0c70affa-f53e-58da-8d18-b0d4d28711d7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4733 (Tier 2, CVSS 9.8)
+  Wasmtime is a standalone JIT-style runtime for WebAssembly, using Cranelift. There is a use after free vulnerability in Wasmtime when both running Wasm that uses externrefs and enabling epoch interruption in Wasmtime. If you are not explicitly enabling epoch interruption (it is disabled by default) then you are not affected. If you are explicitly disabling the Wasm reference types proposal (it is enabled by default) then you are also not affected. The use after free is caused by Cranelift failing to emit stack maps when there are safepoints inside cold blocks. Cold blocks occur when epoch interruption is enabled. Cold blocks are emitted at the end of compiled functions, and change the order blocks are emitted versus defined. This reordering accidentally caused Cranelift to skip emitting some stack maps because it expected to emit the stack maps in block definition order, rather than block emission order. When Wasmtime would eventually collect garbage, it would fail to find live references on the stack because of the missing stack maps, think that they were unreferenced garbage, and therefore reclaim them. Then after the collection ended, the Wasm code could use the reclaimed-too-early references, which is a use after free. Patches have been released in versions 0.34.2 and 0.35.2, which fix the vulnerability. All Wasmtime users are recommended to upgrade to these patched versions. If upgrading is not an option for you at this time, you can avoid the vulnerability by either: disabling the Wasm reference types proposal, config.wasm_reference_types(false); or by disabling epoch interruption if you were previously enabling it. config.epoch_interruption(false).
+references:
+  - https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.epoch_interruption
+  - https://github.com/WebAssembly/reference-types
+  - https://github.com/bytecodealliance/wasmtime
+  - https://github.com/bytecodealliance/wasmtime/commit/666c2554ea0e1728c35aa41178cf235920db888a
+  - https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-gwc9-348x-qwv2
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-24791
+  - https://rustsec.org/advisories/RUSTSEC-2022-0016.html
+  - https://rustsec.org/advisories/RUSTSEC-2022-0099.html
+  - https://www.cve.org/CVERecord?id=CVE-2022-24791
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

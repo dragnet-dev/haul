@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5903 — Event Log Clearing (stormous)'
+id: 76bef0ba-3ed6-5d18-a724-3dc6e14e7726
+status: deprecated
+description: |
+  Detects event log clearing associated with stormous ransomware.
+  Incident: dragnet-ransomware-2024-5903
+  Ransomware victim claim by stormous: calcomp; country: TH; sector: Technology
+  First observed: 2024-02-14.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

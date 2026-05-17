@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7058 — Event Log Clearing (sarcoma)'
+id: 177441d9-7d3d-57a6-8269-7773af6808bc
+status: deprecated
+description: |
+  Detects event log clearing associated with sarcoma ransomware.
+  Incident: dragnet-ransomware-2025-7058
+  Ransomware victim claim by sarcoma: ldi-trucking-inc; country: US; sector: Transportation/Logistics
+  First observed: 2025-02-11.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0465 — Event Log Clearing (cipherforce)'
+id: c3487479-ef60-5fb3-9294-8f053ccfb4a2
+status: deprecated
+description: |
+  Detects event log clearing associated with cipherforce ransomware.
+  Incident: dragnet-ransomware-2026-0465
+  Ransomware victim claim by cipherforce: Biaodianyun Group Ltd; country: CN; sector: Technology
+  First observed: 2026-02-23.
+references:
+  - http://o3ydbkayttkyg4iw2nc732jxmmex25bjeyqyvuuyngnxmpehdefjr3qd.onion/victims/victims/9a327c9a-3896-47bc-a004-f5bfeeda5e54
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

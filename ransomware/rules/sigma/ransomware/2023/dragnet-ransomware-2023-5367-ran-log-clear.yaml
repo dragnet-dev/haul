@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5367 — Event Log Clearing (werewolves)'
+id: a07e064f-03b6-5e1c-a4ba-3f476cb4b44a
+status: deprecated
+description: |
+  Detects event log clearing associated with werewolves ransomware.
+  Incident: dragnet-ransomware-2023-5367
+  Ransomware victim claim by werewolves: kailos.ru; country: RU; sector: Business Services
+  First observed: 2023-10-14.
+references:
+  - https://werewolves.pro/en/gaztranscom-ru.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

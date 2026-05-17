@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0604 — Event Log Clearing (apos)'
+id: c30e0aff-077e-5f66-9311-3f42e7694fcd
+status: deprecated
+description: |
+  Detects event log clearing associated with apos ransomware.
+  Incident: dragnet-ransomware-2024-0604
+  Ransomware victim claim by apos: Drogarias Preço Bom; country: BR; sector: Healthcare
+  First observed: 2024-10-16.
+references:
+  - http://yrz6bayqwhleymbeviter7ejccxm64sv2ppgqgderzgdhutozcbbhpqd.onion/data/428b9254-9f8c-471f-adbc-cdc72795e60b
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

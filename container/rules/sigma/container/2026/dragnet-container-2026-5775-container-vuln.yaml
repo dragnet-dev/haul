@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5775 — Vulnerable Base Image Pull'
+id: 4edcd1d7-8399-59e5-a704-bdd13eead2cb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5775 (Tier 2, CVSS 9.1)
+  rust-openssl provides OpenSSL bindings for the Rust programming language.  From 0.9.0 to before 0.10.78, the *_from_pem_callback APIs did not validate the length returned by the user's callback. A password callback that returns a value larger than the buffer it was given can cause some versions of OpenSSL to over-read this buffer. OpenSSL 3.x is not affected by this. This vulnerability is fixed in 0.10.78.
+references:
+  - https://github.com/rust-openssl/rust-openssl
+  - https://github.com/rust-openssl/rust-openssl/commit/5af6895c907773699f37f583f409b862284062b1
+  - https://github.com/rust-openssl/rust-openssl/pull/2605
+  - https://github.com/rust-openssl/rust-openssl/releases/tag/openssl-v0.10.78
+  - https://github.com/rust-openssl/rust-openssl/security/advisories/GHSA-xmgf-hq76-4vx2
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-41677
+  - https://www.cve.org/CVERecord?id=CVE-2026-41677
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

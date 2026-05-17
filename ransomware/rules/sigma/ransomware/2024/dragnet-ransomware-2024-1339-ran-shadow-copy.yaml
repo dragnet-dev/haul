@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1339 — Shadow Copy Deletion (BrainCipher)'
+id: 5ee5f09d-9117-5c62-8e02-c9f6b0312221
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1339
+  Ransomware victim claim by BrainCipher: G-ONE AUTO PARTS DE MÉXICO, S.A. DE C.V.; country: MX; sector: Manufacturing
+  First observed: 2024-12-02.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/rwYWy5kuQLD0M4wHvljWNsrAnQa4DgxaOqG+TvZwzfNRTHLveJy6xKXxlKTcUGYdMy7Ty3yi3KrTUgvZ6SyPUtIUHZZQ2I3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

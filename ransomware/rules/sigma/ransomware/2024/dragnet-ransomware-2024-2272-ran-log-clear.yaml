@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2272 — Event Log Clearing (frag)'
+id: 2c90f616-658f-5f75-b8ef-62d179ec65b5
+status: deprecated
+description: |
+  Detects event log clearing associated with frag ransomware.
+  Incident: dragnet-ransomware-2024-2272
+  Ransomware victim claim by frag: Stuwarooij; country: NL; sector: Transportation/Logistics
+  First observed: 2024-09-24.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

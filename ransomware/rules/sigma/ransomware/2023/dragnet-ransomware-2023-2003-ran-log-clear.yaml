@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2003 — Event Log Clearing (darkpower)'
+id: c9c7ba5e-5517-587b-b8a7-d36fa40eb809
+status: deprecated
+description: |
+  Detects event log clearing associated with darkpower ransomware.
+  Incident: dragnet-ransomware-2023-2003
+  Ransomware victim claim by darkpower: imtenan.com; sector: Not Found
+  First observed: 2023-03-11.
+references:
+  - http://powerj7kmpzkdhjg4szvcxxgktgk36ezpjxvtosylrpey7svpmrjyuyd.onion/128f21bc1e8845e79485651923c68d27
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

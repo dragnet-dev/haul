@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0628 — Event Log Clearing (groove)'
+id: 52b8c517-b26a-5631-9451-637c1989234c
+status: deprecated
+description: |
+  Detects event log clearing associated with groove ransomware.
+  Incident: dragnet-ransomware-2021-0628
+  Ransomware victim claim by groove: therecord.media 30k USD; sector: Not Found
+  First observed: 2021-10-23.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

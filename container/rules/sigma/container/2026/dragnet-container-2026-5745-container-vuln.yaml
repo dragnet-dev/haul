@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5745 — Vulnerable Base Image Pull'
+id: 4a96b079-c2db-5f29-9a40-3e67a3123168
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5745 (Tier 2, CVSS 9)
+  Axios is a promise based HTTP client for the browser and Node.js. Prior to 1.15.0 and 0.3.1, the Axios library is vulnerable to a specific "Gadget" attack chain that allows Prototype Pollution in any third-party dependency to be escalated into Remote Code Execution (RCE) or Full Cloud Compromise (via AWS IMDSv2 bypass). This vulnerability is fixed in 1.15.0 and 0.3.1.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-40175
+  - https://cert-portal.siemens.com/productcert/html/ssa-876049.html
+  - https://github.com/axios/axios
+  - https://github.com/axios/axios/commit/03cdfc99e8db32a390e12128208b6778492cee9c
+  - https://github.com/axios/axios/commit/363185461b90b1b78845dc8a99a1f103d9b122a1
+  - https://github.com/axios/axios/pull/10660
+  - https://github.com/axios/axios/pull/10660#issuecomment-4224168081
+  - https://github.com/axios/axios/pull/10688
+  - https://github.com/axios/axios/releases/tag/v0.31.0
+  - https://github.com/axios/axios/releases/tag/v1.15.0
+  - https://github.com/axios/axios/security/advisories/GHSA-fvcv-3m26-pcqx
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-40175
+  - https://www.cve.org/CVERecord?id=CVE-2026-40175
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

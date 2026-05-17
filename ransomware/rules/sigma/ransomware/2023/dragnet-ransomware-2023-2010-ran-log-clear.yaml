@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2010 — Event Log Clearing (darkrace)'
+id: 75c5f1c9-adf4-5467-b1ed-201402d4e55f
+status: deprecated
+description: |
+  Detects event log clearing associated with darkrace ransomware.
+  Incident: dragnet-ransomware-2023-2010
+  Ransomware victim claim by darkrace: ERT; country: PT; sector: Manufacturing
+  First observed: 2023-05-30.
+references:
+  - http://wkrlpub5k52rjigwxfm6m7ogid55kamgc5azxlq7zjgaopv33tgx2sqd.onion/40423d38a56c/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

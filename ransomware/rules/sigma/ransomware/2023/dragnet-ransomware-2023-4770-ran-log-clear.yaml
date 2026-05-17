@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4770 — Event Log Clearing (raworld)'
+id: 9d1d072e-8613-5776-828e-8fdc1bd3d010
+status: deprecated
+description: |
+  Detects event log clearing associated with raworld ransomware.
+  Incident: dragnet-ransomware-2023-4770
+  Ransomware victim claim by raworld: Rockford Gastroenterology Associates ; country: US; sector: Healthcare
+  First observed: 2023-12-20.
+references:
+  - http://pa32ymaeu62yo5th5mraikgw5fcvznnsiiwti42carjliarodltmqcqd.onion/post/587459.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

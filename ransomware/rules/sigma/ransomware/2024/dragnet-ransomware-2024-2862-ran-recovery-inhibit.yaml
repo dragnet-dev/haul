@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2862 — Recovery Inhibition (incransom)'
+id: 1325f93f-28aa-5a1d-a2ac-08667b65472d
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with incransom ransomware.
+  Incident: dragnet-ransomware-2024-2862
+  Ransomware victim claim by incransom: Schuck-Gruppe; country: DE; sector: Manufacturing
+  First observed: 2024-11-23.
+references:
+  - /blog/disclosures/67420dd738e2eaa58b9e1e7d
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

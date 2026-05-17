@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6244 — Event Log Clearing (radiant)'
+id: 36303b30-e1c6-5f58-a943-f1f55b6940c1
+status: deprecated
+description: |
+  Detects event log clearing associated with radiant ransomware.
+  Incident: dragnet-ransomware-2025-6244
+  Ransomware victim claim by radiant: UK Rail Services; country: UK; sector: Transportation/Logistics
+  First observed: 2025-10-12.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

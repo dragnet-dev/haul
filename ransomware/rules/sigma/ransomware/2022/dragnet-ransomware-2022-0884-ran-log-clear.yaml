@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0884 — Event Log Clearing (conti)'
+id: eac4d4e1-9e8b-5d70-a601-c55e8c377857
+status: deprecated
+description: |
+  Detects event log clearing associated with conti ransomware.
+  Incident: dragnet-ransomware-2022-0884
+  Ransomware victim claim by conti: Sav-Rx Prescription Services; sector: Healthcare
+  First observed: 2022-03-23.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

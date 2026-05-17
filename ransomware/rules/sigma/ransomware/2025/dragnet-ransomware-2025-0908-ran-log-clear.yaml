@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0908 — Event Log Clearing (arcusmedia)'
+id: 2ac1087d-7cf8-5a69-b5bd-87ee83263b15
+status: deprecated
+description: |
+  Detects event log clearing associated with arcusmedia ransomware.
+  Incident: dragnet-ransomware-2025-0908
+  Ransomware victim claim by arcusmedia: THX Transport; country: US; sector: Transportation/Logistics
+  First observed: 2025-03-18.
+references:
+  - http://arcuufpr5xxbbkin4mlidt7itmr6znlppk63jbtkeguuhszmc5g7qdyd.onion/?p=461
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,39 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0663 — Shadow Copy Deletion (lapsus$)'
+id: 0bf9d366-0181-5a8b-b5c8-da046cde9753
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with lapsus$ ransomware.
+  Incident: dragnet-ransomware-2021-0663
+  Associated with LAPSUS$.
+  Ransomware victim claim by lapsus$: Brazilian Ministry of Health; country: BR; sector: Public Sector
+  First observed: 2021-12-10.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+  - dragnet.actor.lapsus
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

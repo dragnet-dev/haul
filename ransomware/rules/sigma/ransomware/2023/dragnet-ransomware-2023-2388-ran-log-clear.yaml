@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2388 — Event Log Clearing (karakurt)'
+id: 42c0a615-80a5-5241-9e9d-53cdb3ee8a6f
+status: deprecated
+description: |
+  Detects event log clearing associated with karakurt ransomware.
+  Incident: dragnet-ransomware-2023-2388
+  Ransomware victim claim by karakurt: La Red Health Center; sector: Healthcare
+  First observed: 2023-04-27.
+references:
+  - https://3f7nxkjway3d223j27lyad7v5cgmyaifesycvmwq7i7cbs23lb6llryd.onion/companies/40f116fc-bf67-4f7d-99b5-f10e848f04cd
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5340 — Event Log Clearing (vicesociety)'
+id: c4ae6c6e-5e7d-501d-90ab-0b891adad524
+status: deprecated
+description: |
+  Detects event log clearing associated with vicesociety ransomware.
+  Incident: dragnet-ransomware-2023-5340
+  Ransomware victim claim by vicesociety: NPTC Group of Colleges; country: GB; sector: Education
+  First observed: 2023-01-29.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

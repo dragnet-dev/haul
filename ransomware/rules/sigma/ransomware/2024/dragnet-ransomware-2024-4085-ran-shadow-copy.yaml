@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4085 — Shadow Copy Deletion (metaencryptor)'
+id: d55330c8-444d-553d-befe-ff9f26278363
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2024-4085
+  Ransomware victim claim by metaencryptor: Carlex Glass Luxembourg S.A.; country: LU; sector: Manufacturing
+  First observed: 2024-07-31.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:b4935496481d47ffc684cf0a094e99b9/0AFC:7355d6ee6999e9389c2c7632900bc55c3d2ce207b128f2855fd76509624b7f8c/0AFC:7ce751aa15183bb846fe9e1aff476eb1a518f229b3255b27796d0fb3ddfabfb7d49a8534d6e93f30b5acab919b3bec5f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

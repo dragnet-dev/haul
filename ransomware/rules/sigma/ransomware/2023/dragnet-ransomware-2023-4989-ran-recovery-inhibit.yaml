@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4989 — Recovery Inhibition (siegedsec)'
+id: 051c5165-3b1a-555e-9e67-56cf9a530b00
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with siegedsec ransomware.
+  Incident: dragnet-ransomware-2023-4989
+  Ransomware victim claim by siegedsec: Atlassian; sector: Technology
+  First observed: 2023-11-26.
+references:
+  - http://nv5p2mmpctvyqdyyi5zwh4gnifq2uxdx4etvnmaheqlrw6ordrjwxryd.onion/post/5.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

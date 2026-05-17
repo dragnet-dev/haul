@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2919 — Recovery Inhibition (interlock)'
+id: daf37ae8-d2ba-5c2e-bdc8-704e416d5740
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2024-2919
+  Ransomware victim claim by interlock: Texas Tech University Health Sciences Center; country: US; sector: Education
+  First observed: 2024-10-27.
+references:
+  - http://ebhmkoohccl45qesdbvrjqtyro2hmhkmh6vkyfyjjzfllm3ix72aqaid.onion/TTUHSC.php
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

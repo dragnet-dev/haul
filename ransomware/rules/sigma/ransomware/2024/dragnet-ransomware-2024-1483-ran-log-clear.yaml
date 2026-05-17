@@ -1,0 +1,35 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1483 — Event Log Clearing (cicada3301)'
+id: 61c1b9e0-00d4-5c0c-bb8d-e705b8bbdc10
+status: deprecated
+description: |
+  Detects event log clearing associated with cicada3301 ransomware.
+  Incident: dragnet-ransomware-2024-1483
+  Associated with menuPass.
+  Ransomware victim claim by cicada3301: Leech Lake Gaming; country: US; sector: Hospitality and Tourism
+  First observed: 2024-07-19.
+references:
+  - http://cicadabv7vicyvgz5khl7v2x5yygcgow7ryy6yppwmxii4eoobdaztqd.onion/3fvv34yku2wtsj35cx9o4yrmoet3sx0m
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.menupass
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

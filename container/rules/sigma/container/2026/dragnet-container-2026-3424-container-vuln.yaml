@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3424 — Vulnerable Base Image Pull'
+id: 98f40c77-2f46-52d5-9797-42d3d5777ebe
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3424 (Tier 2, CVSS 9.8)
+  An issue was discovered in NeoMutt before 2018-07-16. nntp_add_group in newsrc.c has a stack-based buffer overflow because of incorrect sscanf usage.
+references:
+  - https://github.com/neomutt/neomutt/commit/6296f7153f0c9d5e5cd3aaf08f9731e56621bdd3
+  - https://lists.debian.org/debian-lts-announce/2018/08/msg00001.html
+  - https://neomutt.org/2018/07/16/release
+  - https://ubuntu.com/security/notices/USN-7204-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-14360
+  - https://www.debian.org/security/2018/dsa-4277
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

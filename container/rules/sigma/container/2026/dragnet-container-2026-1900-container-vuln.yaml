@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1900 — Vulnerable Base Image Pull'
+id: f73cfef2-6c3a-51c7-9863-109c0e1d9803
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1900 (Tier 2, CVSS 9.1)
+  Integer overflow in layout.c++ in Sandstorm Cap'n Proto before 0.4.1.1 and 0.5.x before 0.5.1.1 allows remote peers to cause a denial of service or possibly obtain sensitive information from memory via a crafted message, related to pointer validation.
+references:
+  - http://www.openwall.com/lists/oss-security/2015/03/17/3
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=780565
+  - https://github.com/capnproto/capnproto/blob/master/security-advisories/2015-03-02-0-c%2B%2B-integer-overflow.md
+  - https://github.com/capnproto/capnproto/commit/f343f0dbd0a2e87f17cd74f14186ed73e3fbdbfa
+  - https://github.com/sandstorm-io/capnproto/blob/master/security-advisories/2015-03-02-0-c%2B%2B-integer-overflow.md
+  - https://www.cve.org/CVERecord?id=CVE-2015-2310
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

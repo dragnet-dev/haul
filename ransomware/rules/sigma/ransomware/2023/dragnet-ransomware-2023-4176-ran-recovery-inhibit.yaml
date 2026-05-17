@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4176 — Recovery Inhibition (nokoyawa)'
+id: 88601412-03f4-5e39-9215-b66370bd0392
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with nokoyawa ransomware.
+  Incident: dragnet-ransomware-2023-4176
+  Ransomware victim claim by nokoyawa: Liveaction inc.; sector: Technology
+  First observed: 2023-05-22.
+references:
+  - http://nokoleakb76znymx443veg4n6fytx6spck6pc7nkr4dvfuygpub6jsid.onion/leak/646b3b9686dfec2c80d30b33
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

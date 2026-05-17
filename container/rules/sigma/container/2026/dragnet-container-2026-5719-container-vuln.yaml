@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5719 — Vulnerable Base Image Pull'
+id: af53a29f-f25e-5e64-882f-3e6732bc7156
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5719 (Tier 2, CVSS 9.1)
+  Canonical LXD versions 4.12 through 6.7 contain an incomplete denylist in isVMLowLevelOptionForbidden (lxd/project/limits/permissions.go), which omits raw.apparmor and raw.qemu.conf from the set of keys blocked under the restricted.virtual-machines.lowlevel=block project restriction. A remote attacker with can_edit permission on a VM instance in a restricted project can inject an AppArmor rule and a QEMU chardev configuration that bridges the LXD Unix socket into the guest VM, enabling privilege escalation to LXD cluster administrator and subsequently to host root.
+references:
+  - https://github.com/canonical/lxd
+  - https://github.com/canonical/lxd/pull/17909
+  - https://github.com/canonical/lxd/security/advisories/GHSA-fm2x-c5qw-4h6f
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-34177
+  - https://www.cve.org/CVERecord?id=CVE-2026-34177
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:24.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

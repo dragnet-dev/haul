@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1097 — Recovery Inhibition (gunra)'
+id: 36412c8a-fbf2-5847-b03b-63fd99760b2c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with gunra ransomware.
+  Incident: dragnet-ransomware-2026-1097
+  Ransomware victim claim by gunra: Frontier Financial Group; country: HK; sector: Financial Services
+  First observed: 2026-04-08.
+references:
+  - http://lgiil72vkmdtbc3qv4tyq6wedyjxqr2qd4ze7xl2cxgerdnymxj7soqd.onion/company/38QGDXyCydCZi7pcM6fv8
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

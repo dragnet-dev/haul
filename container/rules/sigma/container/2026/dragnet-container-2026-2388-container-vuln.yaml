@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2388 — Vulnerable Base Image Pull'
+id: 1b8b9e03-acab-5505-9b31-92080f9432a4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2388 (Tier 2, CVSS 9.8)
+  Off-by-one vulnerability in the fgetwln function in libbsd before 0.8.2 allows attackers to have unspecified impact via unknown vectors, which trigger a heap-based buffer overflow.
+references:
+  - http://www.openwall.com/lists/oss-security/2016/01/28/5
+  - https://blog.fuzzing-project.org/36-Heap-buffer-overflow-in-fgetwln-function-of-libbsd.html
+  - https://bugs.freedesktop.org/show_bug.cgi?id=93881
+  - https://cgit.freedesktop.org/libbsd/commit/?id=c8f0723d2b4520bdd6b9eb7c3e7976de726d7ff7
+  - https://lists.debian.org/debian-lts-announce/2019/12/msg00036.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/7KJE5SPSX7HEKLZ34LUTZLXWPEL2K353/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DIQKQ42Z7553D46QY3IMIQKS52QTNIHY/
+  - https://security.gentoo.org/glsa/201607-13
+  - https://ubuntu.com/security/notices/USN-4243-1
+  - https://usn.ubuntu.com/4243-1/
+  - https://www.cve.org/CVERecord?id=CVE-2016-2090
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.2'
+      - 'alpine:3.3'
+      - 'alpine:3.4'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'ubuntu:14.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

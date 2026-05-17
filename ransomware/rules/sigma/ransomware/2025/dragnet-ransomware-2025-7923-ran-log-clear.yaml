@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7923 — Event Log Clearing (worldleaks)'
+id: 8a6c4f72-411b-50f1-9363-3ecbbb75b8e3
+status: deprecated
+description: |
+  Detects event log clearing associated with worldleaks ransomware.
+  Incident: dragnet-ransomware-2025-7923
+  Ransomware victim claim by worldleaks: Town of Blacksburg; country: US; sector: Public Sector
+  First observed: 2025-11-25.
+references:
+  - https://worldleaksartrjm3c6vasllvgacbi5u3mgzkluehrzhk2jz4taufuid.onion/companies/3799124552
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

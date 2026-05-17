@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1336 — Event Log Clearing (BrainCipher)'
+id: a7818cd9-3db7-5c59-a9ae-ff0607485cda
+status: deprecated
+description: |
+  Detects event log clearing associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1336
+  Ransomware victim claim by BrainCipher: fabamaq.com; country: AR; sector: Manufacturing
+  First observed: 2024-08-12.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/l6lTz6GYNj367VkZ+VvFgrVlCYXS4EMoDRyKZZeZnZegn2XXs++rJYVw6UPb5otMmW7ZrANBaZp5AQDtJvKQkdWUURjSXZT
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

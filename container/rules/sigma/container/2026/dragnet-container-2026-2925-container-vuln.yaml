@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2925 — Vulnerable Base Image Pull'
+id: 37c379aa-f7f7-587d-976c-608d4a1b078b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2925 (Tier 2, CVSS 9.8)
+  In sam2p 0.49.3, a heap-based buffer overflow exists in the pcxLoadImage24 function of the file in_pcx.cpp.
+references:
+  - https://github.com/pts/sam2p/issues/14
+  - https://www.cve.org/CVERecord?id=CVE-2017-14628
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

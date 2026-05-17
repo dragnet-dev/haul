@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3204 — Vulnerable Base Image Pull'
+id: 8069620f-2cb7-588a-96cc-dacb50f3f00d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3204 (Tier 2, CVSS 9.8)
+  Integer signedness error in MiniUPnP MiniUPnPc v1.4.20101221 through v2.0 allows remote attackers to cause a denial of service or possibly have unspecified other impact.
+references:
+  - http://miniupnp.free.fr/files/changelog.php?file=miniupnpc-2.0.20170509.tar.gz
+  - https://github.com/tintinweb/pub/blob/master/pocs/cve-2017-8798/Readme.md
+  - https://github.com/tintinweb/pub/tree/master/pocs/cve-2017-8798
+  - https://lists.debian.org/debian-lts-announce/2020/04/msg00027.html
+  - https://ubuntu.com/security/notices/USN-3298-1
+  - https://ubuntu.com/security/notices/USN-3298-2
+  - https://www.cve.org/CVERecord?id=CVE-2017-8798
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.6'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2894 — Event Log Clearing (funksec)'
+id: 14e269cf-eb1f-5ac8-88ac-2096437891e8
+status: deprecated
+description: |
+  Detects event log clearing associated with funksec ransomware.
+  Incident: dragnet-ransomware-2025-2894
+  Ransomware victim claim by funksec: carc.gov.jo; country: JO; sector: Public Sector
+  First observed: 2025-01-09.
+references:
+  - http://funknqn44slwmgwgnewne6bintbooauwkaupik4yrlgtycew3ergraid.onion/ransom12.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

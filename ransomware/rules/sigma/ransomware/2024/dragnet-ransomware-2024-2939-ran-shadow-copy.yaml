@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2939 — Shadow Copy Deletion (killsec)'
+id: d50d9192-12ed-5d48-b97c-ee57bdc6ba23
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with killsec ransomware.
+  Incident: dragnet-ransomware-2024-2939
+  Ransomware victim claim by killsec: agra-services.be; country: BE; sector: Agriculture and Food Production
+  First observed: 2024-08-28.
+references:
+  - http://kill432ltnkqvaqntbalnsgojqqs2wz4lhnamrqjg66tq6fuvcztilyd.onion/post/sV0C39KhA1Gbj6RaBVhLY2D5w.php
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

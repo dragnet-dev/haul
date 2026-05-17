@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5791 — Shadow Copy Deletion (sensayq)'
+id: 6455c7be-28bf-5172-800b-ecde9c5b4fb2
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with sensayq ransomware.
+  Incident: dragnet-ransomware-2024-5791
+  Ransomware victim claim by sensayq: Vimer Industrie Grafiche Italiane; country: IT; sector: Manufacturing
+  First observed: 2024-06-04.
+references:
+  - http://159.69.60.54/r/LOcRx06Vf22jPmXvyIFRkXfJshnaosQPiM5am1qV4uC0CZmMghpcz6r0+5hBZoyQF5IwvZLpFN8st7DQxcxnkxNY0MzcmV5
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

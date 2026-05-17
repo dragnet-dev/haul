@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4181 — Vulnerable Base Image Pull'
+id: 0d1bbb1c-6288-5fba-8683-fa34ff477446
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4181 (Tier 2, CVSS 9.8)
+  jsonpickle through 1.4.1 allows remote code execution during deserialization of a malicious payload through the decode() function. Note: It has been argued that this is expected and clearly documented behaviour. pickle is known to be capable of causing arbitrary code execution, and must not be used with un-trusted data
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-22083
+  - https://gist.github.com/j0lt-github/bb543e77a1a10c33cb56cf23d0837874
+  - https://github.com/j0lt-github/python-deserialization-attack-payload-generator
+  - https://github.com/jsonpickle/jsonpickle
+  - https://github.com/jsonpickle/jsonpickle/issues/332
+  - https://github.com/jsonpickle/jsonpickle/issues/332#issuecomment-747807494
+  - https://github.com/jsonpickle/jsonpickle/issues/335
+  - https://github.com/pypa/advisory-database/tree/main/vulns/jsonpickle/PYSEC-2020-49.yaml
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-22083
+  - https://versprite.com/blog/application-security/into-the-jar-jsonpickle-exploitation
+  - https://versprite.com/blog/application-security/into-the-jar-jsonpickle-exploitation/
+  - https://www.cve.org/CVERecord?id=CVE-2020-22083
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

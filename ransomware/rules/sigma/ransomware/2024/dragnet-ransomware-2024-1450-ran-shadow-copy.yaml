@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1450 — Shadow Copy Deletion (chort)'
+id: a3ada3e4-8759-5138-ba8b-36ab157ae166
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with chort ransomware.
+  Incident: dragnet-ransomware-2024-1450
+  Ransomware victim claim by chort: paaf.gov.kw; country: KW; sector: Agriculture and Food Production
+  First observed: 2024-11-17.
+references:
+  - http://hgxyonufefcglpekxma55fttev3lcfucrf7jvep2c3j6447cjroadead.onion/comp/paaf.gov.kw/index
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

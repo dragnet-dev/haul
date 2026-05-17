@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1440 — Recovery Inhibition (krybit)'
+id: a6682f01-7c4d-5c72-b08b-16b69cf4e8c4
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with krybit ransomware.
+  Incident: dragnet-ransomware-2026-1440
+  Ransomware victim claim by krybit: BJ Grupo; country: MX; sector: Energy
+  First observed: 2026-04-03.
+references:
+  - http://krybitqsdzwmhnitvwuhvsntfgf2wrhxveyxroxpc44c6gkft2cqldyd.onion/blog/30e47bb0863906821793d4c00e09821bcae53f5b31419e6964b3a41cee88dec7/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

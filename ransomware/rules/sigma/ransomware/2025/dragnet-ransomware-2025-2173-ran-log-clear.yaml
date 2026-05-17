@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2173 — Event Log Clearing (desolator)'
+id: edf6174b-3644-59a0-ba77-2f4899487712
+status: deprecated
+description: |
+  Detects event log clearing associated with desolator ransomware.
+  Incident: dragnet-ransomware-2025-2173
+  Ransomware victim claim by desolator: Construcciones Sala; country: CO; sector: Construction
+  First observed: 2025-08-28.
+references:
+  - http://po4tq2brx4rgwbdx4mac24fz34uuuf7oigosebp32n2462m2vxl6biqd.onion/victim/242d6188-7cf7-4f6e-a8cd-de66cb1237b5
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

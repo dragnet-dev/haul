@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1151 — Event Log Clearing (blacklock)'
+id: b44526cb-f107-5331-94c0-34cf32bd120a
+status: deprecated
+description: |
+  Detects event log clearing associated with blacklock ransomware.
+  Incident: dragnet-ransomware-2024-1151
+  Ransomware victim claim by blacklock: TBM Consulting Group, Inc.; country: US; sector: Business Services
+  First observed: 2024-11-18.
+references:
+  - http://zdkexsh2e7yihw5uhg5hpsgq3dois2m5je7lzfagij2y6iw5ptl35gyd.onion/Data_Download/TBM.COM
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

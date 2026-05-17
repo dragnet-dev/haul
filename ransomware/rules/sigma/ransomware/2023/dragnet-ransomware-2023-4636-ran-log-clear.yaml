@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4636 — Event Log Clearing (ransomed)'
+id: f87c97d8-f46d-59a4-9024-f0744372eec4
+status: deprecated
+description: |
+  Detects event log clearing associated with ransomed ransomware.
+  Incident: dragnet-ransomware-2023-4636
+  Ransomware victim claim by ransomed: Linktera; sector: Energy
+  First observed: 2023-09-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

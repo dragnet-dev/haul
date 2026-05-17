@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5092 — Vulnerable Base Image Pull'
+id: 7a366e3c-97b5-5bdc-b6c4-7c7b164ddf12
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5092 (Tier 2, CVSS 9.8)
+  An issue in Gevent before version 23.9.0 allows a remote attacker to escalate privileges via a crafted script to the WSGIServer component.
+references:
+  - http://www.gevent.org/changelog.html
+  - https://access.redhat.com/errata/RHSA-2024:8834
+  - https://access.redhat.com/security/cve/CVE-2023-41419
+  - https://bugzilla.redhat.com/2240651
+  - https://errata.almalinux.org/8/ALSA-2024-8834.html
+  - https://github.com/gevent/gevent
+  - https://github.com/gevent/gevent/commit/2f53c851eaf926767fbac62385615efd4886221c
+  - https://github.com/gevent/gevent/issues/1989
+  - https://github.com/pypa/advisory-database/tree/main/vulns/gevent/PYSEC-2023-177.yaml
+  - https://linux.oracle.com/cve/CVE-2023-41419.html
+  - https://linux.oracle.com/errata/ELSA-2024-8834.html
+  - https://lists.debian.org/debian-lts-announce/2025/11/msg00020.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-41419
+  - https://www.cve.org/CVERecord?id=CVE-2023-41419
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:22.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

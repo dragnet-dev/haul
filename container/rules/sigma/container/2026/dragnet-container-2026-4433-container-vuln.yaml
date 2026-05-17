@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4433 — Vulnerable Base Image Pull'
+id: d910fa45-ee32-5685-b2e7-82131fd641e1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4433 (Tier 2, CVSS 9.8)
+  In the standard library in Rust before 1.52.0, the Zip implementation can report an incorrect size due to an integer overflow. This bug can lead to a buffer overflow when a consumed Zip iterator is used again.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-28879
+  - https://github.com/rust-lang/rust/issues/82282
+  - https://github.com/rust-lang/rust/pull/82289
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2020-36323.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-28875.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-28876.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-28877.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-28878.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-28879.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-31162.json
+  - https://access.redhat.com/security/cve/CVE-2021-28879
+  - https://linux.oracle.com/cve/CVE-2021-28879.html
+  - https://linux.oracle.com/errata/ELSA-2021-3063.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CZ337CM4GFJLRDFVQCGC7J25V65JXOG5/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/TFUO3URYCO73D2Q4WYJBWAMJWGGVXQO4/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'cbl-mariner:1.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'oraclelinux:8'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

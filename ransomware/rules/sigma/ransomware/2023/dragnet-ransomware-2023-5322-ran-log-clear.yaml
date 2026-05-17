@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5322 — Event Log Clearing (vicesociety)'
+id: 2b7a9590-36b6-5312-9ba0-66a9d836e768
+status: deprecated
+description: |
+  Detects event log clearing associated with vicesociety ransomware.
+  Incident: dragnet-ransomware-2023-5322
+  Ransomware victim claim by vicesociety: CommScope; sector: Telecommunication
+  First observed: 2023-04-15.
+references:
+  - http://xu66gzit6zp22qvixpenlxu2ok7vzrpqvgkuupkiukpz47va47ewbwad.onion/JhykowedsgX/DasQer3w5TCxd4/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

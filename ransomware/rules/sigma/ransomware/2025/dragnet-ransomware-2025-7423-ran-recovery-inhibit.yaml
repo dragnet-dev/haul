@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7423 — Recovery Inhibition (skira)'
+id: 3ae610d8-061f-5151-a64b-d186eb6e9c26
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with skira ransomware.
+  Incident: dragnet-ransomware-2025-7423
+  Ransomware victim claim by skira: CCL Products India; country: IN; sector: Manufacturing
+  First observed: 2025-03-06.
+references:
+  - http://mtgc3qvyedjnfu7cen2zsupdppi5ys5g2hm6xwujvoepw25p4dy6huid.onion/news/ccl_product_india.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,55 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5552 — Vulnerable Base Image Pull'
+id: 34a895c7-f741-5737-8109-1058ce6bd9f3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5552 (Tier 2, CVSS 9.8)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to 3.20.1, a malicious RDP server can trigger a heap-buffer-overflow write in the FreeRDP client when processing Audio Input (AUDIN) format lists. audin_process_formats reuses callback->formats_count across multiple MSG_SNDIN_FORMATS PDUs and writes past the newly allocated formats array, causing memory corruption and a crash. This vulnerability is fixed in 3.20.1.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-22852
+  - https://github.com/FreeRDP/FreeRDP/releases/tag/3.20.1
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-9chc-g79v-4qq4
+  - https://access.redhat.com/errata/RHSA-2026:6340
+  - https://access.redhat.com/security/cve/CVE-2026-22852
+  - https://bugzilla.redhat.com/2429650
+  - https://bugzilla.redhat.com/2429652
+  - https://bugzilla.redhat.com/2429654
+  - https://bugzilla.redhat.com/2430881
+  - https://bugzilla.redhat.com/2438201
+  - https://bugzilla.redhat.com/2438202
+  - https://bugzilla.redhat.com/2438207
+  - https://bugzilla.redhat.com/2438208
+  - https://bugzilla.redhat.com/2438210
+  - https://bugzilla.redhat.com/2438216
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.23'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

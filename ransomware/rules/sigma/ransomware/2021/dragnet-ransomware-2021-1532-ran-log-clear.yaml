@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1532 — Event Log Clearing (pysa)'
+id: 46f9d1e1-8f0b-5bf0-a98f-1874a5dcca50
+status: deprecated
+description: |
+  Detects event log clearing associated with pysa ransomware.
+  Incident: dragnet-ransomware-2021-1532
+  Ransomware victim claim by pysa: Tenderloin Housing Clinic; sector: Healthcare
+  First observed: 2021-09-09.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1208 — Shadow Copy Deletion (blacknevas)'
+id: b6f2b680-2da9-569a-8f5b-9cbaf7350dea
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2025-1208
+  Ransomware victim claim by blacknevas: Caresoft Global caresoftglobal.com; country: US; sector: Technology
+  First observed: 2025-09-29.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/publications/details/73e602f8-ac61-428d-870f-a13e10bc535a
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

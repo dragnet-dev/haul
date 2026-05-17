@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2161 — Event Log Clearing (datacarry)'
+id: 944ce70b-e92e-5ec8-a5da-6b55c1016f1f
+status: deprecated
+description: |
+  Detects event log clearing associated with datacarry ransomware.
+  Incident: dragnet-ransomware-2025-2161
+  Ransomware victim claim by datacarry: alles Lægehus; country: DK; sector: Healthcare
+  First observed: 2025-05-26.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

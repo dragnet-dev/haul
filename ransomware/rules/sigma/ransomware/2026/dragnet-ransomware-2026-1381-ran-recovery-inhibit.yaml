@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1381 — Recovery Inhibition (interlock)'
+id: 7f0ba68f-0a8c-5cc0-bba9-521819b5d6e7
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2026-1381
+  Ransomware victim claim by interlock: Delta Manufacturing; country: US; sector: Manufacturing
+  First observed: 2026-03-18.
+references:
+  - http://pgjf3dfkamnprahggbw4yojyb7sot3no2glnbfwyzbzqbnaislpv52yd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0580 — Event Log Clearing (clop)'
+id: b0610a02-dc86-581c-9b0a-010bee5d5369
+status: deprecated
+description: |
+  Detects event log clearing associated with clop ransomware.
+  Incident: dragnet-ransomware-2026-0580
+  Ransomware victim claim by clop: STRATEGICOBJECTIVES.COM; country: CA; sector: Business Services
+  First observed: 2026-02-07.
+references:
+  - http://santat7kpllt6iyvqbr7q4amdv6dzrh6paatvyrzl7ry3zm72zigf4ad.onion/strategicobjectives-com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2330 — Recovery Inhibition (direwolf)'
+id: 250415b0-f938-5e7d-9c8b-38dc16cdc4a6
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with direwolf ransomware.
+  Incident: dragnet-ransomware-2025-2330
+  Ransomware victim claim by direwolf: Adnan Sundra & Low; country: MY; sector: Financial Services
+  First observed: 2025-12-22.
+references:
+  - http://direwolfcdkv5whaz2spehizdg22jsuf5aeje4asmetpbt6ri4jnd4qd.onion/api/public/articles/54
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

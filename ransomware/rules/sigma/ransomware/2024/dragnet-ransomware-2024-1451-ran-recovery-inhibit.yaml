@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1451 — Recovery Inhibition (chort)'
+id: 92715abc-7312-514f-9d8d-668b7abac9e8
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with chort ransomware.
+  Incident: dragnet-ransomware-2024-1451
+  Ransomware victim claim by chort: sheboyganwi.gov; country: US; sector: Public Sector
+  First observed: 2024-11-22.
+references:
+  - http://hgxyonufefcglpekxma55fttev3lcfucrf7jvep2c3j6447cjroadead.onion/comp/sheboyganwi.gov/index
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

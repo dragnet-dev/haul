@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1385 — Event Log Clearing (interlock)'
+id: c55114ca-811d-5721-bca7-7205b4d85a94
+status: deprecated
+description: |
+  Detects event log clearing associated with interlock ransomware.
+  Incident: dragnet-ransomware-2026-1385
+  Ransomware victim claim by interlock: Kent District Library; country: US; sector: Public Sector
+  First observed: 2026-05-11.
+references:
+  - http://k6aw4if6phmqcdp5wzfdjfb3plmybzpkcssmgvv5nltv23tndvh4ewid.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

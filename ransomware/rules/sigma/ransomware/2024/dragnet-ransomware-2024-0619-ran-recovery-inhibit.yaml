@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0619 — Recovery Inhibition (apt73)'
+id: 27bb9752-d9f2-578e-a716-0eaaa84e9a9a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with apt73 ransomware.
+  Incident: dragnet-ransomware-2024-0619
+  Ransomware victim claim by apt73: filmai.in; country: IN; sector: Consumer Services
+  First observed: 2024-10-17.
+references:
+  - http://bashe4aec32kr6zbifwd5x6xgjsmhg4tbowrbx4pneqhc5mqooyifpid.onion/page_company.php?id=63
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

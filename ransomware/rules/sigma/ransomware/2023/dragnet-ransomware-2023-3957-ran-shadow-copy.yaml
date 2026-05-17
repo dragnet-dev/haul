@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3957 — Shadow Copy Deletion (metaencryptor)'
+id: 274d1bf7-0104-5d54-88dd-b7df38ff9218
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3957
+  Ransomware victim claim by metaencryptor: ICON Creative Studio; country: CA; sector: Technology
+  First observed: 2023-08-16.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:9bb479e6349e63cb6667d6db855c8dd1/0AFC:5301158f4b7ae0def1279607f4c9d47132ef7d82aeb96394419c30acafc9127c/0AFC:2586d1ca1e6244e55a713a4847b0dc3dc81ea4daad0da892f50959b65bc72a640f249f8301fff897b0775b685bbab48d
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

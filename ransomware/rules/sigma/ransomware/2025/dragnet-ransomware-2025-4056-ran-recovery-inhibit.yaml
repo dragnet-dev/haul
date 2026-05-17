@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4056 — Recovery Inhibition (lynx)'
+id: 02a48e7b-cc96-59b4-b120-c9adc5a6d1c2
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4056
+  Ransomware victim claim by lynx: amethystgroup.co.uk; country: GB; sector: Transportation/Logistics
+  First observed: 2025-04-10.
+references:
+  - http://lynxblog.net/leaks/6807a26cd5daa03fd3350199
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

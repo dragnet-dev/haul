@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3083 — Event Log Clearing (kraken)'
+id: c2eb0cf7-6a00-5089-88dc-6f62fa82d355
+status: deprecated
+description: |
+  Detects event log clearing associated with kraken ransomware.
+  Incident: dragnet-ransomware-2024-3083
+  Ransomware victim claim by kraken: www.mgl.law; country: US; sector: Business Services
+  First observed: 2024-11-28.
+references:
+  - http://krakenccj3wr23452a4ibkbkuph4d6soyx2xgjoogtuamc3m7u7wemad.onion/news/6796c39fbd8bcd3c9bab65f15d632e8f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

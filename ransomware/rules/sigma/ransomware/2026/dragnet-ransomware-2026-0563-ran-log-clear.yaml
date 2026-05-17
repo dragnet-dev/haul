@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0563 — Event Log Clearing (clop)'
+id: 380c48d5-433d-5cec-b0a5-514a43c97f44
+status: deprecated
+description: |
+  Detects event log clearing associated with clop ransomware.
+  Incident: dragnet-ransomware-2026-0563
+  Ransomware victim claim by clop: ONYXEQUITIES.COM; country: US; sector: Financial Services
+  First observed: 2026-01-25.
+references:
+  - http://santat7kpllt6iyvqbr7q4amdv6dzrh6paatvyrzl7ry3zm72zigf4ad.onion/onyxequities-com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

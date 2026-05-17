@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3322 — Vulnerable Base Image Pull'
+id: 1eef0057-a0b4-5132-bf66-8250ac9a3078
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3322 (Tier 2, CVSS 9.8)
+  Incorrect initialization logic of RAR decoder objects in 7-Zip 18.03 and before can lead to usage of uninitialized memory, allowing remote attackers to cause a denial of service (segmentation fault) or execute arbitrary code via a crafted RAR archive.
+references:
+  - http://www.securityfocus.com/bid/104132
+  - http://www.securitytracker.com/id/1040832
+  - https://access.redhat.com/security/cve/CVE-2018-10115
+  - https://landave.io/2018/05/7-zip-from-uninitialized-memory-to-remote-code-execution/
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-10115
+  - https://sourceforge.net/p/sevenzip/discussion/45797/thread/adc65bfa/
+  - https://www.cve.org/CVERecord?id=CVE-2018-10115
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.5'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

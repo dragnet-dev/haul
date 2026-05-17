@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5121 — Vulnerable Base Image Pull'
+id: 84cd9c21-bc12-54e1-9b77-cf0f529e9648
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5121 (Tier 2, CVSS 9.8)
+  Videolan VLC prior to version 3.0.20 contains an incorrect offset read that leads to a Heap-Based Buffer Overflow in function GetPacket() and results in a memory corruption.
+references:
+  - https://0xariana.github.io/blog/real_bugs/vlc/mms
+  - https://lists.debian.org/debian-lts-announce/2023/11/msg00034.html
+  - https://ubuntu.com/security/notices/USN-6783-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-47359
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:23.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

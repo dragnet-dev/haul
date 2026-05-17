@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1721 — Shadow Copy Deletion (snatch)'
+id: ab5775c7-bcaf-5536-9422-c8dfe4a999d2
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with snatch ransomware.
+  Incident: dragnet-ransomware-2021-1721
+  Ransomware victim claim by snatch: Cadence Aerospace; country: US; sector: Manufacturing
+  First observed: 2021-11-29.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

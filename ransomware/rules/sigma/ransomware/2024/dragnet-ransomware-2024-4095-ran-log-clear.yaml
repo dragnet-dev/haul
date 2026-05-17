@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4095 — Event Log Clearing (mogilevich)'
+id: 3f1fd0e8-a0d4-580a-9193-b8cdfe27c55f
+status: deprecated
+description: |
+  Detects event log clearing associated with mogilevich ransomware.
+  Incident: dragnet-ransomware-2024-4095
+  Ransomware victim claim by mogilevich: BAZAARVOICE.COM; country: US; sector: Technology
+  First observed: 2024-02-26.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

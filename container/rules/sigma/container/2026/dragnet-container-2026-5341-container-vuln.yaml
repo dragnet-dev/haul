@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5341 — Vulnerable Base Image Pull'
+id: 15c58a79-1d40-5721-997b-aee918edadab
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5341 (Tier 2, CVSS 9.8)
+  In axios before 1.7.8, lib/helpers/isURLSameOrigin.js does not use a URL object when determining an origin, and has a potentially unwanted setAttribute('href',href) call. NOTE: some parties feel that the code change only addresses a warning message from a SAST tool and does not fix a vulnerability.
+references:
+  - https://github.com/axios/axios/commit/0a8d6e19da5b9899a2abafaaa06a75ee548597db
+  - https://github.com/axios/axios/issues/6351
+  - https://github.com/axios/axios/pull/6714
+  - https://github.com/axios/axios/releases/tag/v1.7.8
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

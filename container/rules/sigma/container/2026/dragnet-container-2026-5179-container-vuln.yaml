@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5179 — Vulnerable Base Image Pull'
+id: 74891ea1-2d37-54cf-8891-343db0a04427
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5179 (Tier 2, CVSS 9.8)
+  The permission model protects itself against path traversal attacks by calling path.resolve() on any paths given by the user. If the path is to be treated as a Buffer, the implementation uses Buffer.from() to obtain a Buffer from the result of path.resolve(). By monkey-patching Buffer internals, namely, Buffer.prototype.utf8Write, the application can modify the result of path.resolve(), which leads to a path traversal vulnerability.
+This vulnerability affects all users using the experimental permission model in Node.js 20 and Node.js 21.
+Please note that at the time this CVE was issued, the permission model is an experimental feature of Node.js.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-21896
+  - https://github.com/nodejs/node/releases/tag/v20.11.1
+  - https://github.com/nodejs/node/releases/tag/v21.6.2
+  - http://www.openwall.com/lists/oss-security/2024/03/11/1
+  - https://access.redhat.com/errata/RHSA-2024:1688
+  - https://access.redhat.com/security/cve/CVE-2024-21896
+  - https://bugzilla.redhat.com/2264569
+  - https://bugzilla.redhat.com/2264574
+  - https://bugzilla.redhat.com/2264582
+  - https://bugzilla.redhat.com/2265717
+  - https://bugzilla.redhat.com/2265720
+  - https://bugzilla.redhat.com/2265722
+  - https://bugzilla.redhat.com/2265727
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2264569
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2264574
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:5.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4775 — Vulnerable Base Image Pull'
+id: f04d2e8b-bda7-5fa3-9637-326a5f6bdad7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4775 (Tier 2, CVSS 9.8)
+  The ejs (aka Embedded JavaScript templates) package 3.1.6 for Node.js allows server-side template injection in settings[view options][outputFunctionName]. This is parsed as an internal option, and overwrites the outputFunctionName option with an arbitrary OS command (which is executed upon template compilation).
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-29078
+  - https://eslam.io/posts/ejs-server-side-template-injection-rce
+  - https://eslam.io/posts/ejs-server-side-template-injection-rce/
+  - https://github.com/mde/ejs
+  - https://github.com/mde/ejs/commit/15ee698583c98dadc456639d6245580d17a24baf
+  - https://github.com/mde/ejs/releases
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-29078
+  - https://security.netapp.com/advisory/ntap-20220804-0001
+  - https://security.netapp.com/advisory/ntap-20220804-0001/
+  - https://www.cve.org/CVERecord?id=CVE-2022-29078
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

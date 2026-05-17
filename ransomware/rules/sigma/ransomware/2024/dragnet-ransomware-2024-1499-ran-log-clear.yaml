@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1499 — Event Log Clearing (ciphbit)'
+id: fb7d5d18-16be-552b-8da6-927736c1b7c7
+status: deprecated
+description: |
+  Detects event log clearing associated with ciphbit ransomware.
+  Incident: dragnet-ransomware-2024-1499
+  Ransomware victim claim by ciphbit: António Belém & António Gonçalves; country: PT; sector: Financial Services
+  First observed: 2024-12-13.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

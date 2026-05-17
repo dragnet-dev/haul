@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2424 — Shadow Copy Deletion (handala)'
+id: a5bfeb69-258f-5fc4-8471-38525cbc8df6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with handala ransomware.
+  Incident: dragnet-ransomware-2024-2424
+  Ransomware victim claim by handala: Ramat Gan Academic College; country: IL; sector: Education
+  First observed: 2024-05-25.
+references:
+  - https://handala.to/ramat-gan-academic-college-hacked/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

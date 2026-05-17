@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3694 — Vulnerable Base Image Pull'
+id: b206803f-f31e-5324-bd9e-05814a6bee27
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3694 (Tier 2, CVSS 9.1)
+  In GraphicsMagick 1.4 snapshot-20190322 Q8, there is a heap-based buffer over-read in the function ReadMIFFImage of coders/miff.c, which allows attackers to cause a denial of service or information disclosure via an RLE packet.
+references:
+  - http://hg.graphicsmagick.org/hg/GraphicsMagick/rev/f7610c1281c1
+  - http://lists.opensuse.org/opensuse-security-announce/2019-04/msg00093.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-04/msg00107.html
+  - https://lists.debian.org/debian-lts-announce/2019/04/msg00015.html
+  - https://sourceforge.net/p/graphicsmagick/bugs/598/
+  - https://ubuntu.com/security/notices/USN-4207-1
+  - https://ubuntu.com/security/notices/USN-5974-1
+  - https://usn.ubuntu.com/4207-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-11006
+  - https://www.debian.org/security/2020/dsa-4640
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

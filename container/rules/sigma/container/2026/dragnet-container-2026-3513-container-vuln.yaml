@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3513 — Vulnerable Base Image Pull'
+id: fd8b8f38-4e26-5535-9a84-957c7d7f2943
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3513 (Tier 2, CVSS 9.8)
+  In WordPress before 4.9.9 and 5.x before 5.0.1, contributors could conduct PHP object injection attacks via crafted metadata in a wp.getMediaItem XMLRPC call. This is caused by mishandling of serialized data at phar:// URLs in the wp_get_attachment_thumb_file function in wp-includes/post.php.
+references:
+  - http://www.securityfocus.com/bid/106220
+  - https://blog.secarma.co.uk/labs/near-phar-dangerous-unserialization-wherever-you-are
+  - https://codex.wordpress.org/Version_4.9.9
+  - https://lists.debian.org/debian-lts-announce/2019/02/msg00019.html
+  - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+  - https://wordpress.org/support/wordpress-version/version-5-0-1/
+  - https://wpvulndb.com/vulnerabilities/9171
+  - https://www.cve.org/CVERecord?id=CVE-2018-20148
+  - https://www.debian.org/security/2019/dsa-4401
+  - https://www.zdnet.com/article/wordpress-plugs-bug-that-led-to-google-indexing-some-user-passwords/
+  - https://www.zdnet.com/article/wordpress-vulnerability-affects-a-third-of-most-popular-websites-online/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

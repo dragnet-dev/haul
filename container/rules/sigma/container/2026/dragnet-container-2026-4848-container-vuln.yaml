@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4848 — Vulnerable Base Image Pull'
+id: b0e08e3c-2d07-5f06-a69e-5f63fccec8b9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4848 (Tier 2, CVSS 9.8)
+  Exim before 4.95 has a heap-based buffer overflow for the alias list in host_name_lookup in host.c when sender_host_name is set.
+references:
+  - https://github.com/Exim/exim/commit/d4bc023436e4cce7c23c5f8bb5199e178b4cc743
+  - https://github.com/Exim/exim/compare/exim-4.94...exim-4.95
+  - https://github.com/Exim/exim/wiki/EximSecurity
+  - https://github.com/ivd38/exim_overflow
+  - https://lists.debian.org/debian-lts-announce/2022/08/msg00014.html
+  - https://ubuntu.com/security/notices/USN-5574-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-37452
+  - https://www.exim.org/static/doc/security/
+  - https://www.openwall.com/lists/oss-security/2022/08/06/8
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

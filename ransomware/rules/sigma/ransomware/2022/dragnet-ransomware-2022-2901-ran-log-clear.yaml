@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2901 — Event Log Clearing (royal)'
+id: 8f6b442d-4ab7-5a72-8637-efda0b038b9a
+status: deprecated
+description: |
+  Detects event log clearing associated with royal ransomware.
+  Incident: dragnet-ransomware-2022-2901
+  Ransomware victim claim by royal: Robinson Pharma; country: US; sector: Manufacturing
+  First observed: 2022-12-27.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

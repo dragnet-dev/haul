@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1426 — Shadow Copy Deletion (la_piovra)'
+id: b9a4c0a3-78cf-5199-b9d1-909e42d2a6ab
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with la_piovra ransomware.
+  Incident: dragnet-ransomware-2022-1426
+  Ransomware victim claim by la_piovra: MegaCorp One; sector: Technology
+  First observed: 2022-06-25.
+references:
+  - http://h3txev6jev7rcm6p2qkxn2vctybi4dvochr3inymzgif53n2j2oqviqd.onion/2022/06/25/megacorp-one/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

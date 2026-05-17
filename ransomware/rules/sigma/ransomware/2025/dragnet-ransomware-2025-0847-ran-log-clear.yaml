@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0847 — Event Log Clearing (anubis)'
+id: 6422c698-a393-5c5d-b40e-55c3b8fed334
+status: deprecated
+description: |
+  Detects event log clearing associated with anubis ransomware.
+  Incident: dragnet-ransomware-2025-0847
+  Ransomware victim claim by anubis: Two Kings Casino Resort; country: US; sector: Hospitality and Tourism
+  First observed: 2025-04-23.
+references:
+  - http://om6q4a6cyipxvt7ioudxt24cw4oqu4yodmqzl25mqd2hgllymrgu4aqd.onion/r/+khRAvxuHPHjd3iSQK+AjFR3puPbzMFkSCrpZuDLzhSh1E5EBxFi9QWWuV9SYwH0gFVOfNY2ph1eQ2lUDNlMxZXExWUxl
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

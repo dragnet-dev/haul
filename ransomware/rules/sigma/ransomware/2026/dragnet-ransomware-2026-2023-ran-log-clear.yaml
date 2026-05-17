@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2023 — Event Log Clearing (payoutsking)'
+id: 041e242d-75c1-5bfd-a488-059e7c985687
+status: deprecated
+description: |
+  Detects event log clearing associated with payoutsking ransomware.
+  Incident: dragnet-ransomware-2026-2023
+  Ransomware victim claim by payoutsking: Del Monte Foods; country: US; sector: Agriculture and Food Production
+  First observed: 2026-02-19.
+references:
+  - http://payoutsgn7cy6uliwevdqspncjpfxpmzgirwl2au65la7rfs5x3qnbqd.onion/ESTlBF-xtabgV-0wBG6n-4k1pkZ-7mPZMm
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2407 — Shadow Copy Deletion (karakurt)'
+id: 36f3c62a-7456-5bc3-bfc7-f0e3adf76318
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with karakurt ransomware.
+  Incident: dragnet-ransomware-2023-2407
+  Ransomware victim claim by karakurt: Winona Powder Coating; country: IN; sector: Manufacturing
+  First observed: 2023-04-24.
+references:
+  - https://3f7nxkjway3d223j27lyad7v5cgmyaifesycvmwq7i7cbs23lb6llryd.onion/companies/6791b765-ab1d-46fb-b11b-ee45e441b541
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

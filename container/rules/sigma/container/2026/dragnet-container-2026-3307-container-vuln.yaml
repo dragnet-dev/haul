@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3307 — Vulnerable Base Image Pull'
+id: b32e1d0c-3f5b-5d6c-aead-d65cbee30441
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3307 (Tier 2, CVSS 10)
+  JabRef version <=4.3.1 contains a XML External Entity (XXE) vulnerability in MsBibImporter XML Parser that can result in disclosure of confidential data, denial of service, server side request forgery, port scanning. This attack appear to be exploitable via Specially crafted MsBib file. This vulnerability appears to have been fixed in after commit 89f855d.
+references:
+  - https://0dd.zone/2018/08/08/JabRef-XXE/
+  - https://github.com/JabRef/jabref/commit/89f855d76713b4cd25ac0830c719cd61c511851e
+  - https://github.com/JabRef/jabref/issues/4229
+  - https://www.cve.org/CVERecord?id=CVE-2018-1000652
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

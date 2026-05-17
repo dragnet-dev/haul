@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5610 — Vulnerable Base Image Pull'
+id: 6909fdff-2687-582d-827d-aa6f93f1e081
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5610 (Tier 2, CVSS 9.8)
+  Rollup is a module bundler for JavaScript. Versions prior to 2.80.0, 3.30.0, and 4.59.0 of the Rollup module bundler (specifically v4.x and present in current source) is vulnerable to an Arbitrary File Write via Path Traversal. Insecure file name sanitization in the core engine allows an attacker to control output filenames (e.g., via CLI named inputs, manual chunk aliases, or malicious plugins) and use traversal sequences (`../`) to overwrite files anywhere on the host filesystem that the build process has permissions for. This can lead to persistent Remote Code Execution (RCE) by overwriting critical system or user configuration files. Versions 2.80.0, 3.30.0, and 4.59.0 contain a patch for the issue.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-27606
+  - https://github.com/rollup/rollup
+  - https://github.com/rollup/rollup/commit/c60770d7aaf750e512c1b2774989ea4596e660b2
+  - https://github.com/rollup/rollup/commit/c8cf1f9c48c516285758c1e11f08a54f304fd44e
+  - https://github.com/rollup/rollup/commit/d6dee5e99bb82aac0bee1df4ab9efbde455452c3
+  - https://github.com/rollup/rollup/releases/tag/v2.80.0
+  - https://github.com/rollup/rollup/releases/tag/v3.30.0
+  - https://github.com/rollup/rollup/releases/tag/v4.59.0
+  - https://github.com/rollup/rollup/security/advisories/GHSA-mw96-cpmx-2vgc
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-27606
+  - https://www.cve.org/CVERecord?id=CVE-2026-27606
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

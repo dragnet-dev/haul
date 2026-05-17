@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2076 — Event Log Clearing (pear)'
+id: 428fad9e-bdc2-5130-add4-841d37b5076d
+status: deprecated
+description: |
+  Detects event log clearing associated with pear ransomware.
+  Incident: dragnet-ransomware-2026-2076
+  Ransomware victim claim by pear: Morning Star Tours; country: US; sector: Hospitality and Tourism
+  First observed: 2026-04-30.
+references:
+  - http://pearsmob5sn44ismokiusuld34pnfwi6ctgin3qbvonpoob4lh3rmtqd.onion/Companies/morningstartours
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

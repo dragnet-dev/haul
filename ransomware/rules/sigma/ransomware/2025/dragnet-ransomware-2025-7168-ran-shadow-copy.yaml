@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7168 — Shadow Copy Deletion (shinyhunters)'
+id: f486f252-1187-579a-9676-89a60d62706c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with shinyhunters ransomware.
+  Incident: dragnet-ransomware-2025-7168
+  Ransomware victim claim by shinyhunters: Republic Services; country: US; sector: Business Services
+  First observed: 2025-06-30.
+references:
+  - https://breachforums.hn//republicservices.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

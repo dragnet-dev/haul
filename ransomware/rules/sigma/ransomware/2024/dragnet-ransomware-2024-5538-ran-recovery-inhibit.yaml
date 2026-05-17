@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5538 — Recovery Inhibition (raworld)'
+id: 52224c4b-ab55-577a-8b05-e1728b7fb696
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with raworld ransomware.
+  Incident: dragnet-ransomware-2024-5538
+  Ransomware victim claim by raworld: NT****st; sector: Not Found
+  First observed: 2024-12-02.
+references:
+  - http://raworldw32b2qxevn3gp63pvibgixr4v75z62etlptg3u3pmajwra4ad.onion/post/wait.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

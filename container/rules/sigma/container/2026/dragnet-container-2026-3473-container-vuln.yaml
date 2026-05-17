@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3473 — Vulnerable Base Image Pull'
+id: 278e4ab8-c1f2-5c59-b245-4ec74a83c8b0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3473 (Tier 2, CVSS 9.8)
+  An issue was discovered in AdPlug 2.3.1. There are several double-free vulnerabilities in the CEmuopl class in emuopl.cpp because of a destructor's two OPLDestroy calls, each of which frees TL_TABLE, SIN_TABLE, AMS_TABLE, and VIB_TABLE.
+references:
+  - https://github.com/adplug/adplug/issues/67
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Q32A64R2APAC5PXIMSYIEFDQX5AD4GAS/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/U3PW6PLDTPSQQRHKTU2FB72SUB4Q66NE/
+  - https://www.cve.org/CVERecord?id=CVE-2018-17825
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

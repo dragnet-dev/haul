@@ -1,0 +1,56 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4543 — Vulnerable Base Image Pull'
+id: 38667731-d026-50d4-bfc7-bb2f4bad5414
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4543 (Tier 2, CVSS 9.1)
+  An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18. Specially crafted inputs passed to these functions could cause an application using lapack to crash or possibly disclose portions of its memory.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-4048
+  - https://github.com/JuliaLang/julia/issues/42415
+  - https://github.com/Reference-LAPACK/lapack/commit/38f3eeee3108b18158409ca2a100e6fe03754781
+  - https://github.com/Reference-LAPACK/lapack/pull/625
+  - https://github.com/xianyi/OpenBLAS/commit/2be5ee3cca97a597f2ee2118808a2d5eacea050c
+  - https://github.com/xianyi/OpenBLAS/commit/337b65133df174796794871b3988cd03426e6d41
+  - https://github.com/xianyi/OpenBLAS/commit/ddb0ff5353637bb5f5ad060c9620e334c143e3d7
+  - https://github.com/xianyi/OpenBLAS/commit/fe497efa0510466fd93578aaf9da1ad8ed4edbe7
+  - https://access.redhat.com/errata/RHSA-2022:7639
+  - https://access.redhat.com/security/cve/CVE-2021-4048
+  - https://bugzilla.redhat.com/2024358
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2024358
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-4048
+  - https://errata.almalinux.org/8/ALSA-2022-7639.html
+  - https://errata.rockylinux.org/RLSA-2022:7639
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'amazonlinux:2022'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'oraclelinux:8'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

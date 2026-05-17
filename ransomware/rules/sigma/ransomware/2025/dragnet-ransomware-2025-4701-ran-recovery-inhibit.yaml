@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4701 — Recovery Inhibition (obscura)'
+id: d780138a-45d4-577f-944d-3863866f15f0
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with obscura ransomware.
+  Incident: dragnet-ransomware-2025-4701
+  Ransomware victim claim by obscura: michigancityin.gov; country: US; sector: Public Sector
+  First observed: 2025-10-13.
+references:
+  - http://obscurad3aphckihv7wptdxvdnl5emma6t3vikcf3c5oiiqndq6y6xad.onion/leaks/10
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

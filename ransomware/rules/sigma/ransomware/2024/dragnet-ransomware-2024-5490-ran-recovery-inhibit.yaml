@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5490 — Recovery Inhibition (raworld)'
+id: 05025412-6f05-521d-a6f6-d6607ee1a39f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with raworld ransomware.
+  Incident: dragnet-ransomware-2024-5490
+  Ransomware victim claim by raworld: 24/7 Express Logistics; country: US; sector: Transportation/Logistics
+  First observed: 2024-03-21.
+references:
+  - http://raworldw32b2qxevn3gp63pvibgixr4v75z62etlptg3u3pmajwra4ad.onion/post/7585.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

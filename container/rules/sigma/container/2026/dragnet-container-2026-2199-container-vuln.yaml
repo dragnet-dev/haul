@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2199 — Vulnerable Base Image Pull'
+id: 9d1a73fc-4bd8-5d49-8dd5-c3a56efaf1f0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2199 (Tier 2, CVSS 10)
+  Integer overflow in the ImageRegionReader::ReadIntoBuffer function in MediaStorageAndFileFormat/gdcmImageRegionReader.cxx in Grassroots DICOM (aka GDCM) before 2.6.2 allows attackers to execute arbitrary code via crafted header dimensions in a DICOM image file, which triggers a buffer overflow.
+references:
+  - http://census-labs.com/news/2016/01/11/gdcm-buffer-overflow-imageregionreaderreadintobuffer/
+  - http://packetstormsecurity.com/files/135205/GDCM-2.6.0-2.6.1-Integer-Overflow.html
+  - http://seclists.org/fulldisclosure/2016/Jan/29
+  - http://sourceforge.net/p/gdcm/gdcm/ci/e547b1ded3fd21e0b0ad149f13045aa12d4b9b7c/
+  - http://sourceforge.net/p/gdcm/mailman/message/34670701/
+  - http://sourceforge.net/p/gdcm/mailman/message/34687533/
+  - http://www.securityfocus.com/archive/1/537264/100/0/threaded
+  - https://www.cve.org/CVERecord?id=CVE-2015-8396
+  - https://www.exploit-db.com/exploits/39229/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

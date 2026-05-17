@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5900 — Vulnerable Base Image Pull'
+id: 21dbd293-5b8d-5082-8779-5051c3c4717e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5900 (Tier 2, CVSS 9.8)
+  The SCRAM code in PgBouncer before 1.25.2 did not check the return value of strlcat() correctly when building the contents of the SCRAM client-final-message. A malicious backend that sends a SCRAM server-final-message with a long nonce can trigger a stack overflow.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-6665
+  - https://www.pgbouncer.org/changelog.html#pgbouncer-125x
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

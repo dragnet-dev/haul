@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5999 — Event Log Clearing (trinity)'
+id: 00540f94-5951-5245-8d7a-d4cb249b1b74
+status: deprecated
+description: |
+  Detects event log clearing associated with trinity ransomware.
+  Incident: dragnet-ransomware-2024-5999
+  Ransomware victim claim by trinity: Cosmetic Dental Group; country: JE; sector: Healthcare
+  First observed: 2024-08-18.
+references:
+  - http://txtggyng5euqkyzl2knbejwpm4rlq575jn2egqldu27osbqytrj6ruyd.onion/articles/6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

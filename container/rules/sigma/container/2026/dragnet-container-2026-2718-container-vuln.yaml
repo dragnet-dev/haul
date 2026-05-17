@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2718 — Vulnerable Base Image Pull'
+id: d0617a34-65fc-5c0b-8ab2-19445f6fe9c2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2718 (Tier 2, CVSS 9.8)
+  Redis-store <=v1.3.0 allows unsafe objects to be loaded from redis
+references:
+  - https://github.com/redis-store/redis-store
+  - https://github.com/redis-store/redis-store/commit/ce13252c26fcc40ed4935c9abfeb0ee0761e5704
+  - https://github.com/redis-store/redis-store/commit/e0c1398d54a9661c8c70267c3a925ba6b192142e
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/redis-store/CVE-2017-1000248.yml
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-1000248
+  - https://www.cve.org/CVERecord?id=CVE-2017-1000248
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

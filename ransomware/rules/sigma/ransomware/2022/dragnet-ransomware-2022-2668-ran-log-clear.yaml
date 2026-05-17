@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2668 — Event Log Clearing (quantum)'
+id: 5af0061c-cf22-59e3-8897-e2cce2df8551
+status: deprecated
+description: |
+  Detects event log clearing associated with quantum ransomware.
+  Incident: dragnet-ransomware-2022-2668
+  Ransomware victim claim by quantum: Active Communications International; sector: Telecommunication
+  First observed: 2022-05-23.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

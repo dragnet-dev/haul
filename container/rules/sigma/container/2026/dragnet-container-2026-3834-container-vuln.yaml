@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3834 — Vulnerable Base Image Pull'
+id: bc5d2d65-6a38-56f3-801a-04a3c5d0606e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3834 (Tier 2, CVSS 9.1)
+  An issue was discovered in app-layer-ssl.c in Suricata 4.1.4. Upon receiving a corrupted SSLv3 (TLS 1.2) packet, the parser function TLSDecodeHSHelloExtensions tries to access a memory region that is not allocated, because the expected length of HSHelloExtensions does not match the real length of the HSHelloExtensions part of the packet.
+references:
+  - https://lists.openinfosecfoundation.org/pipermail/oisf-announce/
+  - https://suricata-ids.org/2019/09/24/suricata-4-1-5-released/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

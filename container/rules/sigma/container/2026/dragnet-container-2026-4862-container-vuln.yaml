@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4862 — Vulnerable Base Image Pull'
+id: 786e97a2-29d1-5a52-b4aa-e995895ca6f3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4862 (Tier 2, CVSS 9.8)
+  syslabs/sif is the Singularity Image Format (SIF) reference implementation. In versions prior to 2.8.1the `github.com/sylabs/sif/v2/pkg/integrity` package did not verify that the hash algorithm(s) used are cryptographically secure when verifying digital signatures. A patch is available in version >= v2.8.1 of the module. Users are encouraged to upgrade. Users unable to upgrade may independently validate that the hash algorithm(s) used for metadata digest(s) and signature hash are cryptographically secure.
+references:
+  - https://github.com/sylabs/sif
+  - https://github.com/sylabs/sif/commit/07fb86029a12e3210f6131e065570124605daeaa
+  - https://github.com/sylabs/sif/commit/21972852d8783bc93fbf080190de8e1978f1c254 (v2.8.1)
+  - https://github.com/sylabs/sif/commit/a854038ce1f18237b81d505a1c3be6a60505db52 (v2.8.1)
+  - https://github.com/sylabs/sif/releases/tag/v2.8.1
+  - https://github.com/sylabs/sif/security/advisories/GHSA-m5m3-46gj-wch8
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-39237
+  - https://nvd.nist.gov/vuln/detail/cve-2004-2761
+  - https://nvd.nist.gov/vuln/detail/cve-2005-4900
+  - https://pkg.go.dev/vuln/GO-2022-1045
+  - https://security.gentoo.org/glsa/202210-19
+  - https://www.cve.org/CVERecord?id=CVE-2022-39237
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

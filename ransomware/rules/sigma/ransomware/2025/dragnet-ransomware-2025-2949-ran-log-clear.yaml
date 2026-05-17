@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2949 — Event Log Clearing (GDLockerSec)'
+id: fd63727a-fc41-5e8d-a806-3cd181a6a625
+status: deprecated
+description: |
+  Detects event log clearing associated with GDLockerSec ransomware.
+  Incident: dragnet-ransomware-2025-2949
+  Ransomware victim claim by GDLockerSec: www.fgse.cu.edu.eg; country: EG; sector: Education
+  First observed: 2025-01-26.
+references:
+  - http://igziys7pres4644kbrtakxfbrwkyld64nxk5prpkgtcexwrrjgtfjzyd.onion/304bddb7-1ae9-48d1-b5d1-370e4a308575/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

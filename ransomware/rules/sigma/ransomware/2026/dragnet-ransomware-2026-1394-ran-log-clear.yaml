@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1394 — Event Log Clearing (interlock)'
+id: 53db2ba4-7e98-51ef-ab67-e70d08387910
+status: deprecated
+description: |
+  Detects event log clearing associated with interlock ransomware.
+  Incident: dragnet-ransomware-2026-1394
+  Ransomware victim claim by interlock: Waterford Hotel Group; country: IE; sector: Hospitality and Tourism
+  First observed: 2026-05-11.
+references:
+  - http://awlcpawkphkrrhg6jhwoz5nnrhzz5kfwq2tuzmteyrosgfcpbkisarqd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

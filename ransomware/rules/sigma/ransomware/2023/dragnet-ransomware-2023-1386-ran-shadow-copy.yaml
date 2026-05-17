@@ -1,0 +1,39 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-1386 — Shadow Copy Deletion (blackbyte)'
+id: 2c0714bd-8a87-5fb5-9af8-59abf1d9d9fc
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blackbyte ransomware.
+  Incident: dragnet-ransomware-2023-1386
+  Associated with BlackByte.
+  Ransomware victim claim by blackbyte: Multistack; sector: Manufacturing
+  First observed: 2023-06-16.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+  - dragnet.actor.blackbyte
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

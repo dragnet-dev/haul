@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3984 — Vulnerable Base Image Pull'
+id: a767e6e6-f7c6-5751-978e-55c4dfc92754
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3984 (Tier 2, CVSS 9.8)
+  An issue was discovered in SVG++ (aka svgpp) 1.2.3. After calling the gil::get_color function in Generic Image Library in Boost, the return code is used as an address, leading to an Access Violation because of an out-of-bounds read.
+references:
+  - https://github.com/svgpp/svgpp/issues/70
+  - https://ubuntu.com/security/notices/USN-6178-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-6246
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

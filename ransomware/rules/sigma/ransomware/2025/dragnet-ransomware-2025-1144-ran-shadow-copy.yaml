@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1144 — Shadow Copy Deletion (bert)'
+id: 906e3a42-48c3-5a89-9bab-777e1455e890
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with bert ransomware.
+  Incident: dragnet-ransomware-2025-1144
+  Ransomware victim claim by bert: Yozgat City Hospital; country: TR; sector: Healthcare
+  First observed: 2025-04-09.
+references:
+  - http://bertblogsoqmm4ow7nqyh5ik7etsmefdbf25stauecytvwy7tkgizhad.onion/post/CCF89B4CDE0A489DB22B294925477C8A
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

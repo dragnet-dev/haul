@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1322 — Shadow Copy Deletion (bluebox)'
+id: 717982cb-cb1a-558a-8f57-47173baf77e3
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with bluebox ransomware.
+  Incident: dragnet-ransomware-2024-1322
+  Ransomware victim claim by bluebox: Groupe-fimar; country: FR; sector: Transportation/Logistics
+  First observed: 2024-12-14.
+references:
+  - http://zu3wfrmrkl4ltqqnpt3owp3cwa33rqwod4gpe3ttb5o4vf2is2gzm6qd.onion/2024/12/18/Groupe-fimar-Commercial-and-Logistics-Group/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

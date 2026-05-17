@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3675 — Recovery Inhibition (lynx)'
+id: dcea8aa5-2a4a-5060-948e-d3ead16b9087
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3675
+  Ransomware victim claim by lynx: Siltech (siltechcorp.local); country: CA; sector: Manufacturing
+  First observed: 2024-11-09.
+references:
+  - http://lynxblog.net/leaks/672f3c74dab69e0ba2ce2cbd
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

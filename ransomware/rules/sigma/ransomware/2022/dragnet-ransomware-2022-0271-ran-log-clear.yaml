@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0271 — Event Log Clearing (arvinclub)'
+id: 3cc1c1d3-1710-519d-bfa7-34881a135337
+status: deprecated
+description: |
+  Detects event log clearing associated with arvinclub ransomware.
+  Incident: dragnet-ransomware-2022-0271
+  Ransomware victim claim by arvinclub: bedfordshire.police.uk; country: GB; sector: Public Sector
+  First observed: 2022-03-12.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

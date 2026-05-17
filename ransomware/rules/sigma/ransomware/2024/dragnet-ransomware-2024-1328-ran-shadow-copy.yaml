@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1328 — Shadow Copy Deletion (BrainCipher)'
+id: cf55fe3b-66c0-5bf6-8243-32293f4d4972
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1328
+  Ransomware victim claim by BrainCipher: Berridge Manufacturing Co.; country: US; sector: Manufacturing
+  First observed: 2024-10-29.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/5X+VgRloFD8aRa4K5u9nVUoJaREzYGzbri5nW2Poq1tHgbnMUrzXK0czJTJ4njqaSR5AMNrLUucpEeMDmobEZRdE1ISEFH
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

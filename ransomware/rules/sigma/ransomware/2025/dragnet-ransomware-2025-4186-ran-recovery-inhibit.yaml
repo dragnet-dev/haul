@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4186 — Recovery Inhibition (lynx)'
+id: 39a00c53-29e9-5c60-a5d2-950b21d98be7
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4186
+  Ransomware victim claim by lynx: Pacific Residential Mortgage; country: US; sector: Financial Services
+  First observed: 2025-02-09.
+references:
+  - http://lynxblog.net/leaks/67bd141d44fac8dca1525178
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

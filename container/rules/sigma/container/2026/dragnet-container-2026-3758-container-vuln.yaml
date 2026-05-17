@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3758 — Vulnerable Base Image Pull'
+id: eff5b770-144b-54e9-b340-933c574e081d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3758 (Tier 2, CVSS 9.8)
+  An issue was discovered in Mongoose before 6.15. The parse_mqtt() function in mg_mqtt.c has a critical heap-based buffer overflow.
+references:
+  - https://github.com/cesanta/mongoose/commit/b3e0f780c34cea88f057a62213c012aa88fe2deb
+  - https://github.com/cesanta/mongoose/releases/tag/6.15
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

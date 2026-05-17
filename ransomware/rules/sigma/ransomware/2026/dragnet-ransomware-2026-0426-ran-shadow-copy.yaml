@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0426 — Shadow Copy Deletion (blackwater)'
+id: 35be28ac-c12d-587f-b86d-6ad287db16f0
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0426
+  Ransomware victim claim by blackwater: Minidoka Memorial Hospital; country: US; sector: Healthcare
+  First observed: 2026-04-17.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=9f470660-332d-37de-8914-393cc1603b4f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

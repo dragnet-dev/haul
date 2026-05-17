@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1338 — Event Log Clearing (BrainCipher)'
+id: b1816ab6-4f56-5bba-9f26-eeef2db2d30b
+status: deprecated
+description: |
+  Detects event log clearing associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1338
+  Ransomware victim claim by BrainCipher: G-One Auto Parts de México S.A. de C.V.; country: MX; sector: Manufacturing
+  First observed: 2024-11-13.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/kU52D7u2QrP7XVvCO1MwDODpOokvsnf6q9ruDi8x7glfXJ2GE5Hp1hrRfUB2nvEfty6DPFp1DfIefQZsxoFP3Q1S2FJNm83
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-1987 — Shadow Copy Deletion (cyclops)'
+id: 4a9f9932-ec26-55ca-9ad3-25f542b662e5
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cyclops ransomware.
+  Incident: dragnet-ransomware-2023-1987
+  Ransomware victim claim by cyclops: Guatemala Military Intelligence Directorate; country: GT; sector: Public Sector
+  First observed: 2023-06-30.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

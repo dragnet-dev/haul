@@ -1,0 +1,34 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0587 — Event Log Clearing (blackbyte)'
+id: 0229b08e-0d23-54eb-bec5-eeebfd9fe465
+status: deprecated
+description: |
+  Detects event log clearing associated with blackbyte ransomware.
+  Incident: dragnet-ransomware-2022-0587
+  Associated with BlackByte.
+  Ransomware victim claim by blackbyte: Grande Stevens; sector: Business Services
+  First observed: 2022-08-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.blackbyte
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6258 — Shadow Copy Deletion (ralord)'
+id: 58f39e88-d1f7-51c5-9068-12dbcdbc355b
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with ralord ransomware.
+  Incident: dragnet-ransomware-2025-6258
+  Ransomware victim claim by ralord: NewHotel cloud company; country: ES; sector: Hospitality and Tourism
+  First observed: 2025-04-15.
+references:
+  - http://ralordqe33mpufkpsr6zkdatktlu3t2uei4ught3sitxgtzfmqmbsuyd.onion/newhotelcloud
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

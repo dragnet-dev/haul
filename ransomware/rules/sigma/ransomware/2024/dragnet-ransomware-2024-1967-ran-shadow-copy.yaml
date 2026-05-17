@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1967 — Shadow Copy Deletion (dragonransomware)'
+id: b4ef4e6a-d3c1-584f-9028-0ebff8928dc5
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with dragonransomware ransomware.
+  Incident: dragnet-ransomware-2024-1967
+  Ransomware victim claim by dragonransomware: wahaj-almassa.com; country: SA; sector: Technology
+  First observed: 2024-10-26.
+references:
+  - https://t.me/DragonRansom/337
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3786 — Vulnerable Base Image Pull'
+id: fc31e326-e688-5638-a6f0-386497e8198f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3786 (Tier 2, CVSS 9.8)
+  An issue was discovered in Das U-Boot through 2019.07. There is an unbounded memcpy with a failed length check at nfs_lookup_reply.
+references:
+  - https://blog.semmle.com/uboot-rce-nfs-vulnerability/
+  - https://cert-portal.siemens.com/productcert/html/ssa-577017.html
+  - https://gitlab.com/u-boot/u-boot
+  - https://gitlab.denx.de/u-boot/u-boot
+  - https://lists.debian.org/debian-lts-announce/2025/05/msg00001.html
+  - https://www.cve.org/CVERecord?id=CVE-2019-14196
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'photon os:3.0'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

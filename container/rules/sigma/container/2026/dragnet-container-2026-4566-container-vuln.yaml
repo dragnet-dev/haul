@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4566 — Vulnerable Base Image Pull'
+id: 42bf5540-bad2-5ed2-97ab-9058a08b9e1c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4566 (Tier 2, CVSS 9.8)
+  The org.h2.util.JdbcUtils.getConnection method of the H2 database takes as parameters the class name of the driver and URL of the database. An attacker may pass a JNDI driver name and a URL leading to a LDAP or RMI servers, causing remote code execution. This can be exploited through various attack vectors, most notably through the H2 Console which leads to unauthenticated remote code execution.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-42392
+  - https://github.com/h2database/h2database
+  - https://github.com/h2database/h2database/releases/tag/version-2.0.206
+  - https://github.com/h2database/h2database/security/advisories/GHSA-h376-j262-vhq6
+  - https://access.redhat.com/security/cve/CVE-2021-42392
+  - https://jfrog.com/blog/the-jndi-strikes-back-unauthenticated-rce-in-h2-database-console
+  - https://jfrog.com/blog/the-jndi-strikes-back-unauthenticated-rce-in-h2-database-console/
+  - https://lists.debian.org/debian-lts-announce/2022/02/msg00017.html
+  - https://security.netapp.com/advisory/ntap-20220119-0001
+  - https://security.netapp.com/advisory/ntap-20220119-0001/
+  - https://ubuntu.com/security/notices/USN-5365-1
+  - https://ubuntu.com/security/notices/USN-6834-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-42392
+  - https://www.debian.org/security/2022/dsa-5076
+  - https://www.oracle.com/security-alerts/cpuapr2022.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

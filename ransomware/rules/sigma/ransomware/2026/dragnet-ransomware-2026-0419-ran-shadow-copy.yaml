@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0419 — Shadow Copy Deletion (blacknevas)'
+id: e897d1e6-c291-5ab4-bc9f-7032dd9adb7c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2026-0419
+  Ransomware victim claim by blacknevas: The company MST (Sanko Makina and ASKO Holding); country: TR; sector: Manufacturing
+  First observed: 2026-03-17.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/b0d5c3ac-d2f9-4e6c-97d0-a49255c54de0
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

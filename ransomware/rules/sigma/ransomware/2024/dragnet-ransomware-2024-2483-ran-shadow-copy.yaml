@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2483 — Shadow Copy Deletion (hellogookie)'
+id: fa811aa5-6002-587c-9277-36e48619b2b5
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with hellogookie ransomware.
+  Incident: dragnet-ransomware-2024-2483
+  Ransomware victim claim by hellogookie: Hey everyone! Some private keys here.; sector: Technology
+  First observed: 2024-04-19.
+references:
+  - http://hellogookie256cvccntvenyxrvn7ht73bs6ss3oj2ocfkjt5y6vq6gfi2tad.onion/news/bb27072d9edbc55651ad21b068807fd3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

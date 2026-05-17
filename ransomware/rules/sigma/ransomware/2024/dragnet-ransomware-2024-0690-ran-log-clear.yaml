@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0690 — Event Log Clearing (arcusmedia)'
+id: 40198de6-e4d2-5774-8eeb-25870ec4f8f7
+status: deprecated
+description: |
+  Detects event log clearing associated with arcusmedia ransomware.
+  Incident: dragnet-ransomware-2024-0690
+  Ransomware victim claim by arcusmedia: Exhaustpro shops; country: US; sector: Business Services
+  First observed: 2024-06-20.
+references:
+  - http://arcuufpr5xxbbkin4mlidt7itmr6znlppk63jbtkeguuhszmc5g7qdyd.onion/?p=173
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

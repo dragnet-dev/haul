@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3653 — Event Log Clearing (J)'
+id: 533bac74-2674-55c2-a0c2-795fd382b66d
+status: deprecated
+description: |
+  Detects event log clearing associated with J ransomware.
+  Incident: dragnet-ransomware-2025-3653
+  Ransomware victim claim by J: powells.biz; country: US; sector: Not Found
+  First observed: 2025-06-15.
+references:
+  - http://twniiyed6mydtbe64i5mdl56nihl7atfaqtpww6gqyaiohgc75apzpad.onion/posts/685538bfc4bd670d16342cf8/685538bfc4bd670d16342cf8/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

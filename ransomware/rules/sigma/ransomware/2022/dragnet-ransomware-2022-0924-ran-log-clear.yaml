@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-0924 — Event Log Clearing (cuba)'
+id: 3f8bb711-d273-5e3e-9563-afe10f02e1f6
+status: deprecated
+description: |
+  Detects event log clearing associated with cuba ransomware.
+  Incident: dragnet-ransomware-2022-0924
+  Ransomware victim claim by cuba: Boss-inc; sector: Manufacturing
+  First observed: 2022-12-01.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1381 — Shadow Copy Deletion (cephalus)'
+id: 23f1725e-6150-5dfa-8a51-56f4fba47d70
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cephalus ransomware.
+  Incident: dragnet-ransomware-2025-1381
+  Ransomware victim claim by cephalus: Shelbourne Accountants; country: IE; sector: Financial Services
+  First observed: 2025-08-29.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

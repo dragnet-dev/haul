@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4964 — Vulnerable Base Image Pull'
+id: 4412b7b8-da7f-5524-90c1-9fd302432659
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4964 (Tier 2, CVSS 9.8)
+  sprintf in the GNU C Library (glibc) 2.37 has a buffer overflow (out-of-bounds write) in some situations with a correct buffer size. This is unrelated to CWE-676. It may write beyond the bounds of the destination buffer when attempting to write a padded, thousands-separated string representation of a number, if the buffer is allocated the exact size required to represent that number as a string. For example, 1,234,567 (with padding to 13) overflows by two bytes.
+references:
+  - http://www.openwall.com/lists/oss-security/2023/02/10/1
+  - https://access.redhat.com/security/cve/CVE-2023-25139
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-25139
+  - https://security.netapp.com/advisory/ntap-20230302-0010/
+  - https://sourceware.org/bugzilla/show_bug.cgi?id=30068
+  - https://www.cve.org/CVERecord?id=CVE-2023-25139
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'ubuntu:23.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4997 — Recovery Inhibition (siegedsec)'
+id: e49b89c0-5634-5649-ab75-c844aa986e21
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with siegedsec ransomware.
+  Incident: dragnet-ransomware-2023-4997
+  Ransomware victim claim by siegedsec: Idaho National Laboratory; sector: Energy
+  First observed: 2023-11-26.
+references:
+  - http://nv5p2mmpctvyqdyyi5zwh4gnifq2uxdx4etvnmaheqlrw6ordrjwxryd.onion/post/11.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1384 — Recovery Inhibition (cephalus)'
+id: 04e41dd6-e6a7-5044-a11c-bfd9f0ab64d6
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with cephalus ransomware.
+  Incident: dragnet-ransomware-2025-1384
+  Ransomware victim claim by cephalus: SystemExec Co., Ltd.; country: JP; sector: Technology
+  First observed: 2025-08-26.
+references:
+  - https://darkforums.st/Thread-Source-Code-SystemExec-Co-Ltd-%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%A8%E3%82%B0%E3%82%BC-GitLab-naked-repo-leak-30G
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

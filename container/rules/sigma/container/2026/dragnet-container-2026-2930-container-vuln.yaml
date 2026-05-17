@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2930 — Vulnerable Base Image Pull'
+id: 24309abc-316b-58ff-9145-78c4606421ca
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2930 (Tier 2, CVSS 9.8)
+  In sam2p 0.49.3, there is an invalid read of size 2 in the parse_rgb function in in_xpm.cpp. However, this can also cause a write to an illegal address.
+references:
+  - https://github.com/pts/sam2p/issues/14
+  - https://www.cve.org/CVERecord?id=CVE-2017-14637
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

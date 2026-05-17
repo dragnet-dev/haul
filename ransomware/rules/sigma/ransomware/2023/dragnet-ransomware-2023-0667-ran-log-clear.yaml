@@ -1,0 +1,35 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-0667 — Event Log Clearing (alphv)'
+id: 30142b97-87da-5410-a417-e80dcc12f7f1
+status: deprecated
+description: |
+  Detects event log clearing associated with alphv ransomware.
+  Incident: dragnet-ransomware-2023-0667
+  Associated with Sea Turtle.
+  Ransomware victim claim by alphv: Law Foundation of Silicon Valley; sector: Business Services
+  First observed: 2023-03-06.
+references:
+  - http://alphvmmm27o3abo3r2mlmjrpdmzle3rykajqc5xsj7j7ejksbpsa36ad.onion/d6d14747-4e3f-4db0-90a7-15e964894d19
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.sea-turtle
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

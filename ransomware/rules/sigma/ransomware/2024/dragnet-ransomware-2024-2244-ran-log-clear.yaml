@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2244 — Event Log Clearing (fog)'
+id: 8b2c76de-9240-597e-b98f-497e1d5c3496
+status: deprecated
+description: |
+  Detects event log clearing associated with fog ransomware.
+  Incident: dragnet-ransomware-2024-2244
+  Ransomware victim claim by fog: Verweij Elektrotechniek; sector: Business Services
+  First observed: 2024-07-04.
+references:
+  - http://xbkv2qey6u3gd3qxcojynrt4h5sgrhkar6whuo74wo63hijnn677jnyd.onion/posts/6686a9537b58c0b6d888847d/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

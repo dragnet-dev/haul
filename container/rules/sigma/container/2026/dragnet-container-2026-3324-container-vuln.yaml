@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3324 — Vulnerable Base Image Pull'
+id: 667fa07c-7a3c-51ce-bff3-a485cdcb2d2f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3324 (Tier 2, CVSS 9.8)
+  In versions of mruby up to and including 1.4.0, a use-after-free vulnerability exists in src/io.c::File#initilialize_copy(). An attacker that can cause Ruby code to be run can possibly use this to execute arbitrary code.
+references:
+  - https://github.com/mruby/mruby/commit/b51b21fc63c9805862322551387d9036f2b63433
+  - https://github.com/mruby/mruby/issues/4001
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

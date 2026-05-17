@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4039 — Recovery Inhibition (lunalock)'
+id: a40dae18-51b8-559f-ab3d-8dbc0617a52c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lunalock ransomware.
+  Incident: dragnet-ransomware-2025-4039
+  Ransomware victim claim by lunalock: JAFICA Telecomunicaciones; country: MX; sector: Telecommunication
+  First observed: 2025-09-13.
+references:
+  - http://lunalockcccxzkpfovwzifwxcytqkiuak6wzybnniqwxcmpsetpbetid.onion/victim/jafica/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

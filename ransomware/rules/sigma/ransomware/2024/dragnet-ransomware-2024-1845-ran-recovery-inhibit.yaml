@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1845 — Recovery Inhibition (donutleaks)'
+id: 62aa758f-0148-5309-a030-1ad0c9a23845
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with donutleaks ransomware.
+  Incident: dragnet-ransomware-2024-1845
+  Ransomware victim claim by donutleaks: Watsonclinic.com; country: US; sector: Healthcare
+  First observed: 2024-03-09.
+references:
+  - http://sbc2zv2qnz5vubwtx3aobfpkeao6l4igjegm3xx7tk5suqhjkp5jxtqd.onion/watsonclinic-com/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

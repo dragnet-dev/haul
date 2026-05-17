@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7533 — Shadow Copy Deletion (teamxxx)'
+id: b5433a61-5968-5a21-b91d-38136b99cc7d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with teamxxx ransomware.
+  Incident: dragnet-ransomware-2025-7533
+  Ransomware victim claim by teamxxx: aetoscapitalasia.com; country: HK; sector: Financial Services
+  First observed: 2025-06-20.
+references:
+  - http://tp5cwh6d2b5hekcg6jlhoe6mawa7dlwiv47epvnfmzuaaur2dnaa3uid.onion/aetoscapitalasia/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

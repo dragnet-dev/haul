@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0911 — Event Log Clearing (arkana)'
+id: 12b145b2-5309-5e1c-91bd-b6858c540c8f
+status: deprecated
+description: |
+  Detects event log clearing associated with arkana ransomware.
+  Incident: dragnet-ransomware-2025-0911
+  Ransomware victim claim by arkana: Anglo American plc; country: GB; sector: Energy
+  First observed: 2025-05-21.
+references:
+  - http://ransomwvbabemdnwl7lzgeenyfmmhskaed6jcruwhkvapsia76vttzyd.onion/anglo-american-plc/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

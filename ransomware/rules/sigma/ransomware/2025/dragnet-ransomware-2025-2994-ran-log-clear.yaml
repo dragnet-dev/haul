@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2994 — Event Log Clearing (global)'
+id: b79003e7-42a3-5d2f-bd38-4b6f135a8545
+status: deprecated
+description: |
+  Detects event log clearing associated with global ransomware.
+  Incident: dragnet-ransomware-2025-2994
+  Ransomware victim claim by global: loraincountyauditor.gov; country: US; sector: Public Sector
+  First observed: 2025-07-14.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

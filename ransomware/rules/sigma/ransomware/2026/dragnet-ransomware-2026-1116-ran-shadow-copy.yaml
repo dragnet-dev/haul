@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1116 — Shadow Copy Deletion (handala)'
+id: ae02d1f6-1d97-57d6-8542-5d18a45c03a9
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1116
+  Ransomware victim claim by handala: Behind the Curtain: Full Details of Shin Bet’s Iran Desk Officers Released; country: IL; sector: Not Found
+  First observed: 2026-03-23.
+references:
+  - https://handala-team.to/behind-the-curtain-full-details-of-shin-bets-iran-desk-officers-released/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

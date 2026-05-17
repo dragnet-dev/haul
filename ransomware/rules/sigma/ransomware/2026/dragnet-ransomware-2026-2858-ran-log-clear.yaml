@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2858 — Event Log Clearing (shinyhunters)'
+id: 5aa65db5-f904-565f-af40-6b7984dc0be5
+status: deprecated
+description: |
+  Detects event log clearing associated with shinyhunters ransomware.
+  Incident: dragnet-ransomware-2026-2858
+  Ransomware victim claim by shinyhunters: Cushman & Wakefield Inc.; country: US; sector: Business Services
+  First observed: 2026-05-03.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

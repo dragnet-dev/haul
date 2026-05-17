@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3830 — Vulnerable Base Image Pull'
+id: 4a38a980-3e8b-5908-99e0-641ac138592e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3830 (Tier 2, CVSS 9.8)
+  wolfSSL 4.1.0 has a one-byte heap-based buffer over-read in DecodeCertExtensions in wolfcrypt/src/asn.c because reading the ASN_BOOLEAN byte is mishandled for a crafted DER certificate in GetLength_ex.
+references:
+  - https://github.com/wolfSSL/wolfssl/issues/2421
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

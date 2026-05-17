@@ -1,0 +1,40 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1447 — Shadow Copy Deletion (cicada3301)'
+id: d46a82cd-242a-55d4-ad21-a6eab8ab4c5c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cicada3301 ransomware.
+  Incident: dragnet-ransomware-2025-1447
+  Associated with menuPass.
+  Ransomware victim claim by cicada3301: MinebeaMitsumi Inc; country: JP; sector: Manufacturing
+  First observed: 2025-03-22.
+references:
+  - http://cicadabv7vicyvgz5khl7v2x5yygcgow7ryy6yppwmxii4eoobdaztqd.onion/mxi06p5f9umb770h1wfim4lyrfs9864g
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+  - dragnet.actor.menupass
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

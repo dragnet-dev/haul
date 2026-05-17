@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2427 — Shadow Copy Deletion (knight)'
+id: b60f9bfd-3363-54d9-abfd-22ca1ab92c64
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with knight ransomware.
+  Incident: dragnet-ransomware-2023-2427
+  Ransomware victim claim by knight: Garn Mason Orthodontics was hacked. All insurance and personal data of customers was stole; sector: Healthcare
+  First observed: 2023-09-29.
+references:
+  - http://knight3xppu263m7g4ag3xlit2qxpryjwueobh7vjdc3zrscqlfu3pqd.onion/blogs/5c7fd00b-34ef-4e4b-b7b5-1104feab699b/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

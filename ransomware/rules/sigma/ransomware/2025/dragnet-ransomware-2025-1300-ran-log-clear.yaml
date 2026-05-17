@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1300 — Event Log Clearing (BrainCipher)'
+id: 1b07827f-e455-5440-8f5d-8d0d7ee2abc2
+status: deprecated
+description: |
+  Detects event log clearing associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2025-1300
+  Ransomware victim claim by BrainCipher: soundtransit.org; country: US; sector: Transportation/Logistics
+  First observed: 2025-05-05.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/s/7wrH+9MG3iFQTxjKt86nHCKtQvGxwQ7r9fD4cVH2RT7neqG4RLcprqopU0ovUsF4kVY+gmRz5s64q4ID0ZlZHMjZKbEdX
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

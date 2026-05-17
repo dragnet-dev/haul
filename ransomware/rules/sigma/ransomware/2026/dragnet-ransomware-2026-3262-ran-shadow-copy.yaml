@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3262 — Shadow Copy Deletion (thegentlemen)'
+id: 2e7d4937-e2ca-53ac-8322-528b1eefa55d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with thegentlemen ransomware.
+  Incident: dragnet-ransomware-2026-3262
+  Ransomware victim claim by thegentlemen: Mahyco Pvt; country: IN; sector: Agriculture and Food Production
+  First observed: 2026-04-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

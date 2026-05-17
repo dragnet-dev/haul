@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2036 — Event Log Clearing (payoutsking)'
+id: d1a94b3b-1a8e-52ac-80d2-446d1dd6a30d
+status: deprecated
+description: |
+  Detects event log clearing associated with payoutsking ransomware.
+  Incident: dragnet-ransomware-2026-2036
+  Ransomware victim claim by payoutsking: I****G; country: US; sector: Not Found
+  First observed: 2026-02-26.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

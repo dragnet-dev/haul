@@ -1,0 +1,61 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2979 — Vulnerable Base Image Pull'
+id: a6742969-06d8-59bc-925b-d86441040edb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2979 (Tier 2, CVSS 9.1)
+  Heap-based buffer overflow in the NCompress::NShrink::CDecoder::CodeReal method in 7-Zip before 18.00 and p7zip allows remote attackers to cause a denial of service (out-of-bounds write) or potentially execute arbitrary code via a crafted ZIP archive.
+references:
+  - http://www.securitytracker.com/id/1040831
+  - https://0patch.blogspot.si/2018/02/two-interesting-micropatches-for-7-zip.html
+  - https://access.redhat.com/security/cve/CVE-2017-17969
+  - https://github.com/p7zip-project/p7zip/issues/7
+  - https://landave.io/2018/01/7-zip-multiple-memory-corruptions-via-rar-and-zip/
+  - https://lists.debian.org/debian-lts-announce/2018/02/msg00003.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-17969
+  - https://ubuntu.com/security/notices/USN-3913-1
+  - https://usn.ubuntu.com/3913-1/
+  - https://www.cve.org/CVERecord?id=CVE-2017-17969
+  - https://www.debian.org/security/2018/dsa-4104
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.5'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

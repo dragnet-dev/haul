@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5896 — Event Log Clearing (stormous)'
+id: 68bbd1fe-2d66-5683-9413-d21608b12c55
+status: deprecated
+description: |
+  Detects event log clearing associated with stormous ransomware.
+  Incident: dragnet-ransomware-2024-5896
+  Ransomware victim claim by stormous: Ascires Biomedical Group; country: ES; sector: Healthcare
+  First observed: 2024-10-11.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

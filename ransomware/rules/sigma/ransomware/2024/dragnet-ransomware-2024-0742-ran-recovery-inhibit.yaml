@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0742 — Recovery Inhibition (argonauts)'
+id: 31f99c35-3e62-5007-a7ec-6d35525b06d8
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with argonauts ransomware.
+  Incident: dragnet-ransomware-2024-0742
+  Ransomware victim claim by argonauts: ivylifesciences.com; country: US; sector: Healthcare
+  First observed: 2024-09-15.
+references:
+  - http://jbmk7h6xlkedn2gg5yi76zca6y3jgdlp5wchlsrd7735tlnrmmvqe5ad.onion/?p=108
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

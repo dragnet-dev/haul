@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2920 — Vulnerable Base Image Pull'
+id: 69d31973-1a1f-543d-ae03-d98c86af45e4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2920 (Tier 2, CVSS 9.8)
+  ImageMagick 7.0.7-0 has a NULL Pointer Dereference in TIFFIgnoreTags in coders/tiff.c.
+references:
+  - http://www.securityfocus.com/bid/100883
+  - https://access.redhat.com/security/cve/CVE-2017-14532
+  - https://github.com/ImageMagick/ImageMagick/issues/719
+  - https://lists.debian.org/debian-lts-announce/2019/05/msg00015.html
+  - https://lists.debian.org/debian-lts-announce/2020/09/msg00007.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-14532
+  - https://ubuntu.com/security/notices/USN-3681-1
+  - https://usn.ubuntu.com/3681-1/
+  - https://www.cve.org/CVERecord?id=CVE-2017-14532
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.10'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

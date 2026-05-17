@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0492 — Shadow Copy Deletion (cryp70n1c0d3)'
+id: 416f47fa-866b-5e50-9715-b9bd8586e50d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cryp70n1c0d3 ransomware.
+  Incident: dragnet-ransomware-2021-0492
+  Ransomware victim claim by cryp70n1c0d3: vaja.ir; sector: Not Found
+  First observed: 2021-12-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

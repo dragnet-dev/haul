@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4215 — Recovery Inhibition (lynx)'
+id: 7e4e84ca-531c-5648-9a32-224784713f69
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4215
+  Ransomware victim claim by lynx: Schmiedetechnik Plettenberg GmbH & Co KG; country: DE; sector: Manufacturing
+  First observed: 2025-03-05.
+references:
+  - http://lynxblog.net/leaks/67c80eea44fac8dca1a00944
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

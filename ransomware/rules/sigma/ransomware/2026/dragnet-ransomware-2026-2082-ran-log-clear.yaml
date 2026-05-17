@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2082 — Event Log Clearing (pear)'
+id: 3e8831e1-c8ce-5967-8a47-6cfdec876c0c
+status: deprecated
+description: |
+  Detects event log clearing associated with pear ransomware.
+  Incident: dragnet-ransomware-2026-2082
+  Ransomware victim claim by pear: Rocky Mountain Associated Physicians; country: US; sector: Healthcare
+  First observed: 2026-01-26.
+references:
+  - http://pearsmob5sn44ismokiusuld34pnfwi6ctgin3qbvonpoob4lh3rmtqd.onion/Companies/utahbariatrics
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,67 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5515 — Vulnerable Base Image Pull'
+id: 784e4371-74ab-520a-9881-f3926de7a226
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5515 (Tier 2, CVSS 10)
+  During session resumption in crypto/tls, if the underlying Config has its ClientCAs or RootCAs fields mutated between the initial handshake and the resumed handshake, the resumed handshake may succeed when it should have failed. This may happen when a user calls Config.Clone and mutates the returned Config, or uses Config.GetConfigForClient. This can cause a client to resume a session with a server that it would not have resumed with during the initial handshake, or cause a server to resume a session with a client that it would not have resumed with during the initial handshake.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-68121
+  - https://github.com/golang/go/issues/77113
+  - https://access.redhat.com/errata/RHSA-2026:4177
+  - https://access.redhat.com/security/cve/CVE-2025-68121
+  - https://bugzilla.redhat.com/2434432
+  - https://bugzilla.redhat.com/2437111
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2434432
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2437111
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-61726
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-68121
+  - https://errata.almalinux.org/9/ALSA-2026-4177.html
+  - https://errata.rockylinux.org/RLSA-2026:4177
+  - https://go.dev/cl/737700
+  - https://go.dev/issue/77217
+  - https://groups.google.com/g/golang-announce/c/K09ubi9FQFk
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

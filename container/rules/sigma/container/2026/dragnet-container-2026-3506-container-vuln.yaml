@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3506 — Vulnerable Base Image Pull'
+id: f3188ca5-7f94-5e3c-90dc-8ed818a70fc9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3506 (Tier 2, CVSS 9.1)
+  The CAF demuxer in modules/demux/caf.c in VideoLAN VLC media player 3.0.4 may read memory from an uninitialized pointer when processing magic cookies in CAF files, because a ReadKukiChunk() cast converts a return value to an unsigned int even if that value is negative. This could result in a denial of service and/or a potential infoleak.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00005.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00037.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00040.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00081.html
+  - http://www.securityfocus.com/bid/106130
+  - https://dyntopia.com/advisories/013-vlc
+  - https://git.videolan.org/?p=vlc.git%3Ba=commit%3Bh=0cc5ea748ee5ff7705dde61ab15dff8f58be39d0
+  - https://ubuntu.com/security/notices/USN-4074-1
+  - https://usn.ubuntu.com/4074-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-19857
+  - https://www.debian.org/security/2019/dsa-4366
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2262 — Event Log Clearing (dunghill)'
+id: f7648ade-2065-54be-ba04-2e0cd9a74a6d
+status: deprecated
+description: |
+  Detects event log clearing associated with dunghill ransomware.
+  Incident: dragnet-ransomware-2023-2262
+  Ransomware victim claim by dunghill: Supply Technology; sector: Business Services
+  First observed: 2023-11-07.
+references:
+  - http://p66slxmtum2ox4jpayco6ai3qfehd5urgrs4oximjzklxcol264driqd.onion/lot10.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

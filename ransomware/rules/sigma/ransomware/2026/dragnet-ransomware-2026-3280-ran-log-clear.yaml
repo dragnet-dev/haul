@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3280 — Event Log Clearing (thegentlemen)'
+id: 13224db5-5277-53f3-bc08-fd32c5147a08
+status: deprecated
+description: |
+  Detects event log clearing associated with thegentlemen ransomware.
+  Incident: dragnet-ransomware-2026-3280
+  Ransomware victim claim by thegentlemen: Mundo Amtae; country: MX; sector: Not Found
+  First observed: 2026-05-06.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

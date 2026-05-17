@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4792 — Vulnerable Base Image Pull'
+id: b5e8b861-e299-5859-9026-f7025333f753
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4792 (Tier 2, CVSS 9.8)
+  Sofia-SIP is an open-source Session Initiation Protocol (SIP) User-Agent library. Prior to version 1.13.8, when parsing each line of a sdp message, `rest = record + 2` will access the memory behind `\0` and cause an out-of-bounds write. An attacker can send a message with evil sdp to FreeSWITCH, causing a crash or more serious consequence, such as remote code execution. Version 1.13.8 contains a patch for this issue.
+references:
+  - https://github.com/freeswitch/sofia-sip/commit/907f2ac0ee504c93ebfefd676b4632a3575908c9
+  - https://github.com/freeswitch/sofia-sip/security/advisories/GHSA-8w5j-6g2j-pxcp
+  - https://lists.debian.org/debian-lts-announce/2022/09/msg00001.html
+  - https://security.gentoo.org/glsa/202210-18
+  - https://ubuntu.com/security/notices/USN-5932-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-31003
+  - https://www.debian.org/security/2023/dsa-5410
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

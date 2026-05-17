@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1404 — Event Log Clearing (chaos)'
+id: c216cb2a-d3a8-5d43-8207-a78fcb4c5a4e
+status: deprecated
+description: |
+  Detects event log clearing associated with chaos ransomware.
+  Incident: dragnet-ransomware-2025-1404
+  Ransomware victim claim by chaos: farmerbros.com; country: US; sector: Agriculture and Food Production
+  First observed: 2025-02-19.
+references:
+  - http://hptqq2o2qjva7lcaaq67w36jihzivkaitkexorauw7b2yul2z6zozpqd.onion/post/LaXUPYIfbMe6UhPQbt8zKwGWBF9HjHVS
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3607 — Vulnerable Base Image Pull'
+id: 21a3506c-9376-5db6-8bea-315bef579f37
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3607 (Tier 2, CVSS 9.8)
+  An issue was discovered in pixHtmlViewer in prog/htmlviewer.c in Leptonica before 1.75.3. Unsanitized input (rootname) can overflow a buffer, leading potentially to arbitrary code execution or possibly unspecified other impact.
+references:
+  - https://github.com/DanBloomberg/leptonica/commit/c1079bb8e77cdd426759e466729917ca37a3ed9f
+  - https://security.gentoo.org/glsa/202312-01
+  - https://ubuntu.com/security/notices/USN-5143-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-7247
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+      - 'ubuntu:19.04'
+      - 'ubuntu:19.10'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3199 — Vulnerable Base Image Pull'
+id: c3601ba9-7c74-5ba8-9b2d-6aa21942de5c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3199 (Tier 2, CVSS 9.8)
+  Google gRPC before 2017-03-29 has an out-of-bounds write caused by a heap-based use-after-free related to the grpc_call_destroy function in core/lib/surface/call.c.
+references:
+  - http://www.securityfocus.com/bid/98280
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=726
+  - https://github.com/grpc/grpc/pull/10353
+  - https://www.cve.org/CVERecord?id=CVE-2017-8359
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

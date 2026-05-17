@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1745 — Vulnerable Base Image Pull'
+id: 739a058b-e070-5ee3-85ed-4fc16b715dde
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1745 (Tier 2, CVSS 9.1)
+  In kernel/compat.c in the Linux kernel before 3.17, as used in Google Chrome OS and other products, there is a possible out-of-bounds read. restart_syscall uses uninitialized data when restarting compat_sys_nanosleep. NOTE: this is disputed because the code path is unreachable
+references:
+  - https://access.redhat.com/security/cve/CVE-2014-3180
+  - https://bugs.chromium.org/p/chromium/issues/detail?id=408827
+  - https://lkml.org/lkml/2014/9/7/29
+  - https://nvd.nist.gov/vuln/detail/CVE-2014-3180
+  - https://www.cve.org/CVERecord?id=CVE-2014-3180
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

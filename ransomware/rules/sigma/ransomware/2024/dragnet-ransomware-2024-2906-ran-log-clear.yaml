@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2906 — Event Log Clearing (insane)'
+id: fa8c1fae-87e9-54fc-9d1d-53f128fa7a03
+status: deprecated
+description: |
+  Detects event log clearing associated with insane ransomware.
+  Incident: dragnet-ransomware-2024-2906
+  Ransomware victim claim by insane: JspPharma; country: TH; sector: Healthcare
+  First observed: 2024-01-17.
+references:
+  - http://nv5lbsrr4rxmewzmpe25nnalowe4ga7ki6yfvit3wlpu7dfc36pyh4ad.onion/jsp.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

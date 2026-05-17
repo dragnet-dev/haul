@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2978 — Event Log Clearing (global)'
+id: 40feb599-7a33-5bf1-a98b-85da2e3798f9
+status: deprecated
+description: |
+  Detects event log clearing associated with global ransomware.
+  Incident: dragnet-ransomware-2025-2978
+  Ransomware victim claim by global: Ascot Vale Health Group; country: AU; sector: Healthcare
+  First observed: 2025-06-07.
+references:
+  - http://vg6xwkmfyirv3l6qtqus7jykcuvgx6imegb73hqny2avxccnmqt5m2id.onion/#post9
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

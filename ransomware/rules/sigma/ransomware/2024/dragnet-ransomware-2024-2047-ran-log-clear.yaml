@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2047 — Event Log Clearing (ElDorado)'
+id: c0a1396b-53f3-53d2-966a-b6e6d7c620d2
+status: deprecated
+description: |
+  Detects event log clearing associated with ElDorado ransomware.
+  Incident: dragnet-ransomware-2024-2047
+  Ransomware victim claim by ElDorado: phxcmp.com; country: US; sector: Technology
+  First observed: 2024-10-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

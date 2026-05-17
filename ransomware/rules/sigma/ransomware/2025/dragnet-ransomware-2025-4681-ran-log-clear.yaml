@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4681 — Event Log Clearing (nova)'
+id: 43ca652f-2632-50b9-bbe8-a5020feb6c7d
+status: deprecated
+description: |
+  Detects event log clearing associated with nova ransomware.
+  Incident: dragnet-ransomware-2025-4681
+  Ransomware victim claim by nova: Tomio Ingeniería; country: AR; sector: Construction
+  First observed: 2025-03-22.
+references:
+  - http://novavdivko2zvtrvtllnq45lxhba2rfzp76qigb4nrliklem5au7czqd.onion/Tomio-Ingeniería
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

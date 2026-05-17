@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6264 — Event Log Clearing (ransomexx)'
+id: 10b65821-7584-5375-90ca-ffb4640c3d9e
+status: deprecated
+description: |
+  Detects event log clearing associated with ransomexx ransomware.
+  Incident: dragnet-ransomware-2025-6264
+  Ransomware victim claim by ransomexx: ADDA (adda.io); country: IN; sector: Technology
+  First observed: 2025-03-07.
+references:
+  - http://rnsm777cdsjrsdlbs4v5qoeppu3px6sb2igmh53jzrx7ipcrbjz5b2ad.onion/2025/03/07/adda-io-software/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

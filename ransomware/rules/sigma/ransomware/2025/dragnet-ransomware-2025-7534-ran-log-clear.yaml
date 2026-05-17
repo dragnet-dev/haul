@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7534 — Event Log Clearing (teamxxx)'
+id: e23653c8-0028-5be8-9072-bd31ce0201b8
+status: deprecated
+description: |
+  Detects event log clearing associated with teamxxx ransomware.
+  Incident: dragnet-ransomware-2025-7534
+  Ransomware victim claim by teamxxx: ationwidecare.org; country: GB; sector: Healthcare
+  First observed: 2025-04-28.
+references:
+  - http://tp5cwh6d2b5hekcg6jlhoe6mawa7dlwiv47epvnfmzuaaur2dnaa3uid.onion/nationwide/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

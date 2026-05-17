@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3243 — Vulnerable Base Image Pull'
+id: e5399e8c-1a8a-5470-b461-523b05fedf7b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3243 (Tier 2, CVSS 9.8)
+  libautotrace.a in AutoTrace 0.31.1 has a heap-based buffer overflow in the ReadImage function in input-bmp.c:496:29.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-9172
+  - https://blogs.gentoo.org/ago/2017/05/20/autotrace-multiple-vulnerabilities-the-autotrace-nightmare/
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-9172
+  - https://www.cve.org/CVERecord?id=CVE-2017-9172
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

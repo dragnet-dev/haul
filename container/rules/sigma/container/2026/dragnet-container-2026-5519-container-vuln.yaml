@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5519 — Vulnerable Base Image Pull'
+id: 71daf2df-1ffe-5c22-b347-d697f67b277c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5519 (Tier 2, CVSS 9.8)
+  xrdp is an open source RDP server. xrdp before v0.10.5 contains an unauthenticated stack-based buffer overflow vulnerability. The issue stems from improper bounds checking when processing user domain information during the connection sequence. If exploited, the vulnerability could allow remote attackers to execute arbitrary code on the target system. The vulnerability allows an attacker to overwrite the stack buffer and the return address, which could theoretically be used to redirect the execution flow. The impact of this vulnerability is lessened if a compiler flag has been used to build the xrdp executable with stack canary protection. If this is the case, a second vulnerability would need to be used to leak the stack canary value. Upgrade to version 0.10.5 to receive a patch. Additionally, do not rely on stack canary protection on production systems.
+references:
+  - https://github.com/neutrinolabs/xrdp/commit/488c8c7d4d189514a366cd8301b6e816c5218ffa
+  - https://github.com/neutrinolabs/xrdp/releases/tag/v0.10.5
+  - https://github.com/neutrinolabs/xrdp/security/advisories/GHSA-rwvg-gp87-gh6f
+  - https://lists.debian.org/debian-lts-announce/2026/02/msg00003.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

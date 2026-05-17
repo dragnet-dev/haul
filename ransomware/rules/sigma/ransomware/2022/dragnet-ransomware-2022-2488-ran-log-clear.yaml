@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2488 — Event Log Clearing (lv)'
+id: 6fd4a97a-9629-5adf-8149-d00451bd2053
+status: deprecated
+description: |
+  Detects event log clearing associated with lv ransomware.
+  Incident: dragnet-ransomware-2022-2488
+  Ransomware victim claim by lv: Importador Ferretero Trujillo Cia. Ltda; sector: Construction
+  First observed: 2022-04-15.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

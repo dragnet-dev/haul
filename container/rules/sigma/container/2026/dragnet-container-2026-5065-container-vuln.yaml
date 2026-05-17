@@ -1,0 +1,55 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5065 — Vulnerable Base Image Pull'
+id: cc163400-782a-551b-bd54-8eb3d5524292
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5065 (Tier 2, CVSS 9.8)
+  Various `node:fs` functions allow specifying paths as either strings or `Uint8Array` objects. In Node.js environments, the `Buffer` class extends the `Uint8Array` class. Node.js prevents path traversal through strings (see CVE-2023-30584) and `Buffer` objects (see CVE-2023-32004), but not through non-`Buffer` `Uint8Array` objects.
+
+This is distinct from CVE-2023-32004 which only referred to `Buffer` objects. However, the vulnerability follows the same pattern using `Uint8Array` instead of `Buffer`.
+
+Please note that at the time this CVE was issued, the permission model is an experimental feature of Node.js.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-39332
+  - https://access.redhat.com/errata/RHSA-2023:7205
+  - https://access.redhat.com/security/cve/CVE-2023-39332
+  - https://bugzilla.redhat.com/2242803
+  - https://bugzilla.redhat.com/2244104
+  - https://bugzilla.redhat.com/2244413
+  - https://bugzilla.redhat.com/2244414
+  - https://bugzilla.redhat.com/2244415
+  - https://bugzilla.redhat.com/2244418
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2242803
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2244104
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2244413
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2244414
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2244415
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2244418
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'oraclelinux:8'
+      - 'photon os:5.0'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3541 — Event Log Clearing (insomnia)'
+id: 529540c7-a7ef-5e94-a6e3-3e012a912e1a
+status: deprecated
+description: |
+  Detects event log clearing associated with insomnia ransomware.
+  Incident: dragnet-ransomware-2025-3541
+  Ransomware victim claim by insomnia: Anatomic Clinical Laboratory Associates; country: US; sector: Healthcare
+  First observed: 2025-11-25.
+references:
+  - http://i62huw7ve22rpyw6lnq3kmfump2dmsg4xpveec3ere73njwatrz74gad.onion/Company/ACLA/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

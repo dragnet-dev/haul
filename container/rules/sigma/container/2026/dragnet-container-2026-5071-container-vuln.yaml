@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5071 — Vulnerable Base Image Pull'
+id: f5d32eab-a83b-5a58-b5ac-645eb06746da
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5071 (Tier 2, CVSS 9.8)
+  A path traversal vulnerability was identified in Samba when processing client pipe names connecting to Unix domain sockets within a private directory. Samba typically uses this mechanism to connect SMB clients to remote procedure call (RPC) services like SAMR LSA or SPOOLSS, which Samba initiates on demand. However, due to inadequate sanitization of incoming client pipe names, allowing a client to send a pipe name containing Unix directory traversal characters (../). This could result in SMB clients connecting as root to Unix domain sockets outside the private directory. If an attacker or client managed to send a pipe name resolving to an external service using an existing Unix domain socket, it could potentially lead to unauthorized access to the service and consequential adverse events, including compromise or service crashes.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-3961
+  - https://access.redhat.com/errata/RHSA-2023:6209
+  - https://access.redhat.com/errata/RHSA-2023:6744
+  - https://access.redhat.com/errata/RHSA-2023:7371
+  - https://access.redhat.com/errata/RHSA-2023:7408
+  - https://access.redhat.com/errata/RHSA-2023:7464
+  - https://access.redhat.com/errata/RHSA-2023:7467
+  - https://access.redhat.com/security/cve/CVE-2023-3961
+  - https://bugzilla.redhat.com/2241881
+  - https://bugzilla.redhat.com/2241882
+  - https://bugzilla.redhat.com/2241884
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2241881
+  - https://bugzilla.samba.org/show_bug.cgi?id=15422
+  - https://errata.almalinux.org/9/ALSA-2023-6744.html
+  - https://linux.oracle.com/cve/CVE-2023-3961.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

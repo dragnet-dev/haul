@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3413 — Recovery Inhibition (tridentlocker)'
+id: 86a5b51d-cfc1-5604-b000-235aaef9a435
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with tridentlocker ransomware.
+  Incident: dragnet-ransomware-2026-3413
+  Ransomware victim claim by tridentlocker: TMPartner; country: JP; sector: Not Found
+  First observed: 2026-02-06.
+references:
+  - http://tridentfrdy6jydwywfx4vx422vnto7pktao2gyx2qdcwjanogq454ad.onion/article/200c65ca-7f2c-48b3-a76b-9d05421afc68
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

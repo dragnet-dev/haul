@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5741 — Event Log Clearing (sarcoma)'
+id: b9145466-cf9f-513d-8ce6-6dea0d553f13
+status: deprecated
+description: |
+  Detects event log clearing associated with sarcoma ransomware.
+  Incident: dragnet-ransomware-2024-5741
+  Ransomware victim claim by sarcoma: Brasilmad; country: BR; sector: Agriculture and Food Production
+  First observed: 2024-12-12.
+references:
+  - brasilmad.com.br
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

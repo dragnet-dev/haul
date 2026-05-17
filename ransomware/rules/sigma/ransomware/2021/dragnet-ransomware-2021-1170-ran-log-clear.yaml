@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1170 — Event Log Clearing (maui)'
+id: 6625846d-7455-50b6-acb1-dbcee7d47b36
+status: deprecated
+description: |
+  Detects event log clearing associated with maui ransomware.
+  Incident: dragnet-ransomware-2021-1170
+  Ransomware victim claim by maui: Unnamed medical facilities (12); country: US; sector: Healthcare
+  First observed: 2021-05-01.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

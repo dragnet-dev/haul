@@ -1,0 +1,57 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3958 — Vulnerable Base Image Pull'
+id: 606ebc44-fd85-5420-8772-0a2800d08a17
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3958 (Tier 2, CVSS 9.8)
+  Insufficient sanitization of arguments passed to rsync can bypass the restrictions imposed by rssh, a restricted shell that should restrict users to perform only rsync operations, resulting in the execution of arbitrary shell commands.
+references:
+  - http://seclists.org/fulldisclosure/2021/May/78
+  - http://www.securityfocus.com/bid/106839
+  - https://lists.debian.org/debian-lts-announce/2019/02/msg00007.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HO3MDU3AH5SLYBKHH5PJ6PHC63ASIF42/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KR2OHTHMJVV4DO3HDRFQQZ5JENHDJQEN/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/T42YYNWJZG422GATWAHAEK4A24OKY557/
+  - https://salsa.debian.org/debian/rssh/commit/3536b6d8e77ece7d66215fe1d08cf633d6b1c97b (regression fix)
+  - https://security.gentoo.org/glsa/202007-29
+  - https://tracker.debian.org/news/1026713/accepted-rssh-234-5deb9u2-source-amd64-into-stable-embargoed-stable/
+  - https://ubuntu.com/security/notices/USN-3946-1
+  - https://usn.ubuntu.com/3946-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-3463
+  - https://www.debian.org/security/2019/dsa-4382
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'amazonlinux:1'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7708 — Event Log Clearing (underground)'
+id: 514e9064-b536-5ad1-9d81-a5e4e276d8bd
+status: deprecated
+description: |
+  Detects event log clearing associated with underground ransomware.
+  Incident: dragnet-ransomware-2025-7708
+  Ransomware victim claim by underground: Afa Systems Ltd.; country: CA; sector: Technology
+  First observed: 2025-02-13.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packages/39dc0afb-d3e1-49f9-8645-62276e3f26eb
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

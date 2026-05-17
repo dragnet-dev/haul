@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6221 — Event Log Clearing (radar)'
+id: ad057bb3-0420-5fb5-91bf-cb48aec725b6
+status: deprecated
+description: |
+  Detects event log clearing associated with radar ransomware.
+  Incident: dragnet-ransomware-2025-6221
+  Ransomware victim claim by radar: Fouad Alghanim & Sons Group of Companies Holding W.L.L.; country: KW; sector: Business Services
+  First observed: 2025-10-31.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

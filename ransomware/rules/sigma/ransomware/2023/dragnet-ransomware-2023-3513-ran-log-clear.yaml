@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3513 — Event Log Clearing (lorenz)'
+id: a4e09b96-78b9-56cb-a671-e3a25408b2a8
+status: deprecated
+description: |
+  Detects event log clearing associated with lorenz ransomware.
+  Incident: dragnet-ransomware-2023-3513
+  Ransomware victim claim by lorenz: AllCare Pharmacy; sector: Healthcare
+  First observed: 2023-10-02.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

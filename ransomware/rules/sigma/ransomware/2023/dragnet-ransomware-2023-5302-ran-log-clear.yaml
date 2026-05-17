@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5302 — Event Log Clearing (underground)'
+id: 8027e18d-abfb-59bc-a26b-ab8a77a2d12e
+status: deprecated
+description: |
+  Detects event log clearing associated with underground ransomware.
+  Incident: dragnet-ransomware-2023-5302
+  Ransomware victim claim by underground: tpa-group.sk; country: SK; sector: Business Services
+  First observed: 2023-07-04.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packages/ebd86cfc-30b9-4ef1-84a3-8ac2aa6bbe45
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

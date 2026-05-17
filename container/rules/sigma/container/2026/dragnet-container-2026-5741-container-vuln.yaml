@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5741 — Vulnerable Base Image Pull'
+id: 92548b9c-e88f-5586-af6e-4f4d74ab3c84
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5741 (Tier 2, CVSS 9.8)
+  Rack::Session is a session management implementation for Rack. From 2.0.0 to before 2.1.2, Rack::Session::Cookie incorrectly handles decryption failures when configured with secrets:. If cookie decryption fails, the implementation falls back to a default decoder instead of rejecting the cookie. This allows an unauthenticated attacker to supply a crafted session cookie that is accepted as valid session data without knowledge of any configured secret. Because this mechanism is used to load session state, an attacker can manipulate session contents and potentially gain unauthorized access. This vulnerability is fixed in 2.1.2.
+references:
+  - https://github.com/advisories/GHSA-33qg-7wpp-89cq
+  - https://github.com/rack/rack-session
+  - https://github.com/rack/rack-session/security/advisories/GHSA-33qg-7wpp-89cq
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/rack-session/CVE-2026-39324.yml
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-39324
+  - https://ubuntu.com/security/notices/USN-8190-1
+  - https://ubuntu.com/security/notices/USN-8190-2
+  - https://www.cve.org/CVERecord?id=CVE-2026-39324
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

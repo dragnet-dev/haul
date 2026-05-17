@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0167 — Event Log Clearing (abyss)'
+id: 09ceb020-2e01-5318-83d8-dcd7e9d86442
+status: deprecated
+description: |
+  Detects event log clearing associated with abyss ransomware.
+  Incident: dragnet-ransomware-2024-0167
+  Ransomware victim claim by abyss: malca-amit.com; country: IL; sector: Transportation/Logistics
+  First observed: 2024-06-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

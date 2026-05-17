@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2893 — Recovery Inhibition (incransom)'
+id: 08c10a32-48e3-5097-a8b3-8408073bba04
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with incransom ransomware.
+  Incident: dragnet-ransomware-2024-2893
+  Ransomware victim claim by incransom: Washington School For The Deaf; country: US; sector: Education
+  First observed: 2024-01-12.
+references:
+  - http://incapt.blog/blog/leak/14136BB1D6BEC8B0
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

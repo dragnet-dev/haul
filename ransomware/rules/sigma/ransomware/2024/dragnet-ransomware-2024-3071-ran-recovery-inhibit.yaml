@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3071 — Recovery Inhibition (knight)'
+id: 6ca0c094-6244-5f33-8f24-9af76fd2f03a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with knight ransomware.
+  Incident: dragnet-ransomware-2024-3071
+  Ransomware victim claim by knight: ABECOM LTDA; country: BR; sector: Business Services
+  First observed: 2024-01-29.
+references:
+  - http://knight3xppu263m7g4ag3xlit2qxpryjwueobh7vjdc3zrscqlfu3pqd.onion/f9d804bf-a032-42a5-a6bc-78175ed481c2/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

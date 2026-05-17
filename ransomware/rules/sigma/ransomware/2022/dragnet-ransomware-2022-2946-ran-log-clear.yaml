@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2946 — Event Log Clearing (snatch)'
+id: 580514e8-d23f-5d39-b7b6-dd762844b176
+status: deprecated
+description: |
+  Detects event log clearing associated with snatch ransomware.
+  Incident: dragnet-ransomware-2022-2946
+  Ransomware victim claim by snatch: Private company #2; sector: Not Found
+  First observed: 2022-03-03.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

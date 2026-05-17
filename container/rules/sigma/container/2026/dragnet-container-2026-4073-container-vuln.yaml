@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4073 — Vulnerable Base Image Pull'
+id: 394367f2-2fd1-5c45-8f0c-3ab97229fbcc
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4073 (Tier 2, CVSS 9.8)
+  Faye (NPM, RubyGem) versions greater than 0.5.0 and before 1.0.4, 1.1.3 and 1.2.5, has the potential for authentication bypass in the extension system. The vulnerability allows any client to bypass checks put in place by server-side extensions, by appending extra segments to the message channel. It is patched in versions 1.0.4, 1.1.3 and 1.2.5.
+references:
+  - https://github.com/faye/faye
+  - https://github.com/faye/faye/commit/65d297d341b607f3cb0b5fa6021a625a991cc30e
+  - https://github.com/faye/faye/security/advisories/GHSA-qpg4-4w7w-2mq5
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/faye/CVE-2020-11020.yml
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-11020
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

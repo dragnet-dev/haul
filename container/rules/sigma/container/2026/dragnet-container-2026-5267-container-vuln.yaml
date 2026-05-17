@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5267 — Vulnerable Base Image Pull'
+id: c0b9fa29-5969-5e30-900d-cb1a5163285a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5267 (Tier 2, CVSS 9.8)
+  Insufficient Session Expiration vulnerability in Apache Airflow Providers FAB.
+
+This issue affects Apache Airflow Providers FAB: 1.2.1 (when used with Apache Airflow 2.9.3) and FAB 1.2.0 for all Airflow versions. The FAB provider prevented the user from logging out.  
+
+* FAB provider 1.2.1 only affected Airflow 2.9.3 (earlier and later versions of Airflow are not affected)
+
+* FAB provider 1.2.0 affected all versions of Airflow.
+
+Users who run Apache Airflow 2.9.3 are recommended to upgrade to Apache Airflow Providers FAB version 1.2.2 which fixes the issue.
+
+Users who run Any Apache Airflow version and have FAB provider 1.2.0 are recommended to upgrade to Apache Airflow Providers FAB version 1.2.2 which fixes the issue.
+
+Also upgrading Apache Airflow to latest version available is recommended.
+
+Note: Early version of Airflow reference container images of Airflow 2.9.3 and constraint files contained FAB provider 1.2.1 version, but this is fixed in updated versions of the images. 
+
+Users are advised to pull the latest Airflow images or reinstall FAB provider according to the current constraints.
+references:
+  - http://www.openwall.com/lists/oss-security/2024/08/04/2
+  - https://github.com/apache/airflow
+  - https://github.com/apache/airflow/pull/40784
+  - https://lists.apache.org/thread/2zoo8cjlwfjhbfdxfgltcm0hnc0qmc52
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-42447
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

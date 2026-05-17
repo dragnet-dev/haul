@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6651 — Event Log Clearing (RunSomeWares)'
+id: 5a513157-a925-589a-b2f1-5136457326c8
+status: deprecated
+description: |
+  Detects event log clearing associated with RunSomeWares ransomware.
+  Incident: dragnet-ransomware-2025-6651
+  Ransomware victim claim by RunSomeWares: F&V Capital Management, LLC (FVCM); country: US; sector: Financial Services
+  First observed: 2025-01-01.
+references:
+  - http://oow7rehrxlzpy6vh3hezl2khstkpa6s7wx3iit74tr6xbjibupld5iad.onion/fvcm/fvcm.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

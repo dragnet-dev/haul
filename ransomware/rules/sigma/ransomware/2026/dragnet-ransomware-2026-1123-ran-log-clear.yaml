@@ -1,0 +1,35 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1123 — Event Log Clearing (handala)'
+id: cd292760-2b6f-5ef0-8a16-d363bb5eeb9a
+status: deprecated
+description: |
+  Detects event log clearing associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1123
+  Associated with VOID MANTICORE.
+  Ransomware victim claim by handala: Handala Hack Strikes 27 Companies for Minab’s Innocents; sector: Not Found
+  First observed: 2026-04-05.
+references:
+  - https://handala-hack.tw/handala-hack-strikes-27-zionist-companies-for-minabs-innocents/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.void-manticore
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

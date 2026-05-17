@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1146 — Event Log Clearing (handala)'
+id: 88944110-961b-5e42-ac8e-2fc31ad4391f
+status: deprecated
+description: |
+  Detects event log clearing associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1146
+  Ransomware victim claim by handala: Publication of Photos and Personal Details of IranWire’s Traitorous Members; sector: Not Found
+  First observed: 2026-04-03.
+references:
+  - https://handala-hack.tw/publication-of-photos-and-personal-details-of-iranwires-traitorous-members/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5407 — Vulnerable Base Image Pull'
+id: 525b544d-8d0b-5c3b-a67c-c03505a19bfe
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5407 (Tier 2, CVSS 9.8)
+  ruby-saml provides security assertion markup language (SAML) single sign-on (SSO) for Ruby. An authentication bypass vulnerability was found in ruby-saml prior to versions 1.12.4 and 1.18.0 due to a parser differential. ReXML and Nokogiri parse XML differently; the parsers can generate entirely different document structures from the same XML input. That allows an attacker to be able to execute a Signature Wrapping attack. This issue may lead to authentication bypass. Versions 1.12.4 and 1.18.0 fix the issue.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-25291
+  - https://github.com/advisories/GHSA-4vc4-m8qh-g8jm
+  - https://securitylab.github.com/advisories/GHSL-2024-329_GHSL-2024-330_ruby-saml
+  - https://github.com/SAML-Toolkits/ruby-saml
+  - https://github.com/SAML-Toolkits/ruby-saml/commit/e76c5b36bac40aedbf1ba7ffaaf495be63328cd9
+  - https://github.com/SAML-Toolkits/ruby-saml/commit/e9c1cdbd0f9afa467b585de279db0cbd0fb8ae97
+  - https://github.com/SAML-Toolkits/ruby-saml/releases/tag/v1.12.4
+  - https://github.com/SAML-Toolkits/ruby-saml/releases/tag/v1.18.0
+  - https://github.com/SAML-Toolkits/ruby-saml/security/advisories/GHSA-4vc4-m8qh-g8jm
+  - https://github.com/omniauth/omniauth-saml/security/advisories/GHSA-hw46-3hmr-x9xv
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/ruby-saml/CVE-2025-25291.yml
+  - https://about.gitlab.com/releases/2025/03/12/patch-release-gitlab-17-9-2-released
+  - https://github.blog/security/sign-in-as-anyone-bypassing-saml-sso-authentication-with-parser-differentials
+  - https://lists.debian.org/debian-lts-announce/2025/04/msg00011.html
+  - https://news.ycombinator.com/item?id=43374519
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

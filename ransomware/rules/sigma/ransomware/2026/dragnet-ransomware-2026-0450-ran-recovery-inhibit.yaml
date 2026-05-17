@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0450 — Recovery Inhibition (bravox)'
+id: a12d0bb9-0413-5032-a934-88a5c30ddfff
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with bravox ransomware.
+  Incident: dragnet-ransomware-2026-0450
+  Ransomware victim claim by bravox: UMBERG TREUHAND AG; country: CH; sector: Financial Services
+  First observed: 2026-03-11.
+references:
+  - http://bravoxxwcfz5qk43ychgveprpd5mw5hvxfs4a2uz2okx7mumiht4fzyd.onion/blog/a25f4a62-4dc0-4ebe-aef8-d10d2e1fd5e4
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

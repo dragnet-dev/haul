@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5735 — Vulnerable Base Image Pull'
+id: b67a8df6-f20e-573e-83e3-da38cef56fec
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5735 (Tier 2, CVSS 9.1)
+  LiteLLM is a proxy server (AI Gateway) to call LLM APIs in OpenAI (or native) format. Prior to 1.83.0, when JWT authentication is enabled (enable_jwt_auth: true), the OIDC userinfo cache uses token[:20] as the cache key. JWT headers produced by the same signing algorithm generate identical first 20 characters. This configuration option is not enabled by default. Most instances are not affected. An unauthenticated attacker can craft a token whose first 20 characters match a legitimate user's cached token. On cache hit, the attacker inherits the legitimate user's identity and permissions. This affects deployments with JWT/OIDC authentication enabled. Fixed in v1.83.0.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-35030
+  - https://github.com/BerriAI/litellm
+  - https://github.com/BerriAI/litellm/security/advisories/GHSA-jjhc-v7c2-5hh6
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-35030
+  - https://www.cve.org/CVERecord?id=CVE-2026-35030
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

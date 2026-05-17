@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4093 — Event Log Clearing (metaencryptor)'
+id: 37e2f14c-de19-57be-bec5-d1bdf2046513
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2024-4093
+  Ransomware victim claim by metaencryptor: Vega Reederei GmbH & Co. KG; country: DE; sector: Transportation/Logistics
+  First observed: 2024-05-07.
+references:
+  - https://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:df11dc83a73c63db78f815aa921b924c/0AFC:3b95898327b5fadbd8f2902d1ae0a3b730ab7072fb7f49060d23a3630051766e/0AFC:dd79f4da74f7dcc9feacf7ab4ae60eaa95c755f22ab7deb77046f57f27329434b33ac95193225d49d5b1baae55685d90
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

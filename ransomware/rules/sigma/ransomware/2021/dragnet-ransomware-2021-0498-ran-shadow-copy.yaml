@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0498 — Shadow Copy Deletion (cuba)'
+id: e179473d-8fa2-526d-9175-09fd55910e2d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cuba ransomware.
+  Incident: dragnet-ransomware-2021-0498
+  Ransomware victim claim by cuba: First Coast Logistics Services, Inc. was founded in 1999. The Company's line of business i; sector: Transportation/Logistics
+  First observed: 2021-09-09.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

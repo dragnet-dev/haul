@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5593 — Vulnerable Base Image Pull'
+id: b329bf45-8b05-5255-bf52-a90adc793a0e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5593 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C. In 2.16 and earlier, a buffer overflow vulnerability exists in PJNATH ICE Session when processing credentials with excessively long usernames.
+references:
+  - https://github.com/pjsip/pjproject/commit/063b3a155f163cc5a9a1df2c56b6720fd3a0dbb0
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-j29p-pvh2-pvqp
+  - https://ubuntu.com/security/notices/USN-8122-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-25994
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

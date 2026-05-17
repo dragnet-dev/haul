@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2720 — Vulnerable Base Image Pull'
+id: 9122bf5d-3702-529b-aadc-c9ce5ddcaab6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2720 (Tier 2, CVSS 9.8)
+  Gifsicle gifview 1.89 and older is vulnerable to a use-after-free in the read_gif function resulting potential code execution
+references:
+  - https://github.com/kohler/gifsicle/commit/81fd7823f6d9c85ab598bc850e40382068361185
+  - https://github.com/kohler/gifsicle/issues/114
+  - https://lists.debian.org/debian-lts-announce/2018/01/msg00006.html
+  - https://ubuntu.com/security/notices/USN-4803-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-1000421
+  - https://www.debian.org/security/2018/dsa-4084
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

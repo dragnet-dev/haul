@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5483 — Vulnerable Base Image Pull'
+id: 20d0c622-b9a1-5247-9113-0fd63b977fd6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5483 (Tier 2, CVSS 9.8)
+  Squid is a caching proxy for the Web. In versions 6.3 and below, Squid is vulnerable to a heap buffer overflow and possible remote code execution attack when processing URN due to incorrect buffer management. This has been fixed in version 6.4. To work around this issue, disable URN access permissions.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-54574
+  - https://github.com/squid-cache/squid/commit/a27bf4b84da23594150c7a86a23435df0b35b988
+  - https://github.com/squid-cache/squid/releases/tag/SQUID_6_4
+  - https://github.com/squid-cache/squid/security/advisories/GHSA-w4gv-vw3f-29g3
+  - http://www.openwall.com/lists/oss-security/2025/11/05/5
+  - https://access.redhat.com/security/cve/CVE-2025-54574
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2245914
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2252918
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2386026
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-49288
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5824
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-54574
+  - https://errata.rockylinux.org/RLSA-2023:7668
+  - https://linux.oracle.com/cve/CVE-2025-54574.html
+  - https://linux.oracle.com/errata/ELSA-2025-14414.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

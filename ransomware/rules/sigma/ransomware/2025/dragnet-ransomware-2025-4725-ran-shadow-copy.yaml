@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4725 — Shadow Copy Deletion (payoutsking)'
+id: c582e366-e08b-5b89-8d89-d4d7ab4926c3
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with payoutsking ransomware.
+  Incident: dragnet-ransomware-2025-4725
+  Ransomware victim claim by payoutsking: Belmont Engineered Plastics; country: US; sector: Manufacturing
+  First observed: 2025-05-07.
+references:
+  - https:/payoutsgn7cy6uliwevdqspncjpfxpmzgirwl2au65la7rfs5x3qnbqd.onion/detail_post/2lrF7AcC1hTdUbUyrIRz
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

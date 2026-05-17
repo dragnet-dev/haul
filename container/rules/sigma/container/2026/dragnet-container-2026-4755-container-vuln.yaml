@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4755 — Vulnerable Base Image Pull'
+id: 9067c4e1-2f2e-50dc-a366-b7f49da3c53c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4755 (Tier 2, CVSS 9.8)
+  PHP-Memcached v2.2.0 and below contains an improper NULL termination which allows attackers to execute CLRF injection. Note: Third parties have disputed this as not affecting PHP-Memcached directly.
+references:
+  - https://github.com/php-memcached-dev/php-memcached/issues/519
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-26635
+  - https://xhzeem.me/posts/Php5-memcached-Injection-Bypass/read/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'cbl-mariner:2.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

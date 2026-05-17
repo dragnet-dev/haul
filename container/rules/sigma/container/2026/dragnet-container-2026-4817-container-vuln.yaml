@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4817 — Vulnerable Base Image Pull'
+id: fc4d88c5-37b9-5485-bd6b-1806cd131d47
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4817 (Tier 2, CVSS 9.8)
+  Apache Commons Configuration performs variable interpolation, allowing properties to be dynamically evaluated and expanded. The standard format for interpolation is "${prefix:name}", where "prefix" is used to locate an instance of org.apache.commons.configuration2.interpol.Lookup that performs the interpolation. Starting with version 2.4 and continuing through 2.7, the set of default Lookup instances included interpolators that could result in arbitrary code execution or contact with remote servers. These lookups are: - "script" - execute expressions using the JVM script execution engine (javax.script) - "dns" - resolve dns records - "url" - load values from urls, including from remote servers Applications using the interpolation defaults in the affected versions may be vulnerable to remote code execution or unintentional contact with remote servers if untrusted configuration values are used. Users are recommended to upgrade to Apache Commons Configuration 2.8.0, which disables the problematic interpolators by default.
+references:
+  - http://www.openwall.com/lists/oss-security/2022/07/06/5
+  - http://www.openwall.com/lists/oss-security/2022/11/15/4
+  - https://access.redhat.com/security/cve/CVE-2022-33980
+  - https://commons.apache.org/proper/commons-configuration/changes-report.html#a2.8.0
+  - https://github.com/apache/commons-configuration
+  - https://issues.apache.org/jira/browse/CONFIGURATION-753
+  - https://issues.apache.org/jira/browse/CONFIGURATION-764
+  - https://lists.apache.org/thread/tdf5n7j80lfxdhs2764vn0xmpfodm87s
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-33980
+  - https://security.netapp.com/advisory/ntap-20221028-0015
+  - https://security.netapp.com/advisory/ntap-20221028-0015/
+  - https://www.cve.org/CVERecord?id=CVE-2022-33980
+  - https://www.debian.org/security/2022/dsa-5290
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

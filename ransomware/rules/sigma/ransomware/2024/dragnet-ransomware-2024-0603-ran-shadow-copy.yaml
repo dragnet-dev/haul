@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0603 — Shadow Copy Deletion (apos)'
+id: f2e5d71b-4e44-5b3e-9ac8-c011774dac5c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with apos ransomware.
+  Incident: dragnet-ransomware-2024-0603
+  Ransomware victim claim by apos: Drogaria Preco Bom; country: BR; sector: Business Services
+  First observed: 2024-04-26.
+references:
+  - https://apos.blog/apos-raas/Drogaria-Preco-Bom-314d05883c88439791995e7f9a288a53
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

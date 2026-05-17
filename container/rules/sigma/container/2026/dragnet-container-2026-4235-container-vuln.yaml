@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4235 — Vulnerable Base Image Pull'
+id: ffa3f74d-640d-5c6b-bfb4-026951ab0c10
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4235 (Tier 2, CVSS 9.8)
+  Exim 4 before 4.92 allows Integer Overflow to Buffer Overflow, in which an unauthenticated remote attacker can execute arbitrary code by leveraging the mishandling of continuation lines during header-length restriction.
+references:
+  - http://www.openwall.com/lists/oss-security/2021/07/25/1
+  - http://www.openwall.com/lists/oss-security/2021/08/03/1
+  - https://ubuntu.com/security/notices/USN-4934-1
+  - https://ubuntu.com/security/notices/USN-4934-2
+  - https://www.cve.org/CVERecord?id=CVE-2020-28020
+  - https://www.exim.org/static/doc/security/CVE-2020-qualys/CVE-2020-28020-HSIZE.txt
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

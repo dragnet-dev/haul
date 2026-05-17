@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5866 — Shadow Copy Deletion (spacebears)'
+id: 3ddc43bf-6508-5088-8814-e2d692777fc2
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with spacebears ransomware.
+  Incident: dragnet-ransomware-2024-5866
+  Ransomware victim claim by spacebears: InVogue Women Healthcare, PLLC (USA,TX); country: US; sector: Healthcare
+  First observed: 2024-05-10.
+references:
+  - http://5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid.onion/companies/13/invogue-women-healthcare-pllc-usatx
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

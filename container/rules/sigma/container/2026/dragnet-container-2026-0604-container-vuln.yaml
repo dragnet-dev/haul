@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0604 — Vulnerable Base Image Pull'
+id: 06c1248b-e707-5485-8f26-4cf986a965ed
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0604 (Tier 2, CVSS 9.3)
+  Eval injection vulnerability in scripts/uscan.pl before Rev 1984 in devscripts allows remote attackers to execute arbitrary Perl code via crafted pathnames on distribution servers for upstream source code used in Debian GNU/Linux packages.
+references:
+  - http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=515209
+  - http://svn.debian.org/wsvn/devscripts/trunk/scripts/uscan.pl?op=diff&rev=1984&sc=1
+  - http://svn.debian.org/wsvn/devscripts/trunk/scripts/uscan.pl?op=log&rev=0&sc=1&isdir=0
+  - http://www.debian.org/security/2009/dsa-1878
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

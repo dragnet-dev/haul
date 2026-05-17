@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2342 — Recovery Inhibition (direwolf)'
+id: d93a83af-7fb7-549c-9b19-35aa20923331
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with direwolf ransomware.
+  Incident: dragnet-ransomware-2025-2342
+  Ransomware victim claim by direwolf: Electricidad Panamericana; country: AR; sector: Energy
+  First observed: 2025-11-21.
+references:
+  - http://direwolfcdkv5whaz2spehizdg22jsuf5aeje4asmetpbt6ri4jnd4qd.onion/api/public/articles/48
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

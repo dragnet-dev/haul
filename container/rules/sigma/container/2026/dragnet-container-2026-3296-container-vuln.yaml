@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3296 — Vulnerable Base Image Pull'
+id: 4597606c-0492-599e-bcf8-84eaf4f9f89b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3296 (Tier 2, CVSS 9.8)
+  rsyslog librelp version 1.2.14 and earlier contains a Buffer Overflow vulnerability in the checking of x509 certificates from a peer that can result in Remote code execution. This attack appear to be exploitable a remote attacker that can connect to rsyslog and trigger a stack buffer overflow by sending a specially crafted x509 certificate.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-1000140
+  - https://github.com/rsyslog/librelp/blob/532aa362f0f7a8d037505b0a27a1df452f9bac9e/src/tcp.c#L1205
+  - http://packetstormsecurity.com/files/172829/librelp-Remote-Code-Execution.html
+  - https://access.redhat.com/errata/RHSA-2018:1223
+  - https://access.redhat.com/errata/RHSA-2018:1225
+  - https://access.redhat.com/errata/RHSA-2018:1701
+  - https://access.redhat.com/errata/RHSA-2018:1702
+  - https://access.redhat.com/errata/RHSA-2018:1703
+  - https://access.redhat.com/errata/RHSA-2018:1704
+  - https://access.redhat.com/errata/RHSA-2018:1707
+  - https://access.redhat.com/security/cve/CVE-2018-1000140
+  - https://lgtm.com/rules/1505913226124/
+  - https://linux.oracle.com/cve/CVE-2018-1000140.html
+  - https://linux.oracle.com/errata/ELSA-2018-1225.html
+  - https://security.gentoo.org/glsa/201804-21
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

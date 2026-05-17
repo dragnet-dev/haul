@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1727 — Event Log Clearing (m3rx)'
+id: f7b1991e-544c-52c8-be1e-a734420d1851
+status: deprecated
+description: |
+  Detects event log clearing associated with m3rx ransomware.
+  Incident: dragnet-ransomware-2026-1727
+  Ransomware victim claim by m3rx: primeproperties.com.au; country: AU; sector: Consumer Services
+  First observed: 2026-04-29.
+references:
+  - http://4k6plf4h2cm2nco6ae3inrsxnmqgl6lllmwefydhnlcq4tuhwbj4qpad.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

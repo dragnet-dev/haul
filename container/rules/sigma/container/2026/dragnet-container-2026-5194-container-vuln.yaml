@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5194 — Vulnerable Base Image Pull'
+id: 692ca668-9836-5b6b-9a71-19476e0576ed
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5194 (Tier 2, CVSS 9.8)
+  The Apache Xerces C++ XML parser on versions 3.0.0 before 3.2.5 contains a use-after-free error triggered during the scanning of external DTDs.
+
+Users are recommended to upgrade to version 3.2.5 which fixes the issue, or mitigate the issue by disabling DTD processing. This can be accomplished via the DOM using a standard parser feature, or via SAX using the XERCES_DISABLE_DTD environment variable.
+
+This issue has been disclosed before as CVE-2018-1311, but unfortunately that advisory incorrectly stated the issue would be fixed in version 3.2.3 or 3.2.4.
+
+
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-1311
+  - https://access.redhat.com/security/cve/CVE-2024-23807
+  - https://github.com/apache/xerces-c/pull/54
+  - https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/issues/322
+  - https://issues.apache.org/jira/browse/XERCESC-2188
+  - https://lists.apache.org/thread/c497tgn864tsbm8w0bo3f0d81s07zk9r
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-23807
+  - https://nvd.nist.gov/vuln/detail/cve-2024-23807
+  - https://www.cve.org/CVERecord?id=CVE-2024-23807
+  - https://www.openwall.com/lists/oss-security/2024/02/16/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

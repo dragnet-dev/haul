@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0508 — Vulnerable Base Image Pull'
+id: 1fa5cd22-7d18-5d8e-9bbe-c9fdfaa2346f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0508 (Tier 2, CVSS 9.8)
+  The Net::Ping::External extension through 0.15 for Perl does not properly sanitize arguments (e.g., invalid hostnames) containing shell metacharacters before use of backticks in External.pm, allowing for shell command injection and arbitrary command execution if untrusted input is used.
+references:
+  - http://matthias.sdfeu.org/devel/net-ping-external-cmd-injection.patch
+  - http://www.openwall.com/lists/oss-security/2017/11/07/4
+  - https://bugs.debian.org/881097
+  - https://rt.cpan.org/Public/Bug/Display.html?id=33230
+  - https://www.cve.org/CVERecord?id=CVE-2008-7319
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

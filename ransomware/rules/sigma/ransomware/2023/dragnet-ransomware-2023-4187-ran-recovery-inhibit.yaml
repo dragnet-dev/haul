@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4187 — Recovery Inhibition (nokoyawa)'
+id: 48a4bd6f-692e-572a-ac85-4f3cb1eab32e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with nokoyawa ransomware.
+  Incident: dragnet-ransomware-2023-4187
+  Ransomware victim claim by nokoyawa: Roman Catholic Diocese of Albany; sector: Public Sector
+  First observed: 2023-08-03.
+references:
+  - http://nokoleakb76znymx443veg4n6fytx6spck6pc7nkr4dvfuygpub6jsid.onion/leak/64cbc48df6451b16e05ad4a2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

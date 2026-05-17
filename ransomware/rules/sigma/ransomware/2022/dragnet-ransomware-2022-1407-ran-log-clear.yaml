@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1407 — Event Log Clearing (kelvinsecurity)'
+id: 9c0ef848-c2c8-5854-b2cf-d0e24936d511
+status: deprecated
+description: |
+  Detects event log clearing associated with kelvinsecurity ransomware.
+  Incident: dragnet-ransomware-2022-1407
+  Ransomware victim claim by kelvinsecurity: Cellulant Corporation; sector: Financial Services
+  First observed: 2022-04-01.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

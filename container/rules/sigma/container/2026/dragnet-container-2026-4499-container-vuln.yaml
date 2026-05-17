@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4499 — Vulnerable Base Image Pull'
+id: 6c4baebf-8229-5840-9040-43fb82c0cf24
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4499 (Tier 2, CVSS 9.8)
+  A flaw was found in mbsync versions prior to 1.4.4. Due to inadequate handling of extremely large (>=2GiB) IMAP literals, malicious or compromised IMAP servers, and hypothetically even external email senders, could cause several different buffer overflows, which could conceivably be exploited for remote code execution.
+references:
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2028932
+  - https://lists.debian.org/debian-lts-announce/2022/07/msg00001.html
+  - https://security.gentoo.org/glsa/202208-15
+  - https://www.cve.org/CVERecord?id=CVE-2021-3657
+  - https://www.openwall.com/lists/oss-security/2021/12/03/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

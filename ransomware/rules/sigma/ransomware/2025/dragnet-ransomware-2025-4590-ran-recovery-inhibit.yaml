@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4590 — Recovery Inhibition (nitrogen)'
+id: 0732cf77-17d5-5c42-bc0f-0951e3a916db
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with nitrogen ransomware.
+  Incident: dragnet-ransomware-2025-4590
+  Ransomware victim claim by nitrogen: Coweta County School System; country: US; sector: Education
+  First observed: 2025-05-24.
+references:
+  - http://nitrogenczslprh3xyw6lh5xyjvmsz7ciljoqxxknd7uymkfetfhgvqd.onion/posts/68323b650722f4dbce964033
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

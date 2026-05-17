@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5015 — Vulnerable Base Image Pull'
+id: c98e4d8d-67a6-5aa4-b27f-983609822293
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5015 (Tier 2, CVSS 9.8)
+  pam_krb5 authenticates a user by essentially running kinit with the password, getting a ticket-granting ticket (tgt) from the Kerberos KDC (Key Distribution Center) over the network, as a way to verify the password. However, if a keytab is not provisioned on the system, pam_krb5 has no way to validate the response from the KDC, and essentially trusts the tgt provided over the network as being valid. In a non-default FreeBSD installation that leverages pam_krb5 for authentication and does not have a keytab provisioned, an attacker that is able to control both the password and the KDC responses can return a valid tgt, allowing authentication to occur for any user on the system.
+
+references:
+  - https://seclists.org/oss-sec/2023/q2/245
+  - https://security.FreeBSD.org/advisories/FreeBSD-SA-23:04.pam_krb5.asc
+  - https://security.FreeBSD.org/advisories/FreeBSD-SA-23:09.pam_krb5.asc
+  - https://security.netapp.com/advisory/ntap-20230714-0005/
+  - https://www.cve.org/CVERecord?id=CVE-2023-3326
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

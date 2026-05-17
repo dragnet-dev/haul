@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3850 — Vulnerable Base Image Pull'
+id: f929c623-6268-5ce7-a9cf-46a0f51b27e2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3850 (Tier 2, CVSS 9.8)
+  An issue was discovered in Suricata 4.1.4. By sending multiple IPv4 packets that have invalid IPv4Options, the function IPV4OptValidateTimestamp in decode-ipv4.c tries to access a memory region that is not allocated. There is a check for o->len < 5 (corresponding to 2 bytes of header and 3 bytes of data). Then, "flag = *(o->data + 3)" places one beyond the 3 bytes, because the code should have been "flag = *(o->data + 1)" instead.
+references:
+  - https://lists.openinfosecfoundation.org/pipermail/oisf-announce/
+  - https://suricata-ids.org/2019/09/24/suricata-4-1-5-released/
+  - https://www.code-intelligence.com/cve-2019-16411
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4889 — Vulnerable Base Image Pull'
+id: a67634af-fab8-5e55-89f0-36945a5ca830
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4889 (Tier 2, CVSS 9.6)
+  A vulnerability identified in the Tailscale Windows client allows a malicious website to reconfigure the Tailscale daemon `tailscaled`, which can then be used to remotely execute code. In the Tailscale Windows client, the local API was bound to a local TCP socket, and communicated with the Windows client GUI in cleartext with no Host header verification. This allowed an attacker-controlled website visited by the node to rebind DNS to an attacker-controlled DNS server, and then make local API requests in the client, including changing the coordination server to an attacker-controlled coordination server. An attacker-controlled coordination server can send malicious URL responses to the client, including pushing executables or installing an SMB share. These allow the attacker to remotely execute code on the node. All Windows clients prior to version v.1.32.3 are affected. If you are running Tailscale on Windows, upgrade to v1.32.3 or later to remediate the issue.
+references:
+  - https://emily.id.au/tailscale
+  - https://github.com/tailscale/tailscale
+  - https://github.com/tailscale/tailscale/releases/tag/v1.32.3
+  - https://github.com/tailscale/tailscale/security/advisories/GHSA-vqp6-rc3h-83cp
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-41924
+  - https://tailscale.com/security-bulletins/#ts-2022-004
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

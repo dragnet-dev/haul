@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4005 — Vulnerable Base Image Pull'
+id: a82a10a0-a08c-5410-8f87-2d95d0a2404f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4005 (Tier 2, CVSS 9.8)
+  The Debian python-rdflib-tools 4.2.2-1 package for RDFLib 4.2.2 has CLI tools that can load Python modules from the current working directory, allowing code injection, because "python -m" looks in this directory, as demonstrated by rdf2dot. This issue is specific to use of the debian/scripts directory.
+references:
+  - https://bugs.debian.org/921751
+  - https://lists.debian.org/debian-lts-announce/2019/03/msg00019.html
+  - https://lists.debian.org/debian-lts-announce/2021/12/msg00026.html
+  - https://ubuntu.com/security/notices/USN-4535-1
+  - https://usn.ubuntu.com/4535-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-7653
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

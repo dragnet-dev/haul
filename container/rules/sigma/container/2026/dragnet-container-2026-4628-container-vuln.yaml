@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4628 — Vulnerable Base Image Pull'
+id: 7e71c966-72fe-5fac-8d55-f6157a468296
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4628 (Tier 2, CVSS 10)
+  It was discovered, that redis, a persistent key-value database, due to a packaging issue, is prone to a (Debian-specific) Lua sandbox escape, which could result in remote code execution.
+references:
+  - http://packetstormsecurity.com/files/166885/Redis-Lua-Sandbox-Escape.html
+  - https://bugs.debian.org/1005787
+  - https://lists.debian.org/debian-security-announce/2022/msg00048.html
+  - https://security.netapp.com/advisory/ntap-20220331-0004/
+  - https://ubuntu.com/security/notices/USN-5316-1
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2022-0543
+  - https://www.cve.org/CVERecord?id=CVE-2022-0543
+  - https://www.debian.org/security/2022/dsa-5081
+  - https://www.ubercomp.com/posts/2022-01-20_redis_on_debian_rce
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

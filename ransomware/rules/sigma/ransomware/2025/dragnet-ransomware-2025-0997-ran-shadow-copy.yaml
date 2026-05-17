@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0997 — Shadow Copy Deletion (babuk2)'
+id: 183cd1a5-f027-59ae-a837-4fd65dddf06d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with babuk2 ransomware.
+  Incident: dragnet-ransomware-2025-0997
+  Ransomware victim claim by babuk2: mohrss.gov.cn ( Ministry of Human Resources and Social Security ); country: CN; sector: Public Sector
+  First observed: 2025-03-20.
+references:
+  - http:/bxwu33iefqfc3rxigynn3ghvq4gdw3gxgxna5m4aa3o4vscdeeqhiqad.onion/blog/510429e17162390c459b585ebf19fb755af45bb3ee0655376d0e6ec48fb7927d/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

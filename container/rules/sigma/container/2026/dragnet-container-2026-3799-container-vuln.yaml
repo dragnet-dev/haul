@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3799 — Vulnerable Base Image Pull'
+id: 39fbfe0b-344e-53cd-bbf0-2033868332d9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3799 (Tier 2, CVSS 9.1)
+  An issue was discovered in libmodbus before 3.0.7 and 3.1.x before 3.1.5. There is an out-of-bounds read for the MODBUS_FC_WRITE_MULTIPLE_REGISTERS case, aka VD-1301.
+references:
+  - https://github.com/stephane/libmodbus/commit/5ccdf5ef79d742640355d1132fa9e2abc7fbaefc
+  - https://libmodbus.org/2019/stable-and-development-releases/
+  - https://lists.debian.org/debian-lts-announce/2021/11/msg00020.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HAGHQFJTJCMYHW553OUWJ3YIJR6PJHB7/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/PRAQZXGAZY6UGWZ6CD33QEFLL7AWW233/
+  - https://ubuntu.com/security/notices/USN-5173-1
+  - https://ubuntu.com/security/notices/USN-5173-2
+  - https://www.cve.org/CVERecord?id=CVE-2019-14463
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

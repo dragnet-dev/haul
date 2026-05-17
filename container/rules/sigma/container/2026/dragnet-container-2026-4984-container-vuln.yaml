@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4984 — Vulnerable Base Image Pull'
+id: 5411a734-f49a-5081-bb2e-ae52683c6458
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4984 (Tier 2, CVSS 9.1)
+  Envoy is an open source edge and service proxy designed for cloud-native applications. Prior to versions 1.26.0, 1.25.3, 1.24.4, 1.23.6, and 1.22.9, Envoy does not sanitize or escape request properties when generating request headers. This can lead to characters that are illegal in header values to be sent to the upstream service. In the worst case, it can cause upstream service to interpret the original request as two pipelined requests, possibly bypassing the intent of Envoy’s security policy. Versions 1.26.0, 1.25.3, 1.24.4, 1.23.6, and 1.22.9 contain a patch. As a workaround, disable adding request headers based on the downstream request properties, such as downstream certificate properties.
+references:
+  - https://access.redhat.com/security/cve/CVE-2023-27493
+  - https://github.com/envoyproxy/envoy/security/advisories/GHSA-w5w5-487h-qv8q
+  - https://linux.oracle.com/cve/CVE-2023-27493.html
+  - https://linux.oracle.com/errata/ELSA-2023-23649.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-27493
+  - https://www.cve.org/CVERecord?id=CVE-2023-27493
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2023'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

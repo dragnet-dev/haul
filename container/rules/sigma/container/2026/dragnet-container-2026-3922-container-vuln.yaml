@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3922 — Vulnerable Base Image Pull'
+id: 6049d0b0-2894-57a8-b44c-ffd5fbed2052
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3922 (Tier 2, CVSS 9.8)
+  Versions of handlebars prior to 4.3.0 are vulnerable to Prototype Pollution leading to Remote Code Execution. Templates may alter an Object's __proto__ and __defineGetter__ properties, which may allow an attacker to execute arbitrary code through crafted payloads.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-19919
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19919
+  - https://github.com/Nerian/bootstrap-wysihtml5-rails/blob/master/vendor/assets/javascripts/bootstrap-wysihtml5/handlebars.runtime.min.js
+  - https://github.com/Nerian/bootstrap-wysihtml5-rails/tree/master/vendor/assets/javascripts/bootstrap-wysihtml5
+  - https://github.com/advisories/GHSA-w457-6q6x-cgp9
+  - https://github.com/handlebars-lang/handlebars.js/commit/156061eb7707575293613d7fdf90e2bdaac029ee
+  - https://github.com/handlebars-lang/handlebars.js/commit/90ad8d97ad2933852fb83fcc054699dc99e094db
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/bootstrap-wysihtml5-rails/CVE-2019-19919.yml
+  - https://github.com/wycats/handlebars.js
+  - https://github.com/wycats/handlebars.js/commit/2078c727c627f25d4a149962f05c1e069beb18bc
+  - https://github.com/wycats/handlebars.js/issues/1558
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-19919
+  - https://www.cve.org/CVERecord?id=CVE-2019-19919
+  - https://www.npmjs.com/advisories/1164
+  - https://www.tenable.com/security/tns-2021-14
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

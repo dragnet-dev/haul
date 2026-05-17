@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2081 — Event Log Clearing (pear)'
+id: dc41e168-3b38-533f-aa09-478d4e5f931d
+status: deprecated
+description: |
+  Detects event log clearing associated with pear ransomware.
+  Incident: dragnet-ransomware-2026-2081
+  Ransomware victim claim by pear: Richard J. Hackerman P.A.; country: US; sector: Business Services
+  First observed: 2026-03-26.
+references:
+  - http://pearsmob5sn44ismokiusuld34pnfwi6ctgin3qbvonpoob4lh3rmtqd.onion/Companies/richardhackerman
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

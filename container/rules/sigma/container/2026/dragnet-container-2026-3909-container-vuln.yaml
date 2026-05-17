@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3909 — Vulnerable Base Image Pull'
+id: f7a17113-43cd-515f-81bc-3347c18feb47
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3909 (Tier 2, CVSS 9.1)
+  In LuaJIT through 2.0.5, as used in Moonjit before 2.1.2 and other products, debug.getinfo has a type confusion issue that leads to arbitrary memory write or read operations, because certain cases involving valid stack levels and > options are mishandled. NOTE: The LuaJIT project owner states that the debug libary is unsafe by definition and that this is not a vulnerability. When LuaJIT was originally developed, the expectation was that the entire debug library had no security guarantees and thus it made no sense to assign CVEs. However, not all users of later LuaJIT derivatives share this perspective
+references:
+  - https://github.com/LuaJIT/LuaJIT/pull/526
+  - https://lists.debian.org/debian-lts-announce/2025/08/msg00022.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-19391
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5956 — Event Log Clearing (threeam)'
+id: d73ef77a-7e88-51ad-aec2-281ba8b0ce72
+status: deprecated
+description: |
+  Detects event log clearing associated with threeam ransomware.
+  Incident: dragnet-ransomware-2024-5956
+  Ransomware victim claim by threeam: garonproducts.com; country: US; sector: Manufacturing
+  First observed: 2024-02-12.
+references:
+  - http://threeamkelxicjsaf2czjyz2lc4q3ngqkxhhlexyfcp2o6raw4rphyad.onion/cl/clicks.php?uri=GARON/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

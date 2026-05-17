@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3599 — Recovery Inhibition (interlock)'
+id: 0605e920-a9f0-5630-9103-1993f86bf4d6
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3599
+  Ransomware victim claim by interlock: Pequannock Township School District; country: US; sector: Education
+  First observed: 2025-08-15.
+references:
+  - http://if6cf3llwqht3bs2glotrlsj4ayowc4pipadzbf7bkztln5ykifkjpyd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

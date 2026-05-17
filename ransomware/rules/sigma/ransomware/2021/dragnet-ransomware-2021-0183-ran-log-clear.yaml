@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0183 — Event Log Clearing (avoslocker)'
+id: f365ce82-422a-50b0-9bd2-448d76d9cf09
+status: deprecated
+description: |
+  Detects event log clearing associated with avoslocker ransomware.
+  Incident: dragnet-ransomware-2021-0183
+  Ransomware victim claim by avoslocker: Geneva, Ohio; sector: Public Sector
+  First observed: 2021-06-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

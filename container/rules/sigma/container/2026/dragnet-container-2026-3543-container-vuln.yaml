@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3543 — Vulnerable Base Image Pull'
+id: 8f4cc473-50ea-5828-bb9e-5c6cde3e9c85
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3543 (Tier 2, CVSS 10)
+  Incorrect parsing in url-parse <1.4.3 returns wrong hostname which leads to multiple vulnerabilities such as SSRF, Open Redirect, Bypass Authentication Protocol.
+references:
+  - http://0xahmed.ninja/
+  - https://access.redhat.com/security/cve/CVE-2018-3774
+  - https://github.com/unshiftio/url-parse
+  - https://github.com/unshiftio/url-parse/commit/209c296d302317268afbe19700a70c63ecbeb2d2
+  - https://github.com/unshiftio/url-parse/commit/53b1794e54d0711ceb52505e0f74145270570d5a
+  - https://github.com/unshiftio/url-parse/commit/d7b582ec1243e8024e60ac0b62d2569c939ef5de
+  - https://github.com/unshiftio/url-parse/compare/0.2.3...1.0.0
+  - https://hackerone.com/reports/384029
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-3774
+  - https://ubuntu.com/security/notices/USN-5973-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-3774
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

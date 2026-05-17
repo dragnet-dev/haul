@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2991 — Vulnerable Base Image Pull'
+id: 82f9e3f1-8104-5f0a-9cb5-8333faecfbfa
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2991 (Tier 2, CVSS 9.8)
+  In PyYAML before 5.1, the yaml.load() API could execute arbitrary code if used with untrusted data. The load() function has been deprecated in version 5.1 and the 'UnsafeLoader' has been introduced for backward compatibility with the function.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-18342
+  - https://github.com/marshmallow-code/apispec/issues/278
+  - https://github.com/pypa/advisory-database/tree/main/vulns/pyyaml/PYSEC-2018-49.yaml
+  - https://github.com/yaml/pyyaml
+  - https://github.com/yaml/pyyaml/blob/master/CHANGES
+  - https://github.com/yaml/pyyaml/commit/7b68405c81db889f83c32846462b238ccae5be80
+  - https://github.com/yaml/pyyaml/issues/193
+  - https://github.com/yaml/pyyaml/pull/74
+  - https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load%28input%29-Deprecation
+  - https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation
+  - https://access.redhat.com/security/cve/CVE-2017-18342
+  - https://linux.oracle.com/cve/CVE-2017-18342.html
+  - https://linux.oracle.com/errata/ELSA-2022-9341.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/JEX7IPV5P2QJITAMA5Z63GQCZA5I6NVZ/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KSQQMRUQSXBSUXLCRD3TSZYQ7SEZRKCE/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

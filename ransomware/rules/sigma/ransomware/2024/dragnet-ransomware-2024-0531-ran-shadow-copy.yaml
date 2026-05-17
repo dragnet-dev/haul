@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0531 — Shadow Copy Deletion (alphalocker)'
+id: aa60b62d-8fe7-5b1c-a854-c2af5c6f3a92
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with alphalocker ransomware.
+  Incident: dragnet-ransomware-2024-0531
+  Ransomware victim claim by alphalocker: goftac.com/    firsttx.com  First Texas Alliance Corp   (FTAC); country: US; sector: Business Services
+  First observed: 2024-08-06.
+references:
+  - http://mydatae2d63il5oaxxangwnid5loq2qmtsol2ozr6vtb7yfm5ypzo6id.onion/blog_1-15
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

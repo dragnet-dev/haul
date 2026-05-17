@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2167 — Recovery Inhibition (dispossessor)'
+id: 888ebec3-5f72-5f9e-8e3a-a87537475948
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with dispossessor ransomware.
+  Incident: dragnet-ransomware-2023-2167
+  Ransomware victim claim by dispossessor: royallepage.ca; country: CA; sector: Business Services
+  First observed: 2023-02-16.
+references:
+  - https://dispossessor.com/blogs/498
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

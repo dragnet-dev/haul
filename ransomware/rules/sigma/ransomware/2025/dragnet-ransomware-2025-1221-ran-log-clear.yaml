@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1221 — Event Log Clearing (blacknevas)'
+id: 182a9244-c8e9-5deb-bf0b-742af18da179
+status: deprecated
+description: |
+  Detects event log clearing associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2025-1221
+  Ransomware victim claim by blacknevas: Payme Ltd; country: GB; sector: Business Services
+  First observed: 2025-05-24.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/publications/details/b15a45af-12a8-4b97-b5d2-e356be1da232
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

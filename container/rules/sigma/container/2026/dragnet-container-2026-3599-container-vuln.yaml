@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3599 — Vulnerable Base Image Pull'
+id: 36e830e4-fbe6-5679-b1d3-1ab08c828c2b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3599 (Tier 2, CVSS 9.8)
+  The netmonrec_comment_destroy function in wiretap/netmon.c in Wireshark through 2.4.4 performs a free operation on an uninitialized memory address, which allows remote attackers to cause a denial of service (application crash) or possibly have unspecified other impact.
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-6836
+  - https://bugs.wireshark.org/bugzilla/show_bug.cgi?id=14397
+  - https://code.wireshark.org/review/#/c/25660/
+  - https://code.wireshark.org/review/#/c/25660/2/wiretap/netmon.c
+  - https://code.wireshark.org/review/gitweb?p=wireshark.git%3Ba=commit%3Bh=28960d79cca262ac6b974f339697b299a1e28fef
+  - https://code.wireshark.org/review/gitweb?p=wireshark.git;a=commit;h=28960d79cca262ac6b974f339697b299a1e28fef
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-6836
+  - https://www.cve.org/CVERecord?id=CVE-2018-6836
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

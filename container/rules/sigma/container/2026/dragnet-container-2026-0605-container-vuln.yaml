@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0605 — Vulnerable Base Image Pull'
+id: 82329341-97e6-5599-a121-7cc561ebef46
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0605 (Tier 2, CVSS 10)
+  Buffer overflow in the set_page_size function in util.cxx in HTMLDOC 1.8.27 and earlier allows context-dependent attackers to execute arbitrary code via a long MEDIA SIZE comment.  NOTE: it was later reported that there were additional vectors in htmllib.cxx and ps-pdf.cxx using an AFM font file with a long glyph name, but these vectors do not cross privilege boundaries.
+references:
+  - http://bugs.gentoo.org/show_bug.cgi?id=278186
+  - http://packetstormsecurity.org/0907-exploits/htmldoc-overflow.txt
+  - http://secunia.com/advisories/35780
+  - http://www.htmldoc.org/str.php?L214
+  - http://www.openwall.com/lists/oss-security/2009/07/25/3
+  - http://www.openwall.com/lists/oss-security/2009/07/26/2
+  - http://www.openwall.com/lists/oss-security/2009/09/01/1
+  - https://access.redhat.com/security/cve/CVE-2009-3050
+  - https://nvd.nist.gov/vuln/detail/CVE-2009-3050
+  - https://www.cve.org/CVERecord?id=CVE-2009-3050
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

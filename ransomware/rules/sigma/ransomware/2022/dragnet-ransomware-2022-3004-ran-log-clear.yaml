@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-3004 — Event Log Clearing (suncrypt)'
+id: 7db1143e-b463-5a36-ae88-5cf072cbb790
+status: deprecated
+description: |
+  Detects event log clearing associated with suncrypt ransomware.
+  Incident: dragnet-ransomware-2022-3004
+  Ransomware victim claim by suncrypt: Heartland Alliance; sector: Business Services
+  First observed: 2022-02-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

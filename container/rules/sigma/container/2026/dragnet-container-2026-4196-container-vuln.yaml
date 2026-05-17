@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4196 — Vulnerable Base Image Pull'
+id: 5ff4e9f4-4d3c-5aa6-9a54-456edb559cc7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4196 (Tier 2, CVSS 9.8)
+  CGI implementation in Yaws web server versions 1.81 to 2.0.7 is vulnerable to OS command injection.
+references:
+  - https://github.com/erlyaws/yaws/commit/799b3b526d15b7a9bc43ae97165aeb085f18fac1
+  - https://github.com/erlyaws/yaws/commits/master
+  - https://github.com/vulnbe/poc-yaws-cgi-shell-injection
+  - https://lists.debian.org/debian-lts-announce/2020/09/msg00022.html
+  - https://packetstormsecurity.com/files/159106/Yaws-2.0.7-XML-Injection-Command-Injection.html
+  - https://ubuntu.com/security/notices/USN-4569-1
+  - https://usn.ubuntu.com/4569-1/
+  - https://vuln.be/post/yaws-xxe-and-shell-injections/
+  - https://www.cve.org/CVERecord?id=CVE-2020-24916
+  - https://www.debian.org/security/2020/dsa-4773
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

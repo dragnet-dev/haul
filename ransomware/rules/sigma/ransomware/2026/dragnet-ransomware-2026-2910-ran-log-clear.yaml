@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2910 — Event Log Clearing (SilentRansomGroup)'
+id: d4079a70-45a4-5731-8c95-6d93670d4a6a
+status: deprecated
+description: |
+  Detects event log clearing associated with SilentRansomGroup ransomware.
+  Incident: dragnet-ransomware-2026-2910
+  Ransomware victim claim by SilentRansomGroup: Orrick, Herrington & Sutcliffe; country: US; sector: Business Services
+  First observed: 2026-02-23.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

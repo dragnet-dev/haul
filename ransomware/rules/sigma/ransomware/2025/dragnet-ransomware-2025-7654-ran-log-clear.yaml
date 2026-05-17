@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7654 — Event Log Clearing (thegentlemen)'
+id: 99de472f-ae5d-54bf-8974-e3d558be369b
+status: deprecated
+description: |
+  Detects event log clearing associated with thegentlemen ransomware.
+  Incident: dragnet-ransomware-2025-7654
+  Ransomware victim claim by thegentlemen: Seguros la Cmara; country: AR; sector: Financial Services
+  First observed: 2025-02-19.
+references:
+  - http://tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

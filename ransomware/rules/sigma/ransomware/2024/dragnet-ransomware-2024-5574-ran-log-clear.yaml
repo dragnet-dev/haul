@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5574 — Event Log Clearing (raznatovic)'
+id: 0b591865-1c8c-5d80-a7bd-378c1ab7dd3c
+status: deprecated
+description: |
+  Detects event log clearing associated with raznatovic ransomware.
+  Incident: dragnet-ransomware-2024-5574
+  Ransomware victim claim by raznatovic: Flash-Motors Last Warning; country: CY; sector: Transportation/Logistics
+  First observed: 2024-01-07.
+references:
+  - https://t.me/ransomed_channel/315
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

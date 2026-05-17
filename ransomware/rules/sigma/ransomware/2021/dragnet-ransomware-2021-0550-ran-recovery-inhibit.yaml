@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0550 — Recovery Inhibition (dispossessor)'
+id: 7329b260-2aed-511e-92a4-231370f880a3
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with dispossessor ransomware.
+  Incident: dragnet-ransomware-2021-0550
+  Ransomware victim claim by dispossessor: brault.us; country: US; sector: Healthcare
+  First observed: 2021-06-07.
+references:
+  - https://dispossessor.com/blogs/204
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1334 — Event Log Clearing (BrainCipher)'
+id: 3489597c-2c08-53f9-83e0-3c79555f1d47
+status: deprecated
+description: |
+  Detects event log clearing associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1334
+  Ransomware victim claim by BrainCipher: Deloitte UK; country: GB; sector: Business Services
+  First observed: 2024-12-04.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/KmH1BH7At23Ci93APEREJJUWQloXVtNFe740gPF+majJunUcaDR8jgpzZGyKfAngoXfOfy1uRPZx8icqklVSFpNWlVp
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1022 — Shadow Copy Deletion (fulcrumsec)'
+id: f4475aa6-45c2-5e44-95c2-c0fca7e1dcf6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with fulcrumsec ransomware.
+  Incident: dragnet-ransomware-2026-1022
+  Ransomware victim claim by fulcrumsec: Fashinza; country: IN; sector: Manufacturing
+  First observed: 2026-05-01.
+references:
+  - http://4e3p3in2bl67hxchuwza7qvnpe7pyeloyztr5fnh257fxkovfhappjyd.onion/shame/fashinza/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

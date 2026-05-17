@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7691 — Event Log Clearing (tridentlocker)'
+id: 04e992c2-da52-5a54-81a8-96d2b0e3c14d
+status: deprecated
+description: |
+  Detects event log clearing associated with tridentlocker ransomware.
+  Incident: dragnet-ransomware-2025-7691
+  Ransomware victim claim by tridentlocker: asiawba; country: KR; sector: Not Found
+  First observed: 2025-11-05.
+references:
+  - http://tridentfrdy6jydwywfx4vx422vnto7pktao2gyx2qdcwjanogq454ad.onion/article/f94cf4f3-7164-43a6-8feb-346cb3b6d83a
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

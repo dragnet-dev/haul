@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5890 — Event Log Clearing (stormous)'
+id: f6cabaa2-4502-5a0d-96f1-4e35d5a87a7a
+status: deprecated
+description: |
+  Detects event log clearing associated with stormous ransomware.
+  Incident: dragnet-ransomware-2024-5890
+  Ransomware victim claim by stormous: Abelsantosyasoc.com.ar; country: AR; sector: Healthcare
+  First observed: 2024-02-02.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4188 — Recovery Inhibition (lynx)'
+id: 9123e925-de2b-585c-ae04-85d2e9b34b5f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4188
+  Ransomware victim claim by lynx: Palomino Petroleum; country: GB; sector: Energy
+  First observed: 2025-03-19.
+references:
+  - http://lynxblog.net/leaks/67da9cb451e131d63486afc8
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

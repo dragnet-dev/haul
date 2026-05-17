@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3588 — Recovery Inhibition (lynx)'
+id: 0798b671-0a03-5d70-871f-d040560dbc49
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2023-3588
+  Ransomware victim claim by lynx: Atlas Commodities; country: US; sector: Energy
+  First observed: 2023-05-22.
+references:
+  - http://lynxblog.net/leaks/67aa135961c2d9c619ca34b9
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

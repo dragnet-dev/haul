@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3885 — Vulnerable Base Image Pull'
+id: 5f8de8f9-e09d-5c95-9acc-1bde9105f441
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3885 (Tier 2, CVSS 9.8)
+  pacman before 5.2 is vulnerable to arbitrary command injection in lib/libalpm/sync.c in the apply_deltas() function. This can be exploited when unsigned databases are used. To exploit the vulnerability, the user must enable the non-default delta feature and retrieve an attacker-controlled crafted database and delta file.
+references:
+  - https://git.archlinux.org/pacman.git/commit/?id=c0e9be7973be6c81b22fde91516fb8991e7bb07b
+  - https://git.archlinux.org/pacman.git/tree/lib/libalpm/sync.c?h=v5.1.3#n767
+  - https://github.com/alpinelinux/alpine-secdb/blob/master/v3.11/community.yaml
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/2TTUXXUW5OCOASIRMJK4RHEPLEA33Y6C/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/K53C45EDWBU3UCN3IRIGR5EZUNWXS7BW/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KIDJ4XKBZRRVRFFGKUA3ZU6NFIP5JUG3/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

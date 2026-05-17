@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2292 — Vulnerable Base Image Pull'
+id: 7a04f691-3208-54e3-84a4-3b65c5b49b63
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2292 (Tier 2, CVSS 9.8)
+  Keys of objects in mysql node module v2.0.0-alpha7 and earlier are not escaped with `mysql.escape()` which could lead to SQL Injection.
+references:
+  - https://github.com/felixge/node-mysql/issues/342
+  - https://nodesecurity.io/advisories/66
+  - https://nvd.nist.gov/vuln/detail/CVE-2015-9244
+  - https://www.npmjs.com/advisories/66
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

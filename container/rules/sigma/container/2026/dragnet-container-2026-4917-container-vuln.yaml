@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4917 — Vulnerable Base Image Pull'
+id: 4f563619-7e0b-5fba-8212-05181cef1ef9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4917 (Tier 2, CVSS 9.8)
+  In Linaro Automated Validation Architecture (LAVA) before 2022.11.1, remote code execution can be achieved through user-submitted Jinja2 template. The REST API endpoint for validating device configuration files in lava-server loads input as a Jinja2 template in a way that can be used to trigger remote code execution in the LAVA server.
+references:
+  - https://lists.lavasoftware.org/archives/list/lava-announce%40lists.lavasoftware.org/thread/WHXGQMIZAPW3GCQEXYHC32N2ZAAAIYCY/
+  - https://podalirius.net/en/articles/python-vulnerabilities-code-execution-in-jinja-templates/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4783 — Vulnerable Base Image Pull'
+id: 5cf17fc0-6078-582c-8734-f05be080bd9b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4783 (Tier 2, CVSS 9.8)
+  In Apache Maven maven-shared-utils prior to version 3.3.3, the Commandline class can emit double-quoted strings without proper escaping, allowing shell injection attacks.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-29599
+  - https://github.com/apache/maven-shared-utils
+  - https://github.com/apache/maven-shared-utils/commit/f751e614c09df8de1a080dc1153931f3f68991c9
+  - https://github.com/apache/maven-shared-utils/pull/40
+  - http://www.openwall.com/lists/oss-security/2022/05/23/3
+  - https://access.redhat.com/security/cve/CVE-2022-29599
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2066479
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-29599
+  - https://errata.almalinux.org/8/ALSA-2022-4798.html
+  - https://errata.rockylinux.org/RLSA-2022:4798
+  - https://issues.apache.org/jira/browse/MSHARED-297
+  - https://linux.oracle.com/cve/CVE-2022-29599.html
+  - https://linux.oracle.com/errata/ELSA-2022-4798.html
+  - https://lists.debian.org/debian-lts-announce/2022/08/msg00018.html
+  - https://rhn.redhat.com/errata/RHSA-2022-1662.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2022'
+      - 'amazonlinux:2023'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

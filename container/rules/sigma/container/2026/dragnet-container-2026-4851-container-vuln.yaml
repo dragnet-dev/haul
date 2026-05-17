@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4851 — Vulnerable Base Image Pull'
+id: 015dcddb-b223-5e97-a038-0631fe810541
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4851 (Tier 2, CVSS 9.8)
+  Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils via the name variable in parseQuery.js. This affects all versions prior to 1.4.1 and 2.0.3.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-37601
+  - https://github.com/webpack/loader-utils
+  - https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11
+  - https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47
+  - https://github.com/webpack/loader-utils/commit/4504e34c4796a5836ef70458327351675aed48a5
+  - https://github.com/webpack/loader-utils/commit/a93cf6f4702012030f6b5ee8340d5c95ec1c7d4c
+  - https://github.com/webpack/loader-utils/commit/f4e48a232fae900237c3e5ff7b57ce9e1c734de1
+  - https://github.com/webpack/loader-utils/issues/212
+  - https://github.com/webpack/loader-utils/issues/212#issuecomment-1319192884
+  - https://github.com/webpack/loader-utils/pull/217
+  - https://github.com/webpack/loader-utils/pull/220
+  - https://github.com/webpack/loader-utils/releases/tag/v1.4.1
+  - https://github.com/webpack/loader-utils/releases/tag/v2.0.3
+  - https://github.com/xmldom/xmldom/issues/436#issuecomment-1319412826
+  - http://users.encs.concordia.ca/~mmannan/publications/JS-vulnerability-aisaccs2022.pdf
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

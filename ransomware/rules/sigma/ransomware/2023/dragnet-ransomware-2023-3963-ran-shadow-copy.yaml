@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3963 — Shadow Copy Deletion (metaencryptor)'
+id: 7657d4d0-ec2b-54d0-a925-e7f1a99cacf4
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3963
+  Ransomware victim claim by metaencryptor: stormtech; sector: Technology
+  First observed: 2023-12-07.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:f08e2c9973f9d495ccd403f2d1b00da5/0AFC:3d47c3fdb3d0547bfdcc99bb2be9022c0f41b0e9e34a4ca03c7f770667a171c5/0AFC:6beedb87226b979c08c9cca3addf869f71fd821299120ae09be386a1b362c2ee
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

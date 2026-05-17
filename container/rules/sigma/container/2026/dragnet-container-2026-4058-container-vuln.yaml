@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4058 — Vulnerable Base Image Pull'
+id: 1d293291-6f68-5881-9f7b-ad0e30774c1e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4058 (Tier 2, CVSS 10)
+  Envoy 1.9.0 and before does not normalize HTTP URL paths. A remote attacker may craft a relative path, e.g., something/../admin, to bypass access control, e.g., a block on /admin. A backend server could then interpret the non-normalized path and provide an attacker access beyond the scope provided for by the access control policy.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-9901
+  - https://github.com/envoyproxy/envoy
+  - https://github.com/envoyproxy/envoy/blob/main/security/postmortems/cve-2019-9900.md
+  - https://github.com/envoyproxy/envoy/commit/e668e669677e52a00d99652b5a260d1cedafdfa8
+  - https://github.com/envoyproxy/envoy/issues/6435
+  - https://github.com/envoyproxy/envoy/security/advisories/GHSA-xcx5-93pw-jw2w
+  - https://groups.google.com/forum/#!topic/envoy-announce/VoHfnDqZiAM
+  - https://groups.google.com/forum/#%21topic/envoy-announce/VoHfnDqZiAM
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-9901
+  - https://www.cve.org/CVERecord?id=CVE-2019-9901
+  - https://www.envoyproxy.io/docs/envoy/v1.9.1/intro/version_history
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

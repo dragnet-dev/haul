@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1208 — Recovery Inhibition (blacknevas)'
+id: 32d4b096-4886-5996-a182-1265582df022
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2025-1208
+  Ransomware victim claim by blacknevas: Caresoft Global caresoftglobal.com; country: US; sector: Technology
+  First observed: 2025-09-29.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/publications/details/73e602f8-ac61-428d-870f-a13e10bc535a
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

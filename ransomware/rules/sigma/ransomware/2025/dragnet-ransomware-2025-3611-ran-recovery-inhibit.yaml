@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3611 — Recovery Inhibition (interlock)'
+id: 0c20d63d-244a-57d6-9905-86c606fedf5b
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3611
+  Ransomware victim claim by interlock: Siegel Group; country: US; sector: Hospitality and Tourism
+  First observed: 2025-02-21.
+references:
+  - http://k6oor2g5bfvdxhxr2g6fczu3iqldbzyavydk56lh6z7ex7n7wqg4eryd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

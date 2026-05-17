@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1771 — Vulnerable Base Image Pull'
+id: c581f760-9aa2-5b1d-815e-101d9c71f37e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1771 (Tier 2, CVSS 9)
+  The krb5_gss_process_context_token function in lib/gssapi/krb5/process_context_token.c in the libgssapi_krb5 library in MIT Kerberos 5 (aka krb5) through 1.11.5, 1.12.x through 1.12.2, and 1.13.x before 1.13.1 does not properly maintain security-context handles, which allows remote authenticated users to cause a denial of service (use-after-free and double free, and daemon crash) or possibly execute arbitrary code via crafted GSSAPI traffic, as demonstrated by traffic to kadmind.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2014-5352
+  - https://github.com/krb5/krb5/commit/82dc33da50338ac84c7b4102dc6513d897d0506a
+  - http://lists.fedoraproject.org/pipermail/package-announce/2015-March/151103.html
+  - http://lists.fedoraproject.org/pipermail/package-announce/2015-March/151437.html
+  - http://lists.opensuse.org/opensuse-security-announce/2015-02/msg00011.html
+  - http://lists.opensuse.org/opensuse-security-announce/2015-02/msg00016.html
+  - http://lists.opensuse.org/opensuse-updates/2015-02/msg00044.html
+  - http://rhn.redhat.com/errata/RHSA-2015-0439.html
+  - http://rhn.redhat.com/errata/RHSA-2015-0794.html
+  - http://web.mit.edu/Kerberos/advisories/MITKRB5-SA-2015-001.txt
+  - http://web.mit.edu/kerberos/advisories/2015-001-patch-r113.txt
+  - http://web.mit.edu/kerberos/advisories/MITKRB5-SA-2015-001.txt
+  - http://www.debian.org/security/2015/dsa-3153
+  - http://www.mandriva.com/security/advisories?name=MDVSA-2015:069
+  - http://www.securityfocus.com/bid/72495
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:14.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

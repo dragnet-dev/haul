@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3295 — Vulnerable Base Image Pull'
+id: 4f26f9f1-6cb6-5d76-92f2-7a973755f15f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3295 (Tier 2, CVSS 9.1)
+  Mercurial version 4.5 and earlier contains a Incorrect Access Control (CWE-285) vulnerability in Protocol server that can result in Unauthorized data access. This attack appear to be exploitable via network connectivity. This vulnerability appears to have been fixed in 4.5.1.
+references:
+  - https://access.redhat.com/errata/RHSA-2019:2276
+  - https://access.redhat.com/security/cve/CVE-2018-1000132
+  - https://github.com/pypa/advisory-database/tree/main/vulns/mercurial/PYSEC-2018-87.yaml
+  - https://linux.oracle.com/cve/CVE-2018-1000132.html
+  - https://linux.oracle.com/errata/ELSA-2019-2276.html
+  - https://lists.debian.org/debian-lts-announce/2018/03/msg00034.html
+  - https://lists.debian.org/debian-lts-announce/2018/07/msg00005.html
+  - https://lists.debian.org/debian-lts-announce/2020/07/msg00032.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-1000132
+  - https://www.cve.org/CVERecord?id=CVE-2018-1000132
+  - https://www.mercurial-scm.org/repo/hg/rev/2ecb0fc535b1 (4.5.2)
+  - https://www.mercurial-scm.org/wiki/WhatsNew#Mercurial_4.5.1_.2F_4.5.2_.282018-03-06.29
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.5'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

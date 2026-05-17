@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0425 — Recovery Inhibition (blackwater)'
+id: a764ffb0-4a0f-5fde-9ed6-8480fccc6304
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0425
+  Ransomware victim claim by blackwater: medical-park; country: TR; sector: Healthcare
+  First observed: 2026-03-20.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=500eaba7-8a1c-3f42-a247-4be113b72b6e
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

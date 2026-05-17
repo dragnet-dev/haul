@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4092 — Event Log Clearing (metaencryptor)'
+id: 293bc51a-b66d-5580-a7bc-eb7cc5854a24
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2024-4092
+  Ransomware victim claim by metaencryptor: Saeilo; country: DE; sector: Manufacturing
+  First observed: 2024-08-23.
+references:
+  - https://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:2b2df2f32e8db7d97e18a0f018e5ea71/0AFC:44ee72b6286e1eb40a7bfc91a674015c9bb5c1b41b62b16ff3844b2499aa2081/0AFC:14d2e8f707df132cfcc9369f067e65b54ae6d8b1551c5a4d36be2d6991da9bbf
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

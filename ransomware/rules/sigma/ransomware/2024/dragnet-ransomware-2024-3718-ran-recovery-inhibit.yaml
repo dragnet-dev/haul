@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3718 — Recovery Inhibition (madliberator)'
+id: 65ea4896-f4d6-5065-bf89-6ec5acdcdd92
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with madliberator ransomware.
+  Incident: dragnet-ransomware-2024-3718
+  Ransomware victim claim by madliberator: VITALDENT; country: ES; sector: Healthcare
+  First observed: 2024-06-13.
+references:
+  - http://k67ivvik3dikqi4gy4ua7xa6idijl4si7k5ad5lotbaeirfcsx4sgbid.onion/vitaldent.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

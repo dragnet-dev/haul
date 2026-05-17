@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4885 — Vulnerable Base Image Pull'
+id: 7268d033-e9d8-5994-996f-0c2dbc4a023f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4885 (Tier 2, CVSS 9.1)
+  TensorFlow is an open source platform for machine learning. When the `BaseCandidateSamplerOp` function receives a value in `true_classes` larger than `range_max`, a heap oob read occurs. We have patched the issue in GitHub commit b389f5c944cadfdfe599b3f1e4026e036f30d2d4. The fix will be included in TensorFlow 2.11. We will also cherrypick this commit on TensorFlow 2.10.1, 2.9.3, and TensorFlow 2.8.4, as these are also affected and still in supported range.
+references:
+  - https://github.com/tensorflow/tensorflow
+  - https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/candidate_sampler_ops.cc
+  - https://github.com/tensorflow/tensorflow/commit/b389f5c944cadfdfe599b3f1e4026e036f30d2d4
+  - https://github.com/tensorflow/tensorflow/security/advisories/GHSA-8w5g-3wcv-9g2j
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-41880
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:2.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

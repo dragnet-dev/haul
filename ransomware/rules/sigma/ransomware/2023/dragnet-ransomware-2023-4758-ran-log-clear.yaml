@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4758 — Event Log Clearing (raworld)'
+id: d367cf6b-aa35-5bc7-b698-f490b83f06e0
+status: deprecated
+description: |
+  Detects event log clearing associated with raworld ransomware.
+  Incident: dragnet-ransomware-2023-4758
+  Ransomware victim claim by raworld: Eastern Media International Corporation; sector: Not Found
+  First observed: 2023-05-25.
+references:
+  - http://pa32ymaeu62yo5th5mraikgw5fcvznnsiiwti42carjliarodltmqcqd.onion/posts/eastern-media-international-corporation/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

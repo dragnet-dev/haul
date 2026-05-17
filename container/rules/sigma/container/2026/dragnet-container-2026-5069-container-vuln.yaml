@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5069 — Vulnerable Base Image Pull'
+id: 3d47c940-e19e-57d2-a1a8-5ad3ed024235
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5069 (Tier 2, CVSS 9.1)
+  FreeRDP is a free implementation of the Remote Desktop Protocol (RDP), released under the Apache license. In affected versions a missing offset validation may lead to an Out Of Bound Read in the function `gdi_multi_opaque_rect`. In particular there is no code to validate if the value `multi_opaque_rect->numRectangles` is less than 45. Looping through `multi_opaque_rect->`numRectangles without proper boundary checks can lead to Out-of-Bounds Read errors which will likely lead to a crash. This issue has been addressed in versions 2.11.0 and 3.0.0-beta3. Users are advised to upgrade. There are no known workarounds for this vulnerability.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-39356
+  - https://github.com/FreeRDP/FreeRDP/blob/63a2f65618748c12f79ff7450d46c6e194f2db76/include/freerdp/primary.h#L186-L196
+  - https://github.com/FreeRDP/FreeRDP/blob/63a2f65618748c12f79ff7450d46c6e194f2db76/libfreerdp/core/orders.c#L1503-L1504
+  - https://github.com/FreeRDP/FreeRDP/blob/63a2f65618748c12f79ff7450d46c6e194f2db76/libfreerdp/gdi/gdi.c#L723C1-L758
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-q5v5-qhj5-mh6m
+  - https://access.redhat.com/errata/RHSA-2024:2208
+  - https://access.redhat.com/security/cve/CVE-2023-39356
+  - https://bugzilla.redhat.com/2236606
+  - https://bugzilla.redhat.com/2236650
+  - https://bugzilla.redhat.com/2236656
+  - https://bugzilla.redhat.com/2236669
+  - https://bugzilla.redhat.com/2236730
+  - https://bugzilla.redhat.com/2236750
+  - https://bugzilla.redhat.com/2236759
+  - https://bugzilla.redhat.com/2236763
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

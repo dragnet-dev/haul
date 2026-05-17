@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3920 — Vulnerable Base Image Pull'
+id: 88481d52-2121-5e0f-bf27-10d70305015b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3920 (Tier 2, CVSS 9.8)
+  NetHack 3.6.x before 3.6.4 is prone to a buffer overflow vulnerability when reading very long lines from configuration files. This affects systems that have NetHack installed suid/sgid, and shared systems that allow users to upload their own configuration files.
+references:
+  - https://bugs.debian.org/947005
+  - https://github.com/NetHack/NetHack/commit/f001de79542b8c38b1f8e6d7eaefbbd28ab94b47
+  - https://github.com/NetHack/NetHack/commit/f4a840a48f4bcf11757b3d859e9d53cc9d5ef226
+  - https://github.com/NetHack/NetHack/security/advisories/GHSA-3cm7-rgh5-9pq5
+  - https://nethack.org/security/
+  - https://nethack.org/security/CVE-2019-19905.html
+  - https://www.cve.org/CVERecord?id=CVE-2019-19905
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

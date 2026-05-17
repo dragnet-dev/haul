@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1747 — Shadow Copy Deletion (darkvault)'
+id: bfcde3cf-a749-573e-909f-dc22cd58c932
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with darkvault ransomware.
+  Incident: dragnet-ransomware-2024-1747
+  Ransomware victim claim by darkvault: hirebus.com; country: US; sector: Transportation/Logistics
+  First observed: 2024-02-21.
+references:
+  - http://mdhby62yvvg6sd5jmx5gsyucs7ynb5j45lvvdh4dsymg43puitu7tfid.onion//post/YTc4NDNlZTZiMDc2YTEzMWFmOTg3NT
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

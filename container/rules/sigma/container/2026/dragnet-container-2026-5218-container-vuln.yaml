@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5218 — Vulnerable Base Image Pull'
+id: 70a36b4c-6158-5e57-9b1f-c991447a321a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5218 (Tier 2, CVSS 9.8)
+  An issue in newlib v.4.3.0 allows an attacker to execute arbitrary code via the time unit scaling in the _gettimeofday function.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-30949
+  - https://gist.github.com/visitorckw/6b26e599241ea80210ea136b28441661
+  - https://inbox.sourceware.org/newlib/20231129035714.469943-1-visitorckw%40gmail.com/
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-30949
+  - https://sourceware.org/git/?p=newlib-cygwin.git%3Ba=commit%3Bh=5f15d7c5817b07a6b18cbab17342c95cb7b42be4
+  - https://www.cve.org/CVERecord?id=CVE-2024-30949
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

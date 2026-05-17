@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7696 — Shadow Copy Deletion (tridentlocker)'
+id: d7dd07f7-e14f-5b27-a2fe-5728f6d0444f
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with tridentlocker ransomware.
+  Incident: dragnet-ransomware-2025-7696
+  Ransomware victim claim by tridentlocker: iqs; country: IQ; sector: Not Found
+  First observed: 2025-11-18.
+references:
+  - http://tridentfrdy6jydwywfx4vx422vnto7pktao2gyx2qdcwjanogq454ad.onion/article/cf4c4631-df18-4c55-9dae-ecba8638a992
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

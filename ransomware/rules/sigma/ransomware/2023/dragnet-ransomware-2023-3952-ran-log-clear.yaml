@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3952 — Event Log Clearing (metaencryptor)'
+id: bb74a13b-b70a-50a2-8ab2-df81a8197fbe
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3952
+  Ransomware victim claim by metaencryptor: CVO Antwerpen; country: BE; sector: Education
+  First observed: 2023-08-16.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:cee005028b9e73c9c6dfb1ddd0b36d85/0AFC:2e6a2c8838acf81834116ecef14e0189/0AFC:89bb9796b12425b37e39337e91b0cce972343f1acc64de0027bf1fe132618441
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

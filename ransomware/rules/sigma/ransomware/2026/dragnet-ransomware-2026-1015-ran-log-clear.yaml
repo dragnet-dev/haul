@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1015 — Event Log Clearing (exitium)'
+id: 8e1b2809-8020-5025-ab21-e478ae7f4aae
+status: deprecated
+description: |
+  Detects event log clearing associated with exitium ransomware.
+  Incident: dragnet-ransomware-2026-1015
+  Ransomware victim claim by exitium: Ming Hwei Energy; country: TW; sector: Energy
+  First observed: 2026-03-29.
+references:
+  - http://m3ksukzn2glzfdvlusohril7n3iyk4z4fudf6mm22lwhpbpt5aiee5qd.onion#Ming%20Hwei%20Energy
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

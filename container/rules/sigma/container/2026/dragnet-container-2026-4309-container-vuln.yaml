@@ -1,0 +1,64 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4309 — Vulnerable Base Image Pull'
+id: 574a40cc-c8b7-5f66-a948-188978f3664d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4309 (Tier 2, CVSS 9.8)
+  smtp_mailaddr in smtp_session.c in OpenSMTPD 6.6, as used in OpenBSD 6.6 and other products, allows remote attackers to execute arbitrary commands as root via a crafted SMTP session, as demonstrated by shell metacharacters in a MAIL FROM field. This affects the "uncommented" default configuration. The issue exists because of an incorrect return value upon failure of input validation.
+references:
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2020-7247
+  - https://github.com/OpenSMTPD/OpenSMTPD/commit/be6ef06cba9484d008d9f057e6b25d863cf278ff (opensmtpd-6.4.0)
+  - https://github.com/openbsd/src/commit/9dcfda045474d8903224d175907bfc29761dcb45
+  - http://packetstormsecurity.com/files/156137/OpenBSD-OpenSMTPD-Privilege-Escalation-Code-Execution.html
+  - http://packetstormsecurity.com/files/156145/OpenSMTPD-6.6.2-Remote-Code-Execution.html
+  - http://packetstormsecurity.com/files/156249/OpenSMTPD-MAIL-FROM-Remote-Code-Execution.html
+  - http://packetstormsecurity.com/files/156295/OpenSMTPD-6.6.1-Local-Privilege-Escalation.html
+  - http://packetstormsecurity.com/files/162093/OpenBSD-OpenSMTPD-6.6-Remote-Code-Execution.html
+  - http://seclists.org/fulldisclosure/2020/Jan/49
+  - http://www.openwall.com/lists/oss-security/2020/01/28/3
+  - https://ftp.openbsd.org/pub/OpenBSD/patches/6.6/common/019_smtpd_exec.patch.sig
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OPH4QU4DNVHA7ACFXMYFCEP5PSXXPN4E/
+  - https://seclists.org/bugtraq/2020/Jan/51
+  - https://ubuntu.com/security/notices/USN-4268-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

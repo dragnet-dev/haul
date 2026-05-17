@@ -1,0 +1,56 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3440 — Vulnerable Base Image Pull'
+id: 0c972267-3bba-52e3-8d24-bca3490b375e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3440 (Tier 2, CVSS 9.8)
+  In Kamailio before 5.0.7 and 5.1.x before 5.1.4, a crafted SIP message with a double "To" header and an empty "To" tag causes a segmentation fault and crash. The reason is missing input validation in the "build_res_buf_from_sip_req" core function. This could result in denial of service and potentially the execution of arbitrary code.
+references:
+  - https://lists.debian.org/debian-lts-announce/2018/08/msg00018.html
+  - https://skalatan.de/blog/advisory-hw-2018-05
+  - https://ubuntu.com/security/notices/USN-7416-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-14767
+  - https://www.debian.org/security/2018/dsa-4267
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

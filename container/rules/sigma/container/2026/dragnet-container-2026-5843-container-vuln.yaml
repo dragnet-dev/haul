@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5843 — Vulnerable Base Image Pull'
+id: e17258cf-bc05-527e-ac04-a019f73d6117
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5843 (Tier 2, CVSS 10)
+  Missing hash/digest size and OID checks allow digests smaller than allowed when verifying ECDSA certificates, or smaller than is appropriate for the relevant key type, to be accepted by signature verification functions. This could lead to reduced security of ECDSA certificate-based authentication if the public CA key used is also known. This affects ECDSA/ECC verification when EdDSA or ML-DSA is also enabled.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-5194
+  - https://github.com/wolfSSL/wolfssl/pull/10131
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-5194
+  - https://www.cve.org/CVERecord?id=CVE-2026-5194
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

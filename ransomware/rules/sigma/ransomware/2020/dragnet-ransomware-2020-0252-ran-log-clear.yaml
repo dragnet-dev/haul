@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0252 — Event Log Clearing (ryuk)'
+id: bcfd5e91-11bb-512f-894b-7e93b8faf533
+status: deprecated
+description: |
+  Detects event log clearing associated with ryuk ransomware.
+  Incident: dragnet-ransomware-2020-0252
+  Ransomware victim claim by ryuk: Sky Lakes Medical Center; country: US; sector: Healthcare
+  First observed: 2020-10-27.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

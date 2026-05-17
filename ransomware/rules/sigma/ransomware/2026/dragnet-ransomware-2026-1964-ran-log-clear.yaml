@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1964 — Event Log Clearing (obscura)'
+id: 0cd17b9b-3d40-51d1-9ee4-7faed34d0232
+status: deprecated
+description: |
+  Detects event log clearing associated with obscura ransomware.
+  Incident: dragnet-ransomware-2026-1964
+  Ransomware victim claim by obscura: STC Concrete Product; country: TH; sector: Construction
+  First observed: 2026-01-11.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

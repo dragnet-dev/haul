@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-6000 — Event Log Clearing (trinity)'
+id: 14e07e1b-93fa-505f-a47b-5384a1d88e44
+status: deprecated
+description: |
+  Detects event log clearing associated with trinity ransomware.
+  Incident: dragnet-ransomware-2024-6000
+  Ransomware victim claim by trinity: Fabrica Industrial Machinery & Equipment; country: AR; sector: Manufacturing
+  First observed: 2024-09-23.
+references:
+  - http://txtggyng5euqkyzl2knbejwpm4rlq575jn2egqldu27osbqytrj6ruyd.onion/articles/articles/10
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,59 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5565 — Vulnerable Base Image Pull'
+id: e9de8d21-f312-585e-9710-a506286623d3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5565 (Tier 2, CVSS 9.8)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to version 3.21.0, a client-side heap buffer overflow occurs in the RDPGFX ClearCodec decode path when maliciously crafted residual data causes out-of-bounds writes during color output. A malicious server can trigger a client‑side heap buffer overflow, causing a crash (DoS) and potential heap corruption with code‑execution risk depending on allocator behavior and surrounding heap layout. Version 3.21.0 contains a patch for the issue.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-23533
+  - https://github.com/FreeRDP/FreeRDP/blob/38514dfa5813aa945a86cfbcec279033f8394468/libfreerdp/codec/clear.c#L268-L281
+  - https://github.com/FreeRDP/FreeRDP/blob/38514dfa5813aa945a86cfbcec279033f8394468/libfreerdp/codec/clear.c#L336
+  - https://github.com/FreeRDP/FreeRDP/releases/tag/3.21.0
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-32q9-m5qr-9j2v
+  - https://access.redhat.com/errata/RHSA-2026:2048
+  - https://access.redhat.com/security/cve/CVE-2026-23533
+  - https://bugzilla.redhat.com/2430877
+  - https://bugzilla.redhat.com/2430880
+  - https://bugzilla.redhat.com/2430885
+  - https://bugzilla.redhat.com/2430886
+  - https://bugzilla.redhat.com/2430887
+  - https://bugzilla.redhat.com/2430888
+  - https://bugzilla.redhat.com/2430891
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2430877
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

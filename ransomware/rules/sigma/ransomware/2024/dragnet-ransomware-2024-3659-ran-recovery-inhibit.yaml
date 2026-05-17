@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3659 — Recovery Inhibition (lynx)'
+id: b732c486-7c47-5f4f-8b66-0e3d675c9419
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3659
+  Ransomware victim claim by lynx: Novati Constructions; country: AU; sector: Business Services
+  First observed: 2024-11-06.
+references:
+  - http://lynxblog.net/leaks/6785697705a779c3d3ce2684
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

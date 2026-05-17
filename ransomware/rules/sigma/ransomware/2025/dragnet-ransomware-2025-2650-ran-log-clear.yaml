@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2650 — Event Log Clearing (everest)'
+id: e3b22693-ddd6-5e27-8d6d-3dbd855173ca
+status: deprecated
+description: |
+  Detects event log clearing associated with everest ransomware.
+  Incident: dragnet-ransomware-2025-2650
+  Ransomware victim claim by everest: Best Price Financial Services; country: GB; sector: Financial Services
+  First observed: 2025-07-23.
+references:
+  - http://ransomocmou6mnbquqz44ewosbkjk3o5qjsl3orawojexfook2j7esad.onion/news/Best_Price_Financial_Services
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

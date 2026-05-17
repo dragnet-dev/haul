@@ -1,0 +1,60 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3795 — Vulnerable Base Image Pull'
+id: 3676d83e-e865-5661-b915-41b47b25e2f4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3795 (Tier 2, CVSS 9.8)
+  In Docker 19.03.x before 19.03.1 linked against the GNU C Library (aka glibc), code injection can occur when the nsswitch facility dynamically loads a library inside a chroot that contains the contents of the container.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-14271
+  - https://github.com/moby/moby
+  - https://github.com/moby/moby/commit/11e48badcb67554b3d795241855028f28d244545
+  - https://github.com/moby/moby/commit/fa8dd90ceb7bcb9d554d27e0b9087ab83e54bd2b
+  - https://github.com/moby/moby/issues/39449
+  - https://github.com/moby/moby/pull/39612
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00084.html
+  - https://access.redhat.com/security/cve/CVE-2019-14271
+  - https://docs.docker.com/engine/release-notes
+  - https://docs.docker.com/engine/release-notes/
+  - https://linux.oracle.com/cve/CVE-2019-14271.html
+  - https://linux.oracle.com/errata/ELSA-2019-4827.html
+  - https://seclists.org/bugtraq/2019/Sep/21
+  - https://security.netapp.com/advisory/ntap-20190828-0003
+  - https://security.netapp.com/advisory/ntap-20190828-0003/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'photon os:2.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

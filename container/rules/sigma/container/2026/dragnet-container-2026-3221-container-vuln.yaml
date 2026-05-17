@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3221 — Vulnerable Base Image Pull'
+id: 1a32253f-323f-5755-9931-12644e380746
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3221 (Tier 2, CVSS 9.8)
+  An issue was discovered in adns before 1.5.2. pap_mailbox822 does not properly check st from adns__findlabel_next. Without this, an uninitialised stack value can be used as the first label length. Depending on the circumstances, an attacker might be able to trick adns into crashing the calling program, leaking aspects of the contents of some of its memory, causing it to allocate lots of memory, or perhaps overrunning a buffer. This is only possible with applications which make non-raw queries for SOA or RP records.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2020-06/msg00037.html
+  - http://www.chiark.greenend.org.uk/ucgi/~ianmdlvl/git?p=adns.git
+  - http://www.chiark.greenend.org.uk/ucgi/~ianmdlvl/git?p=adns.git%3Ba=blob%3Bf=changelog
+  - http://www.chiark.greenend.org.uk/ucgi/~ianmdlvl/git?p=adns.git;a=commit;h=020d86e2eccc2dbdfa9dcca08ddb327cc7ca3ae2
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/TRVHN3GGVNQWAOL3PWC5FLAV7HUESLZR/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UGFZ4SPV6KFQK6ZNUZFB5Y32OYFOM5YJ/
+  - https://www.chiark.greenend.org.uk/pipermail/adns-announce/2020/000004.html
+  - https://www.cve.org/CVERecord?id=CVE-2017-9103
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

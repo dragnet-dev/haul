@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3999 — Vulnerable Base Image Pull'
+id: 51bc27f4-461c-5c59-880f-f9ad591d3ebf
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3999 (Tier 2, CVSS 9.8)
+  Canonical snapd before version 2.37.1 incorrectly performed socket owner validation, allowing an attacker to run arbitrary commands as root. This issue affects: Canonical snapd versions prior to 2.37.1.
+references:
+  - https://ubuntu.com/security/notices/USN-3887-1
+  - https://usn.ubuntu.com/3887-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-7304
+  - https://www.exploit-db.com/exploits/46361
+  - https://www.exploit-db.com/exploits/46362
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

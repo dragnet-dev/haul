@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1433 — Event Log Clearing (leaktheanalyst)'
+id: baf9cfa2-54e9-5da6-9e65-e874f1c94a3f
+status: deprecated
+description: |
+  Detects event log clearing associated with leaktheanalyst ransomware.
+  Incident: dragnet-ransomware-2022-1433
+  Ransomware victim claim by leaktheanalyst: 12 Escape from the dark; sector: Not Found
+  First observed: 2022-01-01.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

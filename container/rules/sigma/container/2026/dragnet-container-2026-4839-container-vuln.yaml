@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4839 — Vulnerable Base Image Pull'
+id: 10d43ff1-b728-5bd1-9b78-20179626ae2a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4839 (Tier 2, CVSS 9.8)
+  Mozilla developers and the Mozilla Fuzzing Team reported memory safety bugs present in Firefox 102. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code. This vulnerability affects Firefox < 103.
+references:
+  - https://bugzilla.mozilla.org/buglist.cgi?bug_id=1759794%2C1760998
+  - https://ubuntu.com/security/notices/USN-5536-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-36320
+  - https://www.mozilla.org/en-US/security/advisories/mfsa2022-30/#CVE-2022-36320
+  - https://www.mozilla.org/security/advisories/mfsa2022-28/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'ubuntu:18.04'
+      - 'ubuntu:20.04'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

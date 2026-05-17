@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3774 — Vulnerable Base Image Pull'
+id: 1f353441-7d4f-5640-91aa-abde37b76b68
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3774 (Tier 2, CVSS 9.8)
+  In qBittorrent before 4.1.7, the function Application::runExternalProgram() located in app/application.cpp allows command injection via shell metacharacters in the torrent name parameter or current tracker parameter, as demonstrated by remote command execution via a crafted name within an RSS feed.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00080.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00085.html
+  - http://www.openwall.com/lists/oss-security/2024/10/30/4
+  - https://github.com/qbittorrent/qBittorrent/issues/10925
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5T4XAX2VUI4WMAS5AI4OE3OEQSQCDCF5/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OH3WYCKODG4OKMC4S6PWHLHAWWU6ORNC/
+  - https://www.cve.org/CVERecord?id=CVE-2019-13640
+  - https://www.debian.org/security/2020/dsa-4650
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

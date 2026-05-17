@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3956 — Event Log Clearing (metaencryptor)'
+id: a763d2f3-15e5-5d9a-8f79-1d8d51af4fa5
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3956
+  Ransomware victim claim by metaencryptor: Heilmann Gruppe; country: DE; sector: Agriculture and Food Production
+  First observed: 2023-08-16.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:57ccac0b7ba2cfda3c50a81a8ca6eae7/0AFC:13d60b7bde88f3ec773f04fe0780aaa68d51703091a50954c1ea963a657f49e9/0AFC:444c358d434fab0f4b4b92f5c882f2d487e5343be0e17305fde7a49bb988a0d9
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

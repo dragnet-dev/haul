@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2548 — Event Log Clearing (midas)'
+id: 5852b98a-774c-5eb2-89e1-897f39ceb37b
+status: deprecated
+description: |
+  Detects event log clearing associated with midas ransomware.
+  Incident: dragnet-ransomware-2022-2548
+  Ransomware victim claim by midas: 1; sector: Not Found
+  First observed: 2022-03-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

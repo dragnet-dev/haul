@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0001 — Shadow Copy Deletion (0mega)'
+id: b290c9cb-c0f8-565d-8e44-588ca8050449
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with 0mega ransomware.
+  Incident: dragnet-ransomware-2024-0001
+  Ransomware victim claim by 0mega: Four Hands LLC; country: US; sector: Business Services
+  First observed: 2024-01-25.
+references:
+  - http://0mega.cc/post/6.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

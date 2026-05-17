@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4222 — Vulnerable Base Image Pull'
+id: 8b6452a4-fcd1-5340-81d5-3c342ef02d35
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4222 (Tier 2, CVSS 9.8)
+  The Kamailio SIP before 5.5.0 server mishandles INVITE requests with duplicated fields and overlength tag, leading to a buffer overflow that crashes the server or possibly have unspecified other impact.
+references:
+  - https://github.com/kamailio/kamailio/commit/ada3701d22b1fd579f06b4f54fa695fa988e685f
+  - https://github.com/kamailio/kamailio/issues/2503
+  - https://lists.debian.org/debian-lts-announce/2023/05/msg00030.html
+  - https://ubuntu.com/security/notices/USN-6022-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-27507
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

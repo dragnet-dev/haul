@@ -1,0 +1,59 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5559 — Vulnerable Base Image Pull'
+id: f3e6db61-8393-5f49-9f75-f85d084da688
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5559 (Tier 2, CVSS 9.8)
+  In the Linux kernel, the following vulnerability has been resolved:
+
+nvmet-tcp: add bounds checks in nvmet_tcp_build_pdu_iovec
+
+nvmet_tcp_build_pdu_iovec() could walk past cmd->req.sg when a PDU
+length or offset exceeds sg_cnt and then use bogus sg->length/offset
+values, leading to _copy_to_iter() GPF/KASAN. Guard sg_idx, remaining
+entries, and sg->length/offset before building the bvec.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-23112
+  - https://access.redhat.com/security/cve/CVE-2026-23112
+  - https://git.kernel.org/linus/52a0a98549344ca20ad81a4176d68d28e3c05a5c (6.19)
+  - https://git.kernel.org/stable/c/043b4307a99f902697349128fde93b2ddde4686c
+  - https://git.kernel.org/stable/c/0b9981751be14b59b4473383c731c833738aebdb
+  - https://git.kernel.org/stable/c/1385be357e8acd09b36e026567f3a9d5c61139de
+  - https://git.kernel.org/stable/c/19672ae68d52ff75347ebe2420dde1b07adca09f
+  - https://git.kernel.org/stable/c/42afe8ed8ad2de9c19457156244ef3e1eca94b5d
+  - https://git.kernel.org/stable/c/52a0a98549344ca20ad81a4176d68d28e3c05a5c
+  - https://git.kernel.org/stable/c/ab200d71553bdcf4de554a5985b05b2dd606bc57
+  - https://git.kernel.org/stable/c/dca1a6ba0da9f472ef040525fab10fd9956db59f
+  - https://linux.oracle.com/cve/CVE-2026-23112.html
+  - https://linux.oracle.com/errata/ELSA-2026-50232.html
+  - https://lore.kernel.org/linux-cve-announce/2026021302-CVE-2026-23112-6499@gregkh/T
+  - https://ubuntu.com/security/notices/USN-8244-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

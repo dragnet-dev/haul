@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5974 — Event Log Clearing (threeam)'
+id: 2e13ba0c-1fa6-5be6-9bef-5767ecb8b7bb
+status: deprecated
+description: |
+  Detects event log clearing associated with threeam ransomware.
+  Incident: dragnet-ransomware-2024-5974
+  Ransomware victim claim by threeam: thermalsolutionsllc.com; country: US; sector: Manufacturing
+  First observed: 2024-05-16.
+references:
+  - http://threeamkelxicjsaf2czjyz2lc4q3ngqkxhhlexyfcp2o6raw4rphyad.onion/cl/clicks.php?uri=THERMAL/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1689 — Event Log Clearing (daixin)'
+id: 83910dc1-a6a5-5581-bf9c-bf6035b04386
+status: deprecated
+description: |
+  Detects event log clearing associated with daixin ransomware.
+  Incident: dragnet-ransomware-2024-1689
+  Ransomware victim claim by daixin: Dubai Municipality; country: AE; sector: Public Sector
+  First observed: 2024-06-05.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

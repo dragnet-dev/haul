@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5213 — Vulnerable Base Image Pull'
+id: e49c1cd7-a0dd-5080-b009-107c57268855
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5213 (Tier 2, CVSS 9.1)
+  Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. Due to the improper URL protocols filtering of links specified in the `link.argocd.argoproj.io` annotations in the application summary component, an attacker can achieve cross-site scripting with elevated permissions. All unpatched versions of Argo CD starting with v1.0.0 are vulnerable to a cross-site scripting (XSS) bug allowing a malicious user to inject a javascript: link in the UI. When clicked by a victim user, the script will execute with the victim's permissions (up to and including admin). This vulnerability allows an attacker to perform arbitrary actions on behalf of the victim via the API, such as creating, modifying, and deleting Kubernetes resources. A patch for this vulnerability has been released in Argo CD versions v2.10.3 v2.9.8, and v2.8.12. There are no completely-safe workarounds besides upgrading. The safest alternative, if upgrading is not possible, would be to create a Kubernetes admission controller to reject any resources with an annotation starting with link.argocd.argoproj.io or reject the resource if the value use an improper URL protocol. This validation will need to be applied in all clusters managed by ArgoCD.
+
+
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-28175
+  - https://github.com/argoproj/argo-cd
+  - https://github.com/argoproj/argo-cd/commit/479b5544b57dc9ef767d49f7003f39602c480b71
+  - https://github.com/argoproj/argo-cd/security/advisories/GHSA-jwv5-8mqv-g387
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-28175
+  - https://www.cve.org/CVERecord?id=CVE-2024-28175
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

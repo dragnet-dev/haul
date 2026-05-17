@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0421 — Event Log Clearing (blackshrantac)'
+id: ede0b6d5-35d3-5bd2-ab72-a7f8fdcd2a6f
+status: deprecated
+description: |
+  Detects event log clearing associated with blackshrantac ransomware.
+  Incident: dragnet-ransomware-2026-0421
+  Ransomware victim claim by blackshrantac: PKT QS; country: GB; sector: Not Found
+  First observed: 2026-01-16.
+references:
+  - http://shrantacpxim7z6m6pnszi52bb2tp23sntby3hklt36rezdja7bdjsyd.onion/leaks/wLLqVbO1WwEu
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

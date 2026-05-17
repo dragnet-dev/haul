@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5350 — Vulnerable Base Image Pull'
+id: 49027880-74f2-5d73-a8f8-a0b4d9c7fc3c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5350 (Tier 2, CVSS 9.1)
+  A vulnerability in the `download_model` function of the onnx/onnx framework, before and including version 1.16.1, allows for arbitrary file overwrite due to inadequate prevention of path traversal attacks in malicious tar files. This vulnerability can be exploited by an attacker to overwrite files in the user's directory, potentially leading to remote command execution.
+references:
+  - https://github.com/onnx/onnx
+  - https://github.com/onnx/onnx/commit/1b70f9b673259360b6a2339c4bd97db9ea6e552f
+  - https://github.com/onnx/onnx/pull/6222
+  - https://github.com/pypa/advisory-database/tree/main/vulns/onnx/PYSEC-2025-10.yaml
+  - https://huntr.com/bounties/a7a46cf6-1fa0-454b-988c-62d222e83f63
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-7776
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

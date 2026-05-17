@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3726 — Event Log Clearing (mallox)'
+id: 87bb5c7d-ff29-5014-b04b-d8236803f933
+status: deprecated
+description: |
+  Detects event log clearing associated with mallox ransomware.
+  Incident: dragnet-ransomware-2024-3726
+  Ransomware victim claim by mallox: highfashion.com.hk; country: HK; sector: Business Services
+  First observed: 2024-03-03.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

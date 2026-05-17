@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2015 — Shadow Copy Deletion (payoutsking)'
+id: a99d57b4-7fa1-5331-8c8a-90d0c5511e8e
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with payoutsking ransomware.
+  Incident: dragnet-ransomware-2026-2015
+  Ransomware victim claim by payoutsking: Ash & Lacy Holdings; country: UK; sector: Not Found
+  First observed: 2026-01-14.
+references:
+  - http://payoutsgn7cy6uliwevdqspncjpfxpmzgirwl2au65la7rfs5x3qnbqd.onion/PqVXm4-9ewwi8-tG5q6g-AxFv70-E1OkIl
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

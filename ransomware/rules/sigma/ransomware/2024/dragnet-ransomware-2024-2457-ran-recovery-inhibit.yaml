@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2457 — Recovery Inhibition (helldown)'
+id: 700393a4-6b77-51a6-b912-157c91306d29
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with helldown ransomware.
+  Incident: dragnet-ransomware-2024-2457
+  Ransomware victim claim by helldown: deganis; country: FR; sector: Business Services
+  First observed: 2024-08-13.
+references:
+  - http://onyxcgfg4pjevvp5h34zvhaj45kbft3dg5r33j5vu3nyp7xic3vrzvad.onion/2d5e0418.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

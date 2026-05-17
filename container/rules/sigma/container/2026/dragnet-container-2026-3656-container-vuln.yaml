@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3656 — Vulnerable Base Image Pull'
+id: 8a2362d0-835c-5c5d-a477-3f6efcaede70
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3656 (Tier 2, CVSS 9.8)
+  An issue was discovered in Suricata 4.1.x before 4.1.4. If the input of the function SSHParseBanner is composed only of a \n character, then the program runs into a heap-based buffer over-read. This occurs because the erroneous search for \r results in an integer underflow.
+references:
+  - https://lists.openinfosecfoundation.org/pipermail/oisf-announce/
+  - https://suricata-ids.org/2019/04/30/suricata-4-1-4-released/
+  - https://www.cve.org/CVERecord?id=CVE-2019-10053
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

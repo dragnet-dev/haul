@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1125 — Event Log Clearing (lv)'
+id: 2cb5e0da-9cde-5ded-a9cd-fbb80123a690
+status: deprecated
+description: |
+  Detects event log clearing associated with lv ransomware.
+  Incident: dragnet-ransomware-2021-1125
+  Ransomware victim claim by lv: docol.com.br - more then 1.5TB data leaked; sector: Business Services
+  First observed: 2021-11-22.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

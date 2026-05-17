@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5119 — Vulnerable Base Image Pull'
+id: 5906f8be-7826-53a7-809c-5666779c2e20
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5119 (Tier 2, CVSS 9.8)
+  Heap Buffer Overflow vulnerability in GPAC version 2.3-DEV-rev617-g671976fcc-master, allows attackers to execute arbitrary code and cause a denial of service (DoS) via str2ulong class in src/media_tools/avilib.c in gpac/MP4Box.
+references:
+  - https://github.com/gpac/gpac/commit/dfdf1681aae2f7b6265e58e97f8461a89825a74b
+  - https://github.com/gpac/gpac/issues/2669
+  - https://www.cve.org/CVERecord?id=CVE-2023-46932
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

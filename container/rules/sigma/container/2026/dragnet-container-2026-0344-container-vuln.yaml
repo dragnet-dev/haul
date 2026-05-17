@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0344 — Vulnerable Base Image Pull'
+id: 6d98f898-84e9-50e1-ae8b-530b9adfaec2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0344 (Tier 2, CVSS 9.3)
+  The dataconn function in ftpd.c in netkit ftpd (netkit-ftpd) 0.17, when certain modifications to support SSL have been introduced, calls fclose on an uninitialized file stream, which allows remote attackers to cause a denial of service (daemon crash) and possibly have unspecified other impact via some types of FTP over SSL protocol behavior, as demonstrated by breaking a passive FTP DATA connection in a way that triggers an error in the server's SSL_accept function. NOTE: the netkit ftp issue is covered by CVE-2007-5769.
+references:
+  - http://bugs.gentoo.org/show_bug.cgi?id=199206
+  - http://marc.info/?l=full-disclosure&m=119704348003382&w=2
+  - http://osvdb.org/41191
+  - http://secunia.com/advisories/28697
+  - http://www.gentoo.org/security/en/glsa/glsa-200801-17.xml
+  - http://www.securityfocus.com/bid/26763
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

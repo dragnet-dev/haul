@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3864 — Vulnerable Base Image Pull'
+id: e1845985-3acd-561f-9f8b-8209d4788ad1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3864 (Tier 2, CVSS 9.8)
+  libsoup from versions 2.65.1 until 2.68.1 have a heap-based buffer over-read because soup_ntlm_parse_challenge() in soup-auth-ntlm.c does not properly check an NTLM message's length before proceeding with a memcpy.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-17266
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=941912
+  - https://github.com/Kirin-say/Vulnerabilities/blob/master/CVE-2019-17266_POC.md
+  - https://gitlab.gnome.org/GNOME/libsoup/commit/88b7dff4467f4151afae244ea7d1223753cd05ab
+  - https://gitlab.gnome.org/GNOME/libsoup/commit/f8a54ac85eec2008c85393f331cdd251af8266ad
+  - https://gitlab.gnome.org/GNOME/libsoup/issues/173
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-17266
+  - https://security-tracker.debian.org/tracker/CVE-2019-17266
+  - https://ubuntu.com/security/notices/USN-4152-1
+  - https://usn.ubuntu.com/4152-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-17266
+  - https://www.mail-archive.com/debian-bugs-dist%40lists.debian.org/msg1705054.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

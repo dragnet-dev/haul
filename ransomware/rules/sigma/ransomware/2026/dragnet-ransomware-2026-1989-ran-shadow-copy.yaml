@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1989 — Shadow Copy Deletion (payload)'
+id: ed0e1342-3faa-504d-8af0-e1d456e590a6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with payload ransomware.
+  Incident: dragnet-ransomware-2026-1989
+  Ransomware victim claim by payload: Marino Food Products Pvt; country: LK; sector: Agriculture and Food Production
+  First observed: 2026-04-16.
+references:
+  - http://payloadrz5yw227brtbvdqpnlhq3rdcdekdnn3rgucbcdeawq2v6vuyd.onion/posts/0de813bc-eaed-452e-9b1e-10c6c085e000
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3941 — Vulnerable Base Image Pull'
+id: 9a15b33e-b98d-5a3b-be4a-6939586193e5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3941 (Tier 2, CVSS 9.8)
+  InfluxDB before 1.7.6 has an authentication bypass vulnerability in the authenticate function in services/httpd/handler.go because a JWT token may have an empty SharedSecret (aka shared secret).
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-20933
+  - https://github.com/influxdata/influxdb/commit/761b557315ff9c1642cf3b0e5797cd3d983a24c0
+  - https://github.com/influxdata/influxdb/compare/v1.7.5...v1.7.6
+  - https://github.com/influxdata/influxdb/issues/12927
+  - https://github.com/ticarpi/jwt_tool/blob/a6ca3e0524a204b5add070bc6874cb4e7e5a9864/jwt_tool.py#L1368
+  - https://lists.debian.org/debian-lts-announce/2020/12/msg00030.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-20933
+  - https://pkg.go.dev/github.com/influxdata/influxdb/services/httpd
+  - https://ubuntu.com/security/notices/USN-5451-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-20933
+  - https://www.debian.org/security/2021/dsa-4823
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'photon os:5.0'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

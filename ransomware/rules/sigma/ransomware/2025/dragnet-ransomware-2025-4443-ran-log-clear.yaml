@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4443 — Event Log Clearing (metaencryptor)'
+id: 44950f14-53ed-5986-a516-09e96351a399
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2025-4443
+  Ransomware victim claim by metaencryptor: Third Avenue Management; country: US; sector: Financial Services
+  First observed: 2025-04-08.
+references:
+  - https://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:9dc55a7491fc472a3a5ce0c44887c3c3/0AFC:4b23ef9a379ee004a23eed6c755ab03464c7ee095016a2c9086bf0ab34bcb8ed/0AFC:5054806d6498f809d08b8344ee8fc73a9d2771bd91613117bac5f0643ef73b3c19367188d6d8365af7b63f0520cbc2d6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

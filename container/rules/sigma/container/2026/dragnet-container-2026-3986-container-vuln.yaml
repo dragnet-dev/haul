@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3986 — Vulnerable Base Image Pull'
+id: d39ca212-d1bf-592d-b1a5-e2ee53284453
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3986 (Tier 2, CVSS 9.8)
+  A Denial of Service issue was discovered in the LIVE555 Streaming Media libraries as used in Live555 Media Server 0.93. It can cause an RTSPServer crash in handleHTTPCmd_TunnelingPOST, when RTSP-over-HTTP tunneling is supported, via x-sessioncookie HTTP headers in a GET request and a POST request within the same TCP session. This occurs because of a call to an incorrect virtual function pointer in the readSocket function in GroupsockHelper.cpp.
+references:
+  - https://github.com/rgaufman/live555/issues/19
+  - https://lists.debian.org/debian-lts-announce/2019/02/msg00037.html
+  - https://seclists.org/bugtraq/2019/Mar/22
+  - https://security.gentoo.org/glsa/202005-06
+  - https://ubuntu.com/security/notices/USN-4853-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-6256
+  - https://www.debian.org/security/2019/dsa-4408
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.04'
+      - 'ubuntu:19.10'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

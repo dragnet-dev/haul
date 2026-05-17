@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1138 — Event Log Clearing (macaw)'
+id: a711a29e-9c14-5342-8e7f-4c662eccc945
+status: deprecated
+description: |
+  Detects event log clearing associated with macaw ransomware.
+  Incident: dragnet-ransomware-2021-1138
+  Ransomware victim claim by macaw: Sinclair Broadcast Group; country: US; sector: Telecommunication
+  First observed: 2021-10-16.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3141 — Event Log Clearing (hunters)'
+id: bf170597-f82a-5e0f-af4e-98a8ff45ea91
+status: deprecated
+description: |
+  Detects event log clearing associated with hunters ransomware.
+  Incident: dragnet-ransomware-2025-3141
+  Ransomware victim claim by hunters: Sansone Group; country: US; sector: Not Found
+  First observed: 2025-04-04.
+references:
+  - https://hunters55rdxciehoqzwv7vgyv6nt37tbwax2reroyzxhou7my5ejyid.onion/companies/2225671407
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

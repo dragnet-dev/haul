@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2349 — Vulnerable Base Image Pull'
+id: 934f2edd-65ff-5115-8950-1ddb1540e5d4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2349 (Tier 2, CVSS 9.8)
+  partclone.restore in Partclone 0.2.87 is prone to a heap-based buffer overflow vulnerability due to insufficient validation of the partclone image header. An attacker may be able to execute arbitrary code in the context of the user running the affected application.
+references:
+  - https://github.com/Thomas-Tsai/partclone/issues/82
+  - https://www.cve.org/CVERecord?id=CVE-2016-10721
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

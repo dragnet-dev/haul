@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3615 — Vulnerable Base Image Pull'
+id: 1a53571b-d12f-5175-92cf-f901e200ea76
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3615 (Tier 2, CVSS 9.8)
+  There is an invalid free in MiniPS::delete0 in minips.cpp that leads to a Segmentation fault in sam2p 0.49.4. A crafted input will lead to a denial of service or possibly unspecified other impact.
+references:
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=891527
+  - https://github.com/pts/sam2p/issues/28
+  - https://lists.debian.org/debian-lts-announce/2018/04/msg00004.html
+  - https://www.cve.org/CVERecord?id=CVE-2018-7551
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

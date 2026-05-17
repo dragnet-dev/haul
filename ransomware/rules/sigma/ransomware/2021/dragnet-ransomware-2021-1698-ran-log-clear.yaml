@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1698 — Event Log Clearing (rook)'
+id: 088a02f8-dfb0-5b40-887a-7f7c1aae2725
+status: deprecated
+description: |
+  Detects event log clearing associated with rook ransomware.
+  Incident: dragnet-ransomware-2021-1698
+  Ransomware victim claim by rook: KMG Prestige, Inc. (Data will be given tomorrow); sector: Energy
+  First observed: 2021-12-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

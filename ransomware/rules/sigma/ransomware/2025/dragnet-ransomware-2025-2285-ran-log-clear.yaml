@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2285 — Event Log Clearing (devman)'
+id: 3bb3050b-7231-5be0-b187-75e74df6bdf6
+status: deprecated
+description: |
+  Detects event log clearing associated with devman ransomware.
+  Incident: dragnet-ransomware-2025-2285
+  Ransomware victim claim by devman: ruff.com.br; country: BR; sector: Not Found
+  First observed: 2025-08-04.
+references:
+  - http://wugurgyscp5rxpihef5vl6b6m5ont3b6sezhl7boboso2enib2k3q6qd.onion#ruffcombr
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

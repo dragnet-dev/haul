@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5693 — Vulnerable Base Image Pull'
+id: 4d7d3489-ffe4-5ee1-a9f6-d8dbdc125ec6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5693 (Tier 2, CVSS 10)
+  FastMCP is a Pythonic way to build MCP servers and clients. Prior to version 3.2.0, the OpenAPIProvider in FastMCP exposes internal APIs to MCP clients by parsing OpenAPI specifications. The RequestDirector class is responsible for constructing HTTP requests to the backend service. A vulnerability exists in the _build_url() method. When an OpenAPI operation defines path parameters (e.g., /api/v1/users/{user_id}), the system directly substitutes parameter values into the URL template string without URL-encoding. Subsequently, urllib.parse.urljoin() resolves the final URL. Since urljoin() interprets ../ sequences as directory traversal, an attacker controlling a path parameter can perform path traversal attacks to escape the intended API prefix and access arbitrary backend endpoints. This results in authenticated SSRF, as requests are sent with the authorization headers configured in the MCP provider. This issue has been patched in version 3.2.0.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-32871
+  - https://github.com/PrefectHQ/fastmcp
+  - https://github.com/PrefectHQ/fastmcp/commit/40bdfb6b1de0ce30609ee9ba5bb95ecd04a9fb71
+  - https://github.com/PrefectHQ/fastmcp/pull/3507
+  - https://github.com/PrefectHQ/fastmcp/releases/tag/v3.2.0
+  - https://github.com/PrefectHQ/fastmcp/security/advisories/GHSA-vv7q-7jx5-f767
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-32871
+  - https://www.cve.org/CVERecord?id=CVE-2026-32871
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,69 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4999 — Vulnerable Base Image Pull'
+id: 5d46c712-9271-5b63-abc3-cf761ae244cd
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4999 (Tier 2, CVSS 9.8)
+  The go command may execute arbitrary code at build time when using cgo. This may occur when running "go get" on a malicious module, or when running any other command which builds untrusted code. This is can by triggered by linker flags, specified via a "#cgo LDFLAGS" directive. Flags containing embedded spaces are mishandled, allowing disallowed flags to be smuggled through the LDFLAGS sanitization by including them in the argument of another flag. This only affects usage of the gccgo compiler.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-29405
+  - https://github.com/golang/go/commit/1008486a9ff979dbd21c7466eeb6abf378f9c637 (go1.20.5)
+  - https://github.com/golang/go/commit/3ba9c890b86dc8c3a54c98d32497b7a8012704f9 (go1.19.10)
+  - https://github.com/golang/go/commit/44e0fb13e783a44463e95926a674fd580daa3a55 (go1.19.10)
+  - https://github.com/golang/go/commit/fa60c381ed06c12f9c27a7b50ca44c5f84f7f0f4 (go1.20.5)
+  - https://github.com/golang/go/issues/60306
+  - https://access.redhat.com/errata/RHSA-2023:3923
+  - https://access.redhat.com/security/cve/CVE-2023-29405
+  - https://bugzilla.redhat.com/2216965
+  - https://bugzilla.redhat.com/2217562
+  - https://bugzilla.redhat.com/2217565
+  - https://bugzilla.redhat.com/2217569
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2216965
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2217562
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2217565
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3504 — Vulnerable Base Image Pull'
+id: 454bd518-ae28-5114-956b-c8177be988de
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3504 (Tier 2, CVSS 9.8)
+  Git before 2.19.2 on Linux and UNIX executes commands from the current working directory (as if '.' were at the end of $PATH) in certain cases involving the run_command() API and run-command.c, because there was a dangerous change from execvp to execv during 2017.
+references:
+  - http://www.securityfocus.com/bid/106020
+  - http://www.securitytracker.com/id/1042166
+  - https://access.redhat.com/errata/RHSA-2018:3800
+  - https://access.redhat.com/security/cve/CVE-2018-19486
+  - https://git.kernel.org/pub/scm/git/git.git/commit/?id=321fd82389742398d2924640ce3a61791fd27d60
+  - https://git.kernel.org/pub/scm/git/git.git/tree/Documentation/RelNotes/2.19.2.txt
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-19486
+  - https://security.gentoo.org/glsa/201904-13
+  - https://ubuntu.com/security/notices/USN-3829-1
+  - https://usn.ubuntu.com/3829-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-19486
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'photon os:5.0'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

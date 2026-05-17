@@ -1,0 +1,70 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3625 — Vulnerable Base Image Pull'
+id: f6d71a14-47e5-5332-91b2-5d2bde8808c7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3625 (Tier 2, CVSS 9.8)
+  transport.py in the SSH server implementation of Paramiko before 1.17.6, 1.18.x before 1.18.5, 2.0.x before 2.0.8, 2.1.x before 2.1.5, 2.2.x before 2.2.3, 2.3.x before 2.3.2, and 2.4.x before 2.4.1 does not properly check whether authentication is completed before processing other requests, as demonstrated by channel-open. A customized SSH client can simply skip the authentication step.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-7750
+  - https://github.com/advisories/GHSA-232r-66cg-79px
+  - https://github.com/paramiko/paramiko
+  - https://github.com/paramiko/paramiko/blob/e861c7697622774071ce73b46ffe8817eacdedfa/sites/www/changelog.rst?plain=1#L759-L763
+  - https://github.com/paramiko/paramiko/blob/master/sites/www/changelog.rst
+  - https://github.com/paramiko/paramiko/commit/e9dfd854bdaf8af15d7834f7502a0451d217bb8c
+  - https://github.com/paramiko/paramiko/commit/fa29bd8446c8eab237f5187d28787727b4610516
+  - https://github.com/paramiko/paramiko/issues/1175
+  - https://github.com/pypa/advisory-database/tree/main/vulns/paramiko/PYSEC-2018-19.yaml
+  - http://www.securityfocus.com/bid/103713
+  - https://access.redhat.com/errata/RHSA-2018:0591
+  - https://access.redhat.com/errata/RHSA-2018:0646
+  - https://access.redhat.com/errata/RHSA-2018:1124
+  - https://access.redhat.com/errata/RHSA-2018:1125
+  - https://access.redhat.com/errata/RHSA-2018:1213
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:6'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

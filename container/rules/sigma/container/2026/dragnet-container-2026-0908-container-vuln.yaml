@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0908 — Vulnerable Base Image Pull'
+id: 8ab4e8ea-eadf-5035-bd53-1df3ff1ad218
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0908 (Tier 2, CVSS 9.8)
+  mod_perl 2.0 through 2.0.10 allows attackers to execute arbitrary Perl code by placing it in a user-owned .htaccess file, because (contrary to the documentation) there is no configuration option that permits Perl code for the administrator's control of HTTP request processing without also permitting unprivileged users to run Perl code in the context of the user account that runs Apache HTTP Server processes.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2011-2767
+  - http://lists.opensuse.org/opensuse-security-announce/2019-11/msg00063.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-11/msg00065.html
+  - http://www.securityfocus.com/bid/105195
+  - https://access.redhat.com/errata/RHSA-2018:2737
+  - https://access.redhat.com/errata/RHSA-2018:2825
+  - https://access.redhat.com/errata/RHSA-2018:2826
+  - https://access.redhat.com/security/cve/CVE-2011-2767
+  - https://bugs.debian.org/644169
+  - https://linux.oracle.com/cve/CVE-2011-2767.html
+  - https://linux.oracle.com/errata/ELSA-2018-2737.html
+  - https://lists.apache.org/thread.html/c8ebe8aad147a3ad2e7b0e8b2da45263171ab5d0fc7f8c100feaa94d%40%3Cmodperl-cvs.perl.apache.org%3E
+  - https://lists.debian.org/debian-lts-announce/2018/09/msg00018.html
+  - https://mail-archives.apache.org/mod_mbox/perl-modperl/201110.mbox/%3C20111004084343.GA21290%40ktnx.net%3E
+  - https://mail-archives.apache.org/mod_mbox/perl-modperl/201110.mbox/raw/%3C20111004084343.GA21290%40ktnx.net%3E
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:6'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

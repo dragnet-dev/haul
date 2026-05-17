@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3937 — Vulnerable Base Image Pull'
+id: e4c8d604-b8de-56bd-b5a3-aba1b92fbd4a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3937 (Tier 2, CVSS 9.8)
+  In ruamel.yaml through 0.16.7, the load method allows remote code execution if the application calls this method with an untrusted argument. In other words, this issue affects developers who are unaware of the need to use methods such as safe_load in these use cases.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-20478
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-20478
+  - https://www.cve.org/CVERecord?id=CVE-2019-20478
+  - https://www.exploit-db.com/exploits/47655
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

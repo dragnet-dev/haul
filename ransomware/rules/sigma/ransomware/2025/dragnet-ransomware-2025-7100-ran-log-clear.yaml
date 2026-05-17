@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7100 — Event Log Clearing (sarcoma)'
+id: 7c098e78-ca80-5c01-b6b5-c774b26a12cf
+status: deprecated
+description: |
+  Detects event log clearing associated with sarcoma ransomware.
+  Incident: dragnet-ransomware-2025-7100
+  Ransomware victim claim by sarcoma: Woodmen Valley Chapel; country: US; sector: Not Found
+  First observed: 2025-04-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

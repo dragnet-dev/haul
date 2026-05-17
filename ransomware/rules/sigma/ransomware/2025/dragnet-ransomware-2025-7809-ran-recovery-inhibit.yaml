@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7809 — Recovery Inhibition (weyhro)'
+id: cbae9294-21b8-56bd-a8e5-ff7b2cef70c5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with weyhro ransomware.
+  Incident: dragnet-ransomware-2025-7809
+  Ransomware victim claim by weyhro: McMillan James Equipment Company (MJEC); country: US; sector: Manufacturing
+  First observed: 2025-03-19.
+references:
+  - https://weyhro.hk//leaks/mjec
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

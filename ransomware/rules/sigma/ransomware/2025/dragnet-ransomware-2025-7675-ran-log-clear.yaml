@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7675 — Event Log Clearing (threeam)'
+id: 89ec7c94-727b-50a4-a85e-e9e75542d97b
+status: deprecated
+description: |
+  Detects event log clearing associated with threeam ransomware.
+  Incident: dragnet-ransomware-2025-7675
+  Ransomware victim claim by threeam: aceforwarding.com; sector: Transportation/Logistics
+  First observed: 2025-11-19.
+references:
+  - http://threeamkelxicjsaf2czjyz2lc4q3ngqkxhhlexyfcp2o6raw4rphyad.onion/detail/7negxssuv9kr7bjj5kw5so5l6hdem3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

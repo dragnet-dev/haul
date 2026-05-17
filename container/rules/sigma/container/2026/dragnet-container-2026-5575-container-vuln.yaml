@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5575 — Vulnerable Base Image Pull'
+id: ce94d7f1-0ff6-5a87-91be-76998b64d675
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5575 (Tier 2, CVSS 9.1)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to 3.22.0, ecam_encoder_compress_h264 trusts server-controlled dimensions and does not validate the source buffer size, leading to an out-of-bounds read in sws_scale. This vulnerability is fixed in 3.22.0.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-24677
+  - https://github.com/FreeRDP/FreeRDP/commit/d2d4f449312ddafd4a4c6c8a4f856c7f0d44a3b5
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-xw37-j744-f8v7
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-24677
+  - https://ubuntu.com/security/notices/USN-8042-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-24677
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0910 — Vulnerable Base Image Pull'
+id: abba7708-9507-525f-b80e-7547ae11e553
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0910 (Tier 2, CVSS 9.3)
+  The LZW decompressor in (1) the BufCompressedFill function in fontfile/decompress.c in X.Org libXfont before 1.4.4 and (2) compress/compress.c in 4.3BSD, as used in zopen.c in OpenBSD before 3.8, FreeBSD, NetBSD 4.0.x and 5.0.x before 5.0.3 and 5.1.x before 5.1.1, FreeType 2.1.9, and other products, does not properly handle code words that are absent from the decompression table when encountered, which allows context-dependent attackers to trigger an infinite loop or a heap-based buffer overflow, and possibly execute arbitrary code, via a crafted compressed stream, a related issue to CVE-2006-1168 and CVE-2011-2896.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2011-2895
+  - http://cgit.freedesktop.org/xorg/lib/libXfont/commit/?id=d11ee5886e9d9ec610051a206b135a4cdc1e09a0
+  - http://ftp.netbsd.org/pub/NetBSD/security/advisories/NetBSD-SA2011-007.txt.asc
+  - http://lists.apple.com/archives/security-announce/2012/Feb/msg00000.html
+  - http://lists.apple.com/archives/security-announce/2012/May/msg00001.html
+  - http://lists.apple.com/archives/security-announce/2015/Dec/msg00000.html
+  - http://lists.apple.com/archives/security-announce/2015/Dec/msg00001.html
+  - http://lists.apple.com/archives/security-announce/2015/Dec/msg00002.html
+  - http://lists.apple.com/archives/security-announce/2015/Dec/msg00005.html
+  - http://lists.freedesktop.org/archives/xorg-announce/2011-August/001721.html
+  - http://lists.freedesktop.org/archives/xorg-announce/2011-August/001722.html
+  - http://lists.opensuse.org/opensuse-security-announce/2011-09/msg00019.html
+  - http://lists.opensuse.org/opensuse-security-announce/2011-12/msg00004.html
+  - http://secunia.com/advisories/45544
+  - http://secunia.com/advisories/45568
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:5'
+      - 'oraclelinux:6'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

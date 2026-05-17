@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0274 — Recovery Inhibition (ALP-001)'
+id: 575a0ba1-add0-5976-99da-ec199c201999
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with ALP-001 ransomware.
+  Incident: dragnet-ransomware-2026-0274
+  Ransomware victim claim by ALP-001: nepgroup.com; country: US; sector: Business Services
+  First observed: 2026-04-08.
+references:
+  - http://b4riuxx7ypobdptctf6lyfcvgi6vn74iurzdh4kn2agbk7472dvywgyd.onion#nepgroup.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

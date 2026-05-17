@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1349 — Event Log Clearing (BrainCipher)'
+id: d7f8cc3e-384e-5a25-9265-e376fa7e8e63
+status: deprecated
+description: |
+  Detects event log clearing associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1349
+  Ransomware victim claim by BrainCipher: Sherbrooke Metals; country: US; sector: Manufacturing
+  First observed: 2024-07-21.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/VsUdbI9UaMS8IzWxbb4twcNoiVmp0AE6heLAbqjhUnTCdasW2zA2LXdGRM3XP97HUKzIZTxwTSUL8p2mReqlIweUdVN3dT
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

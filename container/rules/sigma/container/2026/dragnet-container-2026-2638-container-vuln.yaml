@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2638 — Vulnerable Base Image Pull'
+id: 0fb3d87f-35c3-543a-8eb5-7c2d42f430a9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2638 (Tier 2, CVSS 9.1)
+  Ansible before version 2.2.0 fails to properly sanitize fact variables sent from the Ansible controller. An attacker with the ability to create special variables on the controller could execute arbitrary commands on Ansible clients as the user Ansible runs as.
+references:
+  - http://www.securityfocus.com/bid/94109
+  - https://access.redhat.com/errata/RHSA-2016:2778
+  - https://access.redhat.com/security/cve/CVE-2016-8628
+  - https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2016-8628
+  - https://github.com/advisories/GHSA-jg4f-jqm5-4mgq
+  - https://github.com/ansible/ansible
+  - https://github.com/ansible/ansible/commit/35938b907dfcd1106ca40b794f0db446bdb8cf09
+  - https://github.com/ansible/ansible/issues/41903
+  - https://github.com/pypa/advisory-database/tree/main/vulns/ansible/PYSEC-2018-38.yaml
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-8628
+  - https://web.archive.org/web/20200227214455/http://www.securityfocus.com/bid/94109
+  - https://www.cve.org/CVERecord?id=CVE-2016-8628
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

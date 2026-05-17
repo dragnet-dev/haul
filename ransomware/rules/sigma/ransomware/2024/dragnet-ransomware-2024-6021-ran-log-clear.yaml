@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-6021 — Event Log Clearing (underground)'
+id: fdc9833e-00dc-57f2-b5e4-ed2a9809cb61
+status: deprecated
+description: |
+  Detects event log clearing associated with underground ransomware.
+  Incident: dragnet-ransomware-2024-6021
+  Ransomware victim claim by underground: Simmtech Co., Ltd.; country: KR; sector: Technology
+  First observed: 2024-12-16.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packagess/597763cb-cd1d-4f7c-bc17-93fc849db20d
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

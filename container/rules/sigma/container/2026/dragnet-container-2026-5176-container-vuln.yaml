@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5176 — Vulnerable Base Image Pull'
+id: 0a5ca639-0a00-5898-baea-6758a925df8e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5176 (Tier 2, CVSS 9.8)
+  Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. Prior to versions 2.8.13, 2.9.9, and 2.10.4, an attacker can exploit a chain of vulnerabilities, including a Denial of Service (DoS) flaw and in-memory data storage weakness, to effectively bypass the application's brute force login protection. This is a critical security vulnerability that allows attackers to bypass the brute force login protection mechanism. Not only can they crash the service affecting all users, but they can also make unlimited login attempts, increasing the risk of account compromise. Versions 2.8.13, 2.9.9, and 2.10.4 contain a patch for this issue.
+
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-21652
+  - https://argo-cd.readthedocs.io/en/stable/security_considerations/#cve-2020-8827-insufficient-anti-automationanti-brute-force
+  - https://github.com/argoproj/argo-cd
+  - https://github.com/argoproj/argo-cd/commit/17b0df1168a4c535f6f37e95f25ed7cd81e1fa4d
+  - https://github.com/argoproj/argo-cd/commit/6e181d72b31522f886a2afa029d5b26d7912ec7b
+  - https://github.com/argoproj/argo-cd/commit/cebb6538f7944c87ca2fecb5d17f8baacc431456
+  - https://github.com/argoproj/argo-cd/security/advisories/GHSA-x32m-mvfj-52xv
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-21652
+  - https://www.cve.org/CVERecord?id=CVE-2024-21652
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4209 — Vulnerable Base Image Pull'
+id: ae7edf8e-71f1-5433-a533-1ccbc2af1347
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4209 (Tier 2, CVSS 9.8)
+  gnuplot v5.5 was discovered to contain a buffer overflow via the function plotrequest().
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-25969
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-25969
+  - https://sourceforge.net/p/gnuplot/bugs/2311/
+  - https://ubuntu.com/security/notices/USN-7589-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-25969
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

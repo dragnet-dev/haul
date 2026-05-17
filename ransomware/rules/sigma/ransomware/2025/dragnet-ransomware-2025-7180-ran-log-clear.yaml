@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7180 — Event Log Clearing (silent)'
+id: a75c35ce-1935-5e4a-ada6-cdb92a0d4a9e
+status: deprecated
+description: |
+  Detects event log clearing associated with silent ransomware.
+  Incident: dragnet-ransomware-2025-7180
+  Ransomware victim claim by silent: Cocoon; country: US; sector: Not Found
+  First observed: 2025-05-04.
+references:
+  - http://silentbgdghp3zeldwpumnwabglreql7jcffhx5vqkvtf2lshc4n5zid.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

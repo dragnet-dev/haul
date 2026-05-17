@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5498 — Vulnerable Base Image Pull'
+id: 54718310-92f5-5cac-a647-c919bd22c42c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5498 (Tier 2, CVSS 9.8)
+  An issue was discovered in Django 4.2 before 4.2.25, 5.1 before 5.1.13, and 5.2 before 5.2.7. QuerySet.annotate(), QuerySet.alias(), QuerySet.aggregate(), and QuerySet.extra() are subject to SQL injection in column aliases, when using a suitably crafted dictionary, with dictionary expansion, as the **kwargs passed to these methods (on MySQL and MariaDB).
+references:
+  - http://www.openwall.com/lists/oss-security/2025/10/01/3
+  - https://access.redhat.com/security/cve/CVE-2025-59681
+  - https://docs.djangoproject.com/en/dev/releases/security
+  - https://docs.djangoproject.com/en/dev/releases/security/
+  - https://github.com/django/django
+  - https://github.com/django/django/commit/41b43c74bda19753c757036673ea9db74acf494a
+  - https://github.com/django/django/commit/43d84aef04a9e71164c21a74885996981857e66e
+  - https://groups.google.com/g/django-announce
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-59681
+  - https://ubuntu.com/security/notices/USN-7794-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-59681
+  - https://www.djangoproject.com/weblog/2025/oct/01/security-releases
+  - https://www.djangoproject.com/weblog/2025/oct/01/security-releases/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

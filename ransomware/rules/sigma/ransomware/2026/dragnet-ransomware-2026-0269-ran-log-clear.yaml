@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0269 — Event Log Clearing (ALP-001)'
+id: bd8da745-ea4a-5ba0-b18c-8de868ba6b53
+status: deprecated
+description: |
+  Detects event log clearing associated with ALP-001 ransomware.
+  Incident: dragnet-ransomware-2026-0269
+  Ransomware victim claim by ALP-001: inatech.com; country: GB; sector: Technology
+  First observed: 2026-04-08.
+references:
+  - http://b4riuxx7ypobdptctf6lyfcvgi6vn74iurzdh4kn2agbk7472dvywgyd.onion#inatech.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

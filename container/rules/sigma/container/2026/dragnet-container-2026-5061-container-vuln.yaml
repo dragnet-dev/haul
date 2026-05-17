@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5061 — Vulnerable Base Image Pull'
+id: 188d9d36-43bd-5e3b-8c24-e61aaf9ca53c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5061 (Tier 2, CVSS 9.3)
+  Sydent is an identity server for the Matrix communications protocol. Prior to version 2.5.6, if configured to send emails using TLS, Sydent does not verify SMTP servers' certificates. This makes  Sydent's emails vulnerable to interception via a man-in-the-middle (MITM) attack. Attackers with privileged access to the network can intercept room invitations and address confirmation emails. This is patched in Sydent 2.5.6. When patching, make sure that Sydent trusts the certificate of the server it is connecting to. This should happen automatically when using properly issued certificates. Those who use self-signed certificates should make sure to copy their Certification Authority certificate, or their self signed certificate if using only one, to the trust store of your operating system. As a workaround, one can ensure Sydent's emails fail to send by setting the configured SMTP server to a loopback or non-routable address under one's control which does not have a listening SMTP server.
+references:
+  - https://docs.python.org/3/library/ssl.html?highlight=ssl#security-considerations
+  - https://github.com/matrix-org/sydent
+  - https://github.com/matrix-org/sydent/commit/1cd748307c6b168b66154e6c4db715d4b9551261
+  - https://github.com/matrix-org/sydent/commit/1cd748307c6b168b66154e6c4db715d4b9551261 (v2.5.6)
+  - https://github.com/matrix-org/sydent/pull/574
+  - https://github.com/matrix-org/sydent/releases/tag/v2.5.6
+  - https://github.com/matrix-org/sydent/security/advisories/GHSA-p6hw-wm59-3g5g
+  - https://github.com/pypa/advisory-database/tree/main/vulns/matrix-sydent/PYSEC-2023-139.yaml
+  - https://github.com/python/cpython/issues/91826
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-38686
+  - https://peps.python.org/pep-0476
+  - https://peps.python.org/pep-0476/
+  - https://www.cve.org/CVERecord?id=CVE-2023-38686
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

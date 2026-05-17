@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2012 — Event Log Clearing (ElDorado)'
+id: bb822233-4bcb-5670-9706-19aa68a7f687
+status: deprecated
+description: |
+  Detects event log clearing associated with ElDorado ransomware.
+  Incident: dragnet-ransomware-2024-2012
+  Ransomware victim claim by ElDorado: First Baptist Church; country: US; sector: Public Sector
+  First observed: 2024-12-14.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

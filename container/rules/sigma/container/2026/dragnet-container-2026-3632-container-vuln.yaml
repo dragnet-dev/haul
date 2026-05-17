@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3632 — Vulnerable Base Image Pull'
+id: cb43af47-d6a6-5984-8579-61d83cb0c2ad
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3632 (Tier 2, CVSS 9.8)
+  FreeRDP prior to version 2.0.0-rc4 contains a Heap-Based Buffer Overflow in function zgfx_decompress_segment() that results in a memory corruption and probably even a remote code execution.
+references:
+  - http://www.securityfocus.com/bid/106938
+  - https://access.redhat.com/security/cve/CVE-2018-8784
+  - https://github.com/FreeRDP/FreeRDP/commit/17c363a5162fd4dc77b1df54e48d7bd9bf6b3be7
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-8784
+  - https://research.checkpoint.com/reverse-rdp-attack-code-execution-on-rdp-clients/
+  - https://ubuntu.com/security/notices/USN-3845-1
+  - https://usn.ubuntu.com/3845-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-8784
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+      - 'ubuntu:19.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4649 — Vulnerable Base Image Pull'
+id: 41a6605e-7164-57c1-9e53-28793e9186b1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4649 (Tier 2, CVSS 9.8)
+  heap-buffer-overflow in mrb_vm_exec in mruby/mruby in GitHub repository mruby/mruby prior to 3.2. Possible arbitrary code execution if being exploited.
+references:
+  - https://github.com/mruby/mruby/commit/b1d0296a937fe278239bdfac840a3fd0e93b3ee9
+  - https://huntr.dev/bounties/f918376e-b488-4113-963d-ffe8716e4189
+  - https://huntr.dev/bounties/f918376e-b488-4113-963d-ffe8716e4189/
+  - https://www.cve.org/CVERecord?id=CVE-2022-1286
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

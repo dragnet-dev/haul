@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1345 — Shadow Copy Deletion (BrainCipher)'
+id: 05266ac4-e565-5b01-896c-41c5535d9342
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1345
+  Ransomware victim claim by BrainCipher: Modern Dental Group Limited; country: HK; sector: Healthcare
+  First observed: 2024-12-18.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/DVQ83l3fCyYk+ELADQo+nAwKbcWqBN8BdzRKQH8W9yot+ZJL5PUyW67p7mbr0zXgEkE+1MPDLbm2c3DwoGVT8nc1Z1VHaHZB
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

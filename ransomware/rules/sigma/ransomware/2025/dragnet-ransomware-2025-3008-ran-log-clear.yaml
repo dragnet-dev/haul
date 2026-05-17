@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3008 — Event Log Clearing (gunra)'
+id: 0bba0057-f05e-5aa0-b239-4695b12aeb40
+status: deprecated
+description: |
+  Detects event log clearing associated with gunra ransomware.
+  Incident: dragnet-ransomware-2025-3008
+  Ransomware victim claim by gunra: Adria Grupa; country: HR; sector: Business Services
+  First observed: 2025-05-22.
+references:
+  - http://gunrabxbig445sjqa535uaymzerj6fp4nwc6ngc2xughf2pedjdhk4ad.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

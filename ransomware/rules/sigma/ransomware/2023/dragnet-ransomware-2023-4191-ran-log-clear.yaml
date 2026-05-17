@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4191 — Event Log Clearing (nokoyawa)'
+id: 32a4e6e2-b38a-5514-953a-01b17c928c52
+status: deprecated
+description: |
+  Detects event log clearing associated with nokoyawa ransomware.
+  Incident: dragnet-ransomware-2023-4191
+  Ransomware victim claim by nokoyawa: Stockmann Natursteine & Fliesen; country: DE; sector: Construction
+  First observed: 2023-04-15.
+references:
+  - http://nokoleakb76znymx443veg4n6fytx6spck6pc7nkr4dvfuygpub6jsid.onion/leak/643b271f3ace4551e2e01b6a
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

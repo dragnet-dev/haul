@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3123 — Vulnerable Base Image Pull'
+id: ba2b12c7-8f15-5434-91fc-c67faf5a7425
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3123 (Tier 2, CVSS 9.8)
+  The ssh_agent_channel_data function in PuTTY before 0.68 allows remote attackers to have unspecified impact via a large length value in an agent protocol message and leveraging the ability to connect to the Unix-domain socket representing the forwarded agent connection, which trigger a buffer overflow.
+references:
+  - http://lists.opensuse.org/opensuse-updates/2017-03/msg00055.html
+  - http://www.chiark.greenend.org.uk/~sgtatham/putty/wishlist/vuln-agent-fwd-overflow.html
+  - http://www.securityfocus.com/bid/97156
+  - http://www.securitytracker.com/id/1038067
+  - https://git.tartarus.org/?p=simon/putty.git%3Ba=commitdiff%3Bh=4ff22863d895cb7ebfced4cf923a012a614adaa8
+  - https://git.tartarus.org/?p=simon/putty.git;a=commitdiff;h=4ff22863d895cb7ebfced4cf923a012a614adaa8
+  - https://security.gentoo.org/glsa/201703-03
+  - https://security.gentoo.org/glsa/201706-09
+  - https://www.cve.org/CVERecord?id=CVE-2017-6542
+  - https://www.exploit-db.com/exploits/42137/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.2'
+      - 'alpine:3.3'
+      - 'alpine:3.4'
+      - 'alpine:3.5'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

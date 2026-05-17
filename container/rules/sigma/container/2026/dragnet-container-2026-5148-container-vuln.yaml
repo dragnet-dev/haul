@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5148 — Vulnerable Base Image Pull'
+id: 28557861-34a8-5d92-8295-26a3aeeb3beb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5148 (Tier 2, CVSS 9.1)
+  Due to a failure in validating the number of scanline samples of a OpenEXR file containing deep scanline data, Academy Software Foundation OpenEX image parsing library version 3.2.1 and prior is susceptible to a heap-based buffer overflow vulnerability. This issue was resolved as of versions v3.2.2 and v3.1.12 of the affected library.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-5841
+  - https://github.com/AcademySoftwareFoundation/openexr/commit/46944c3a87ebc6c5d9a9a4962a94569ba1082bc3
+  - https://github.com/AcademySoftwareFoundation/openexr/issues/1625
+  - https://github.com/AcademySoftwareFoundation/openexr/pull/1627
+  - http://seclists.org/fulldisclosure/2024/Sep/32
+  - http://seclists.org/fulldisclosure/2024/Sep/34
+  - http://seclists.org/fulldisclosure/2024/Sep/36
+  - https://access.redhat.com/errata/RHSA-2024:9548
+  - https://access.redhat.com/security/cve/CVE-2023-5841
+  - https://bugzilla.redhat.com/2262397
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2262397
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5841
+  - https://errata.almalinux.org/9/ALSA-2024-9548.html
+  - https://errata.rockylinux.org/RLSA-2024:9548
+  - https://linux.oracle.com/cve/CVE-2023-5841.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:24.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

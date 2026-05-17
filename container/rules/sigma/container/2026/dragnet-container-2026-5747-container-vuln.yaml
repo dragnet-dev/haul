@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5747 — Vulnerable Base Image Pull'
+id: f0b2dc27-22d9-5317-8c63-a6cdc5f0ff3b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5747 (Tier 2, CVSS 9.8)
+  In Mesa before 25.3.6 and 26 before 26.0.1, out-of-bounds memory access can occur in WebGPU because the amount of to-be-allocated data depends on an untrusted party, and is then used for alloca.
+references:
+  - https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39866
+  - https://lists.freedesktop.org/archives/mesa-dev/2026-February/226597.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-40393
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

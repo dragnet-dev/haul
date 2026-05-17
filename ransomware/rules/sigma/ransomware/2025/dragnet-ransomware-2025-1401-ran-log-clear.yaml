@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1401 — Event Log Clearing (chaos)'
+id: e99b0238-d8b0-54a1-961e-cb6828b8d0e2
+status: deprecated
+description: |
+  Detects event log clearing associated with chaos ransomware.
+  Incident: dragnet-ransomware-2025-1401
+  Ransomware victim claim by chaos: ebaengineering.com; country: US; sector: Construction
+  First observed: 2025-10-07.
+references:
+  - http://hptqq2o2qjva7lcaaq67w36jihzivkaitkexorauw7b2yul2z6zozpqd.onion/post/OVsE8XTrZxDuO2GaH6AbnrdTxK2EUqM2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

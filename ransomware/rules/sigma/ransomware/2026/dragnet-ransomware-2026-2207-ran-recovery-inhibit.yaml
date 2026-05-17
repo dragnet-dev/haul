@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2207 — Recovery Inhibition (PrinzEugen)'
+id: e8a808f4-e67a-53b7-b2af-1cc4420bdd75
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with PrinzEugen ransomware.
+  Incident: dragnet-ransomware-2026-2207
+  Ransomware victim claim by PrinzEugen: Transitions Pro Centre Val de Loire; country: FR; sector: Business Services
+  First observed: 2026-05-03.
+references:
+  - http://prinzfkbjiazbrur4mjje6mntjc4vydx3iatkkzycufoylqcoo4y7pqd.onion/transitions-pro-centre-val-de-loire
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,49 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4728 — Vulnerable Base Image Pull'
+id: ed75ed80-2bc0-502f-8ed1-e8690d658f77
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4728 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C language. In versions prior to and including 2.12 PJSIP there is a stack-buffer overflow vulnerability which only impacts PJSIP users who accept hashed digest credentials (credentials with data_type `PJSIP_CRED_DATA_DIGEST`). This issue has been patched in the master branch of the PJSIP repository and will be included with the next release. Users unable to upgrade need to check that the hashed digest data length must be equal to `PJSIP_MD5STRLEN` before passing to PJSIP.
+references:
+  - https://github.com/pjsip/pjproject/commit/d27f79da11df7bc8bb56c2f291d71e54df8d2c47
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-73f7-48m9-w662
+  - https://lists.debian.org/debian-lts-announce/2022/03/msg00035.html
+  - https://lists.debian.org/debian-lts-announce/2023/08/msg00038.html
+  - https://lists.debian.org/debian-lts-announce/2024/09/msg00030.html
+  - https://security.gentoo.org/glsa/202210-37
+  - https://ubuntu.com/security/notices/USN-6422-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-24754
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

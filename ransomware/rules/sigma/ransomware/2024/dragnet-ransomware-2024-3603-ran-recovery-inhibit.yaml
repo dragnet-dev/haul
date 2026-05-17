@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3603 — Recovery Inhibition (lynx)'
+id: 8aad37cd-5356-54e2-95bf-856953541503
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3603
+  Ransomware victim claim by lynx: Clutch Industries; country: AU; sector: Manufacturing
+  First observed: 2024-12-15.
+references:
+  - http://lynxblog.net/leaks/678d388b05a779c3d3f9daaa
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

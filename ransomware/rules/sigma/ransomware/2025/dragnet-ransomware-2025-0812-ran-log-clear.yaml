@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0812 — Event Log Clearing (anubis)'
+id: d6e2d6da-bfd1-5fca-83ab-c548a59cb0f6
+status: deprecated
+description: |
+  Detects event log clearing associated with anubis ransomware.
+  Incident: dragnet-ransomware-2025-0812
+  Ransomware victim claim by anubis: Aussie Fluid Power; country: AU; sector: Manufacturing
+  First observed: 2025-10-16.
+references:
+  - http://om6q4a6cyipxvt7ioudxt24cw4oqu4yodmqzl25mqd2hgllymrgu4aqd.onion/r/+pramV9PZLqGQtQPymaK6dYfpO+n6DjkqLgmqL8LV385aLhqLgG4JPE+8SLLI0JVhKnkLMviwEa9nLoFP1VJHhudU9uUWVo
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

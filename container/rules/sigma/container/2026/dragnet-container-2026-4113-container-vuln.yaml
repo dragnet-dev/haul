@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4113 — Vulnerable Base Image Pull'
+id: a4bc8d06-c469-53fd-bba4-0d3ae063e662
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4113 (Tier 2, CVSS 9.8)
+  An issue was discovered in janus-gateway (aka Janus WebRTC Server) through 0.10.0. janus_streaming_rtsp_parse_sdp in plugins/janus_streaming.c has a Buffer Overflow via a crafted RTSP server.
+references:
+  - https://github.com/meetecho/janus-gateway/blob/v0.10.0/plugins/janus_streaming.c#L6117
+  - https://github.com/meetecho/janus-gateway/blob/v0.10.0/plugins/janus_streaming.c#L6166
+  - https://github.com/meetecho/janus-gateway/pull/2229
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

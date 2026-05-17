@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2787 — Vulnerable Base Image Pull'
+id: 8d638cb3-d4db-5224-829e-f51d8314853c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2787 (Tier 2, CVSS 9.8)
+  OpenVPN versions before 2.3.3 and 2.4.x before 2.4.4 are vulnerable to a buffer overflow vulnerability when key-method 1 is used, possibly resulting in code execution.
+references:
+  - http://www.openwall.com/lists/oss-security/2017/09/28/2
+  - http://www.securityfocus.com/bid/101153
+  - http://www.securitytracker.com/id/1039470
+  - https://community.openvpn.net/openvpn/wiki/CVE-2017-12166
+  - https://lists.debian.org/debian-lts-announce/2022/05/msg00002.html
+  - https://ubuntu.com/security/notices/USN-7340-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-12166
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0418 — Shadow Copy Deletion (blacknevas)'
+id: cedaf313-99be-5b12-bc5e-fc930fefc3ff
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2026-0418
+  Ransomware victim claim by blacknevas: Heng An Standard Life Insurance; country: HK; sector: Financial Services
+  First observed: 2026-03-21.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/a269572e-ffee-4c63-8038-ed994eb007aa
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

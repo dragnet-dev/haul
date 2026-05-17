@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3358 — Event Log Clearing (thegentlemen)'
+id: 975dcefd-61c4-583d-8c43-c6dc25a677f2
+status: deprecated
+description: |
+  Detects event log clearing associated with thegentlemen ransomware.
+  Incident: dragnet-ransomware-2026-3358
+  Ransomware victim claim by thegentlemen: Systherm Grupa; country: PL; sector: Manufacturing
+  First observed: 2026-01-07.
+references:
+  - http://tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4668 — Vulnerable Base Image Pull'
+id: b7378e33-3f4b-5fdb-980e-b0ab120e7d59
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4668 (Tier 2, CVSS 9.8)
+  Istio is an open platform to connect, manage, and secure microservices. In Istio 1.12.0 and 1.12.1 The authorization policy with hosts and notHosts might be accidentally bypassed for ALLOW action or rejected unexpectedly for DENY action during the upgrade from 1.11 to 1.12.0/1.12.1. Istio 1.12 supports the hosts and notHosts fields in authorization policy with a new Envoy API shipped with the 1.12 data plane. A bug in the 1.12.0 and 1.12.1 incorrectly uses the new Envoy API with the 1.11 data plane. This will cause the hosts and notHosts fields to be always matched regardless of the actual value of the host header when mixing 1.12.0/1.12.1 control plane and 1.11 data plane. Users are advised to upgrade or to not mix the 1.12.0/1.12.1 control plane with 1.11 data plane if using hosts or notHosts field in authorization policy.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-21679
+  - https://github.com/istio/istio/security/advisories/GHSA-rwfr-xrvw-2rvv
+  - https://istio.io/latest/news/releases/1.12.x/announcing-1.12.2/
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-21679
+  - https://www.cve.org/CVERecord?id=CVE-2022-21679
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

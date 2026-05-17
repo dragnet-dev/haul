@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5272 — Event Log Clearing (trigona)'
+id: 74dadbad-81fe-5826-91dc-4548589a5351
+status: deprecated
+description: |
+  Detects event log clearing associated with trigona ransomware.
+  Incident: dragnet-ransomware-2023-5272
+  Ransomware victim claim by trigona: Amouage; country: OM; sector: Consumer Services
+  First observed: 2023-04-17.
+references:
+  - http://6n5tfadusp4sarzuxntz34q4ohspiaya2mc6aw6uhlusfqfsdomavyyd.onion/leak/4
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

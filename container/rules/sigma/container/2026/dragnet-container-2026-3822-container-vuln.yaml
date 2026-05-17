@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3822 — Vulnerable Base Image Pull'
+id: feb5f242-5696-556c-b2a3-52f4b78b242e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3822 (Tier 2, CVSS 9.8)
+  An issue was discovered in LINBIT csync2 through 2.0. csync_daemon_session in daemon.c neglects to force a failure of a hello command when the configuration requires use of SSL.
+references:
+  - https://github.com/LINBIT/csync2/commit/416f1de878ef97e27e27508914f7ba8599a0be22
+  - https://github.com/LINBIT/csync2/pull/13/commits/0ecfc333da51575f188dd7cf6ac4974d13a800b1
+  - https://www.cve.org/CVERecord?id=CVE-2019-15522
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

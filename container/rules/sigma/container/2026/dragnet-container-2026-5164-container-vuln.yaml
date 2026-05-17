@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5164 — Vulnerable Base Image Pull'
+id: 28cb7a4a-72ef-5ba2-81a3-6bf6df3f5e45
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5164 (Tier 2, CVSS 9.8)
+  In PHP versions 8.1.* before 8.1.31, 8.2.* before 8.2.26, 8.3.* before 8.3.14, uncontrolled long string inputs to ldap_escape() function on 32-bit systems can cause an integer overflow, resulting in an out-of-bounds write.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-11236
+  - https://github.com/php/php-src/commit/2dbe1425c5768faea2aa7bca26081dd208c94ac8 (php-8.2.26)
+  - https://github.com/php/php-src/commit/7742f79a8a9c20522dbf40e1dc1d4ccad71d399c (php-8.2.26)
+  - https://github.com/php/php-src/security/advisories/GHSA-5hqh-c84r-qjcv
+  - https://lists.debian.org/debian-lts-announce/2024/12/msg00007.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-11236
+  - https://security.netapp.com/advisory/ntap-20241220-0008/
+  - https://ubuntu.com/security/notices/USN-7153-1
+  - https://ubuntu.com/security/notices/USN-7157-1
+  - https://www.cve.org/CVERecord?id=CVE-2024-11236
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

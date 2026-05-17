@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4602 — Vulnerable Base Image Pull'
+id: ec0c05b0-aebb-5e33-9df2-be9a5ade9cda
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4602 (Tier 2, CVSS 9.8)
+  A stack-based buffer overflow in handle_request function in DHT.c in toxcore 0.1.9 through 0.1.11 and 0.2.0 through 0.2.12 (caused by an improper length calculation during the handling of received network packets) allows remote attackers to crash the process or potentially execute arbitrary code via a network packet.
+references:
+  - https://blog.tox.chat/2021/12/stack-based-buffer-overflow-vulnerability-in-udp-packet-handling-in-toxcore-cve-2021-44847/
+  - https://github.com/TokTok/c-toxcore/pull/1718
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/S7EBS3NIRYJ7V3PTNINP3PJSVUHGZTGA/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZLTKINSPO5T65LB3ZASDPCREKUE22RYE/
+  - https://www.cve.org/CVERecord?id=CVE-2021-44847
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

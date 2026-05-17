@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5556 — Vulnerable Base Image Pull'
+id: 02be4667-1075-5720-9291-b09da481710d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5556 (Tier 2, CVSS 9.8)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to 3.20.1, a heap use-after-free occurs in irp_thread_func because the IRP is freed by irp->Complete() and then accessed again on the error path. This vulnerability is fixed in 3.20.1.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-22857
+  - https://github.com/FreeRDP/FreeRDP/releases/tag/3.20.1
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-4gxq-jhq6-4cr8
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-22857
+  - https://ubuntu.com/security/notices/USN-8105-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-22857
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

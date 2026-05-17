@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5137 — Vulnerable Base Image Pull'
+id: 5a7910b8-f0b8-5659-ad0d-504228563c5f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5137 (Tier 2, CVSS 9.8)
+  If Windows failed to duplicate a handle during process creation, the sandbox code may have inadvertently freed a pointer twice, resulting in a use-after-free and a potentially exploitable crash.
+*This bug only affects Firefox on Windows when run in non-standard configurations (such as using `runas`). Other operating systems are unaffected.* This vulnerability affects Firefox < 118, Firefox ESR < 115.3, and Thunderbird < 115.3.
+references:
+  - https://access.redhat.com/security/cve/CVE-2023-5174
+  - https://bugzilla.mozilla.org/show_bug.cgi?id=1848454
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-5174
+  - https://www.cve.org/CVERecord?id=CVE-2023-5174
+  - https://www.mozilla.org/security/advisories/mfsa2023-41/
+  - https://www.mozilla.org/security/advisories/mfsa2023-42/
+  - https://www.mozilla.org/security/advisories/mfsa2023-43/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

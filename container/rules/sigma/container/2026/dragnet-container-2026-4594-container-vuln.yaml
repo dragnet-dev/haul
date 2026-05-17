@@ -1,0 +1,49 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4594 — Vulnerable Base Image Pull'
+id: 2de49143-7740-57c1-937e-95e3cceba0b3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4594 (Tier 2, CVSS 9.8)
+  A flaw was found in mbsync in isync 1.4.0 through 1.4.3. Due to an unchecked condition, a malicious or compromised IMAP server could use a crafted mail message that lacks headers (i.e., one that starts with an empty line) to provoke a heap overflow, which could conceivably be exploited for remote code execution.
+references:
+  - http://www.openwall.com/lists/oss-security/2021/12/03/2
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=999804
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CYZ2GNB4ZO2T27D2XNUWMCS3THZYSJQU/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LCBSY7OZ57XNC6ZYXF6WU5KBSWITZVDX/
+  - https://security.gentoo.org/glsa/202208-15
+  - https://sourceforge.net/p/isync/isync/commit_browser
+  - https://sourceforge.net/p/isync/isync/ref/master/tags/
+  - https://www.cve.org/CVERecord?id=CVE-2021-44143
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

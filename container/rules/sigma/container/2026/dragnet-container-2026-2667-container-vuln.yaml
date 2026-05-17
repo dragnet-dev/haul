@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2667 — Vulnerable Base Image Pull'
+id: 62ef537d-332a-585e-9d05-24699fc29c4c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2667 (Tier 2, CVSS 9.8)
+  tools/tiffcp.c in libtiff 4.0.6 has an out-of-bounds write on tiled images with odd tile width versus image width. Reported as MSVR 35103, aka "cpStripToTile heap-buffer-overflow."
+references:
+  - http://rhn.redhat.com/errata/RHSA-2017-0225.html
+  - http://www.debian.org/security/2017/dsa-3762
+  - http://www.securityfocus.com/bid/94484
+  - http://www.securityfocus.com/bid/94747
+  - https://access.redhat.com/security/cve/CVE-2016-9540
+  - https://github.com/vadz/libtiff/commit/5ad9d8016fbb60109302d558f7edb2cb2a3bb8e3
+  - https://linux.oracle.com/cve/CVE-2016-9540.html
+  - https://linux.oracle.com/errata/ELSA-2017-0225.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-9540
+  - https://ubuntu.com/security/notices/USN-3212-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-9540
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

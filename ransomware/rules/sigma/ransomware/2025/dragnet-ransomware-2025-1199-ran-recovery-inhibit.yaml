@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1199 — Recovery Inhibition (blacklock)'
+id: 9182921c-7c9e-50c0-9ba8-0f30f51477cb
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blacklock ransomware.
+  Incident: dragnet-ransomware-2025-1199
+  Ransomware victim claim by blacklock: Rees NDT Inspection Services; country: DE; sector: Manufacturing
+  First observed: 2025-01-24.
+references:
+  - http://zdkexsh2e7yihw5uhg5hpsgq3dois2m5je7lzfagij2y6iw5ptl35gyd.onion/Data_Download/REESNDT
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

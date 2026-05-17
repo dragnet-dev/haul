@@ -1,0 +1,56 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4161 — Vulnerable Base Image Pull'
+id: 414e9f38-3b92-5482-a339-f771960cd841
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4161 (Tier 2, CVSS 9.8)
+  An issue was discovered in SaltStack Salt through 3002. Sending crafted web requests to the Salt API, with the SSH client enabled, can result in shell injection.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-16846
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2020-16846
+  - https://github.com/pypa/advisory-database/tree/main/vulns/salt/PYSEC-2020-104.yaml
+  - https://github.com/saltstack/salt
+  - https://github.com/saltstack/salt/blob/8f9405cf8e6f7d7776d5000841c886dec6d96250/doc/topics/releases/2019.2.6.rst#L10
+  - https://github.com/saltstack/salt/blob/8f9405cf8e6f7d7776d5000841c886dec6d96250/doc/topics/releases/3000.4.rst#L10
+  - https://github.com/saltstack/salt/blob/8f9405cf8e6f7d7776d5000841c886dec6d96250/doc/topics/releases/3001.2.rst#L10
+  - https://github.com/saltstack/salt/blob/8f9405cf8e6f7d7776d5000841c886dec6d96250/doc/topics/releases/3002.1.rst#L12
+  - https://github.com/saltstack/salt/releases
+  - http://lists.opensuse.org/opensuse-security-announce/2020-11/msg00029.html
+  - http://packetstormsecurity.com/files/160039/SaltStack-Salt-REST-API-Arbitrary-Command-Execution.html
+  - https://access.redhat.com/security/cve/CVE-2020-16846
+  - https://docs.saltstack.com/en/latest/topics/releases/2019.2.6.html
+  - https://docs.saltstack.com/en/latest/topics/releases/3000.4.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

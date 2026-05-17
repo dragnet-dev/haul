@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5085 — Vulnerable Base Image Pull'
+id: dc36bdd5-e10e-5c95-bec7-3b142debc91d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5085 (Tier 2, CVSS 9.8)
+  phpPgAdmin 7.14.4 and earlier is vulnerable to deserialization of untrusted data which may lead to remote code execution because user-controlled data is directly passed to the PHP 'unserialize()' function in multiple places. An example is the functionality to manage tables in 'tables.php' where the 'ma[]' POST parameter is deserialized.
+references:
+  - https://github.com/dub-flow/vulnerability-research/tree/main/CVE-2023-40619
+  - https://lists.debian.org/debian-lts-announce/2023/11/msg00000.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

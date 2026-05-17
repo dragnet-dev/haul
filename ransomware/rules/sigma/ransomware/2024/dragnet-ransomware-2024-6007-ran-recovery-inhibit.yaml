@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-6007 — Recovery Inhibition (trisec)'
+id: 7da85a24-3d75-5539-8040-d863fd274afc
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with trisec ransomware.
+  Incident: dragnet-ransomware-2024-6007
+  Ransomware victim claim by trisec: ki.se; country: SE; sector: Healthcare
+  First observed: 2024-02-19.
+references:
+  - http://orfc3joknhrzscdbuxajypgrvlcawtuagbj7f44ugbosuvavg3dc3zid.onion/cmm.se.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

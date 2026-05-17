@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3890 — Vulnerable Base Image Pull'
+id: db546867-71e4-5069-9eef-e6cde6332e02
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3890 (Tier 2, CVSS 9.8)
+  An issue was discovered in amqp_handle_input in amqp_connection.c in rabbitmq-c 0.9.0. There is an integer overflow that leads to heap memory corruption in the handling of CONNECTION_STATE_HEADER. A rogue server could return a malicious frame header that leads to a smaller target_size value than needed. This condition is then carried on to a memcpy function that copies too much data into a heap buffer.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-18609
+  - https://github.com/alanxz/rabbitmq-c/blob/master/ChangeLog.md
+  - https://github.com/alanxz/rabbitmq-c/commit/fc85be7123050b91b054e45b91c78d3241a5047a
+  - https://access.redhat.com/security/cve/CVE-2019-18609
+  - https://linux.oracle.com/cve/CVE-2019-18609.html
+  - https://linux.oracle.com/errata/ELSA-2020-4445.html
+  - https://lists.debian.org/debian-lts-announce/2019/12/msg00004.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WA7CPNVYMF6OQNIYNLWUY6U2GTKFOKH3/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/XQER6XTKYMHNQR7QTHW7DJAH645WQROU/
+  - https://news.ycombinator.com/item?id=21681976
+  - https://security.gentoo.org/glsa/202003-07
+  - https://ubuntu.com/security/notices/USN-4214-1
+  - https://ubuntu.com/security/notices/USN-4214-2
+  - https://usn.ubuntu.com/4214-1/
+  - https://usn.ubuntu.com/4214-2/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'amazonlinux:1'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.04'
+      - 'ubuntu:19.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

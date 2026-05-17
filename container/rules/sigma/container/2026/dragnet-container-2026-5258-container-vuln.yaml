@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5258 — Vulnerable Base Image Pull'
+id: af22106a-7ecf-54e9-9518-6dc9b5e5d579
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5258 (Tier 2, CVSS 10)
+  jrburke requirejs v2.3.6 was discovered to contain a prototype pollution via the function s.contexts._.configure. This vulnerability allows attackers to execute arbitrary code or cause a Denial of Service (DoS) via injecting arbitrary properties.
+references:
+  - https://gist.github.com/mestrtee/9acae342285bd2998fa09ebcb1e6d30a
+  - https://github.com/requirejs/r.js
+  - https://github.com/requirejs/r.js/issues/1015
+  - https://github.com/requirejs/requirejs/issues/1854
+  - https://github.com/requirejs/requirejs/pull/1856/commits/ebd7a2ff71473542fa132d0d15c10fb4ed1539e1
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-38999
+  - https://security.snyk.io/vuln/SNYK-JS-REQUIREJS-5416713
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

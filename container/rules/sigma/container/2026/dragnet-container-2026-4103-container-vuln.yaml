@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4103 — Vulnerable Base Image Pull'
+id: 0efad870-669e-505d-b24d-ab57d66de947
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4103 (Tier 2, CVSS 9.1)
+  modules/loaders/loader_ico.c in imlib2 1.6.0 has an integer overflow (with resultant invalid memory allocations and out-of-bounds reads) via an icon with many colors in its color map.
+references:
+  - https://git.enlightenment.org/legacy/imlib2.git/commit/?id=c95f938ff1effaf91729c050a0f1c8684da4dd63
+  - https://ubuntu.com/security/notices/USN-5099-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-12761
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

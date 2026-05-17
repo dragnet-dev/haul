@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5755 — Vulnerable Base Image Pull'
+id: 253d69dd-25d7-572f-884c-ad0c80f3baeb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5755 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C. In 2.16 and earlier, a stack buffer overflow exists in pjsip_auth_create_digest2() in PJSIP when using pre-computed digest credentials (PJSIP_CRED_DATA_DIGEST). The function copies credential data using cred_info->data.slen as the length without an upper-bound check, which can overflow the fixed-size ha1 stack buffer (128 bytes) if data.slen exceeds the expected digest string length.
+references:
+  - https://github.com/pjsip/pjproject/commit/c82123ea6f3c3652bbc9ebd5e9e658c301451687
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-2wcg-w3c4-48r7
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine edge:'
+      - 'debian:11'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

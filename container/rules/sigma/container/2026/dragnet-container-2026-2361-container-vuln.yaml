@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2361 — Vulnerable Base Image Pull'
+id: a79f196e-c59d-5f24-a87e-667873eece8d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2361 (Tier 2, CVSS 9.8)
+  UDM provides support for running commands after a download is completed, this is currently made use of for click package installation. This functionality was not restricted to unconfined applications. Before UDM version 1.2+16.04.20160408-0ubuntu1 any confined application could make use of the UDM C++ API to run arbitrary commands in an unconfined environment as the phablet user.
+references:
+  - https://bazaar.launchpad.net/~phablet-team/ubuntu-download-manager/trunk/revision/359
+  - https://www.cve.org/CVERecord?id=CVE-2016-1579
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0843 — Event Log Clearing (anubis)'
+id: dc9d56b5-7e85-5e86-945c-9b41050eca50
+status: deprecated
+description: |
+  Detects event log clearing associated with anubis ransomware.
+  Incident: dragnet-ransomware-2025-0843
+  Ransomware victim claim by anubis: Storage King; country: AU; sector: Consumer Services
+  First observed: 2025-09-30.
+references:
+  - http://om6q4a6cyipxvt7ioudxt24cw4oqu4yodmqzl25mqd2hgllymrgu4aqd.onion/r/63Hz1G6cnBvcyk7P0y1bfutL1RWXe2XCG73wnOF9BLaxhAsCcYZ4LSlo0EnRssu7RjkBujYy6J+3OeDuQfpolVuVE53elZJ
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

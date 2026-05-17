@@ -1,0 +1,56 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4091 — Vulnerable Base Image Pull'
+id: bec8e30d-686d-5fa4-8281-27fb19888539
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4091 (Tier 2, CVSS 9.8)
+  cbs_jpeg_split_fragment in libavcodec/cbs_jpeg.c in FFmpeg 4.1 and 4.2.2 has a heap-based buffer overflow during JPEG_MARKER_SOS handling because of a missing length check.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-12284
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=19734
+  - https://github.com/FFmpeg/FFmpeg/commit/1812352d767ccf5431aa440123e2e260a4db2726
+  - https://github.com/FFmpeg/FFmpeg/commit/a3a3730b5456ca00587455004d40c047f7b20a99
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-12284
+  - https://security.gentoo.org/glsa/202007-58
+  - https://ubuntu.com/security/notices/USN-4431-1
+  - https://usn.ubuntu.com/4431-1/
+  - https://www.cve.org/CVERecord?id=CVE-2020-12284
+  - https://www.debian.org/security/2020/dsa-4722
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

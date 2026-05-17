@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2907 — Event Log Clearing (interlock)'
+id: 8e12881e-f99a-535e-b654-0a16b089fc61
+status: deprecated
+description: |
+  Detects event log clearing associated with interlock ransomware.
+  Incident: dragnet-ransomware-2024-2907
+  Ransomware victim claim by interlock: Bishop Ireton High School; country: US; sector: Education
+  First observed: 2024-11-20.
+references:
+  - http://viqh6qmehdkpn7jrfhthyejxtg3gd5hg4bch7sjetvkdaipeu3k6anad.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

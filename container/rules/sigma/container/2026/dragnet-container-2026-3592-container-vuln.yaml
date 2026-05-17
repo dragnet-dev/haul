@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3592 — Vulnerable Base Image Pull'
+id: 0cf330c3-57d2-5129-a936-169ed07cf3ef
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3592 (Tier 2, CVSS 9.8)
+  The malloc implementation in the GNU C Library (aka glibc or libc6), from version 2.24 to 2.26 on powerpc, and only in version 2.26 on i386, did not properly handle malloc calls with arguments close to SIZE_MAX and could return a pointer to a heap region that is smaller than requested, eventually leading to heap corruption.
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-6551
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-6551
+  - https://security.netapp.com/advisory/ntap-20190404-0003/
+  - https://sourceware.org/bugzilla/show_bug.cgi?id=22774
+  - https://sourceware.org/git/?p=glibc.git%3Ba=commit%3Bh=8e448310d74b283c5cd02b9ed7fb997b47bf9b22
+  - https://www.cve.org/CVERecord?id=CVE-2018-6551
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

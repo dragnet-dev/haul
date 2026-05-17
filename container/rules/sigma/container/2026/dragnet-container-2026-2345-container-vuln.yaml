@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2345 — Vulnerable Base Image Pull'
+id: 439275a9-5ee8-563e-8231-a649e11065d7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2345 (Tier 2, CVSS 9.8)
+  Yodl before 3.07.01 has a Buffer Over-read in the queue_push function in queue/queuepush.c.
+references:
+  - https://github.com/fbb-git/yodl/commit/fd85f8c94182558ff1480d06a236d6fb927979a3
+  - https://github.com/fbb-git/yodl/issues/1
+  - https://lists.debian.org/debian-lts-announce/2020/04/msg00026.html
+  - https://www.cve.org/CVERecord?id=CVE-2016-10375
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

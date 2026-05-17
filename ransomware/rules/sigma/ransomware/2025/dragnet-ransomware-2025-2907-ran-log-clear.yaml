@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2907 — Event Log Clearing (funksec)'
+id: d55f4de5-5ac0-5c53-b2ac-b3ad539862e1
+status: deprecated
+description: |
+  Detects event log clearing associated with funksec ransomware.
+  Incident: dragnet-ransomware-2025-2907
+  Ransomware victim claim by funksec: herbalcanadaonline.com; country: CA; sector: Agriculture and Food Production
+  First observed: 2025-02-07.
+references:
+  - http://funknqn44slwmgwgnewne6bintbooauwkaupik4yrlgtycew3ergraid.onion/herbalcanadaonline.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

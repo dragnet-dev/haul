@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3733 — Event Log Clearing (malekteam)'
+id: e852b85d-4a99-5e56-9cf4-7a7d7b40a3ff
+status: deprecated
+description: |
+  Detects event log clearing associated with malekteam ransomware.
+  Incident: dragnet-ransomware-2023-3733
+  Ransomware victim claim by malekteam: dorimedia; country: CH; sector: Technology
+  First observed: 2023-12-24.
+references:
+  - http://195.14.123.2/dori.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

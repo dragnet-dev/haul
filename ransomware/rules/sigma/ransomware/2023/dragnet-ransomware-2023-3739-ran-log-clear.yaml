@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3739 — Event Log Clearing (mallox)'
+id: 12928561-d948-55f0-8423-518e577572a9
+status: deprecated
+description: |
+  Detects event log clearing associated with mallox ransomware.
+  Incident: dragnet-ransomware-2023-3739
+  Ransomware victim claim by mallox: AICHELIN UNITHERM; country: IN; sector: Manufacturing
+  First observed: 2023-03-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

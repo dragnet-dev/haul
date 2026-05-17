@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0645 — Recovery Inhibition (apt73)'
+id: 8d49d987-0a31-5777-bbe3-cf4804990e82
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with apt73 ransomware.
+  Incident: dragnet-ransomware-2024-0645
+  Ransomware victim claim by apt73: thebeautyclick.co.uk; country: GB; sector: Business Services
+  First observed: 2024-10-21.
+references:
+  - http://bashe4aec32kr6zbifwd5x6xgjsmhg4tbowrbx4pneqhc5mqooyifpid.onion/page_company.php?id=60
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

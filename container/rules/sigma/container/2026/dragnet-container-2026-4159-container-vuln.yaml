@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4159 — Vulnerable Base Image Pull'
+id: a2a02dd2-2262-55fc-bcf1-5811cae19f37
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4159 (Tier 2, CVSS 9.6)
+  Heap buffer overflow in clipboard in Google Chrome prior to 87.0.4280.66 allowed a remote attacker who had compromised the renderer process to potentially perform a sandbox escape via a crafted HTML page.
+references:
+  - http://packetstormsecurity.com/files/161354/Chrome-ClipboardWin-WriteBitmap-Heap-Buffer-Overflow.html
+  - https://access.redhat.com/security/cve/CVE-2020-16025
+  - https://chromereleases.googleblog.com/2020/11/stable-channel-update-for-desktop_17.html
+  - https://crbug.com/1147431
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-16025
+  - https://www.cve.org/CVERecord?id=CVE-2020-16025
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04'
+      - 'ubuntu:18.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

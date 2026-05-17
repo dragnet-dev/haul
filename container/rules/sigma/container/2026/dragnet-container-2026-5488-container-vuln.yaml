@@ -1,0 +1,57 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5488 — Vulnerable Base Image Pull'
+id: a5499355-506c-5a14-92e8-220b4a88f380
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5488 (Tier 2, CVSS 9.1)
+  A flaw in Node.js’s Permissions model allows attackers to bypass `--allow-fs-read` and `--allow-fs-write` restrictions using crafted relative symlink paths. By chaining directories and symlinks, a script granted access only to the current directory can escape the allowed path and read sensitive files. This breaks the expected isolation guarantees and enables arbitrary file read/write, leading to potential system compromise.
+This vulnerability affects users of the permission model on Node.js v20,  v22,  v24, and v25.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-55130
+  - https://access.redhat.com/errata/RHSA-2026:2783
+  - https://access.redhat.com/security/cve/CVE-2025-55130
+  - https://bugzilla.redhat.com/2431338
+  - https://bugzilla.redhat.com/2431340
+  - https://bugzilla.redhat.com/2431343
+  - https://bugzilla.redhat.com/2431349
+  - https://bugzilla.redhat.com/2431350
+  - https://bugzilla.redhat.com/2431352
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2431338
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2431340
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2431343
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2431349
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2431350
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2431352
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

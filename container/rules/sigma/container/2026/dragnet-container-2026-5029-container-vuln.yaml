@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5029 — Vulnerable Base Image Pull'
+id: faf279d2-604c-598b-a194-b71f4a098297
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5029 (Tier 2, CVSS 9.8)
+  In Suricata before 6.0.13, an adversary who controls an external source of Lua rules may be able to execute Lua code. This is addressed in 6.0.13 by disabling Lua unless allow-rules is true in the security lua configuration section.
+references:
+  - https://github.com/OISF/suricata/commit/b95bbcc66db526ffcc880eb439dbe8abc87a81da
+  - https://github.com/OISF/suricata/compare/suricata-6.0.12...suricata-6.0.13
+  - https://www.stamus-networks.com/stamus-labs
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

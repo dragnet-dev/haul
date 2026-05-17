@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2287 — Vulnerable Base Image Pull'
+id: edda9e5a-75ed-59df-a486-2512936e8978
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2287 (Tier 2, CVSS 9.8)
+  The MemcmpLowercase function in Suricata before 2.0.6 improperly excludes the first byte from comparisons, which might allow remote attackers to bypass intrusion-prevention functionality via a crafted HTTP request.
+references:
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=777523
+  - https://redmine.openinfosecfoundation.org/issues/1364
+  - https://suricata-ids.org/2015/01/15/suricata-2-0-6-available/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

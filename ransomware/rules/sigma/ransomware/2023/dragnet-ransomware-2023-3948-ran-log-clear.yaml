@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3948 — Event Log Clearing (metaencryptor)'
+id: a13ba20c-0eeb-5785-a758-c32d575e3adf
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3948
+  Ransomware victim claim by metaencryptor: Autohaus Ebert GmbH; country: DE; sector: Consumer Services
+  First observed: 2023-08-16.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:897d3ecdbd7b5b35d544605f6cc4695a/0AFC:1d8868449db5662f5c7f885878cd9b515affc12059108ab5ec3e1031ecf63c29/0AFC:dece2a04f87a0375e9269e02d89c25b39c11a42be41131a1215792294b943d9e
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

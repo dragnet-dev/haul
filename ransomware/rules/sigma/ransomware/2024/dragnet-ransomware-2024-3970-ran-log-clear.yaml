@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3970 — Event Log Clearing (meow)'
+id: 490d2fb3-bad8-5189-918c-3d8c21418c6e
+status: deprecated
+description: |
+  Detects event log clearing associated with meow ransomware.
+  Incident: dragnet-ransomware-2024-3970
+  Ransomware victim claim by meow: Barkal Food Industries; country: SD; sector: Agriculture and Food Production
+  First observed: 2024-08-27.
+references:
+  - http://meow6xanhzfci2gbkn3lmbqq7xjjufskkdfocqdngt3ltvzgqpsg5mid.onion/product/61
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

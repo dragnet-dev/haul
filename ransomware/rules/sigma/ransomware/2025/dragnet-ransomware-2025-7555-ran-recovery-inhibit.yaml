@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7555 — Recovery Inhibition (termite)'
+id: 97f47c66-8541-5faf-bf07-4098cc8eb864
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with termite ransomware.
+  Incident: dragnet-ransomware-2025-7555
+  Ransomware victim claim by termite: Bjørklund; country: NO; sector: Consumer Services
+  First observed: 2025-04-11.
+references:
+  - http://termiteuslbumdge2zmfmfcsrvmvsfe4gvyudc5j6cdnisnhtftvokid.onion/post/67f9834d9b91b4933324ef12
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

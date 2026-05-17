@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7713 — Event Log Clearing (VanHelsing)'
+id: d5397e4c-0f2a-5ca5-8b22-21fd135a50f5
+status: deprecated
+description: |
+  Detects event log clearing associated with VanHelsing ransomware.
+  Incident: dragnet-ransomware-2025-7713
+  Ransomware victim claim by VanHelsing: alertenterprise.com; country: US; sector: Technology
+  First observed: 2025-03-31.
+references:
+  - http://vanhelxjo52qr2ixcmtjayqqrcodkuh36n7uq7q7xj23ggotyr3y72yd.onion/blog/blog.php?id=45
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

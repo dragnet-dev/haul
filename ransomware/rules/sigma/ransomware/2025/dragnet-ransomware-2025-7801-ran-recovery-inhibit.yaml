@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7801 — Recovery Inhibition (weyhro)'
+id: 4a003c24-9a1f-5b66-9666-44295f7efb89
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with weyhro ransomware.
+  Incident: dragnet-ransomware-2025-7801
+  Ransomware victim claim by weyhro: 101 Arch Street; country: US; sector: Not Found
+  First observed: 2025-05-08.
+references:
+  - http://weyhro27ruifvuqkk3hxzcrtxv2lsalntxgkv6q2j3znkhdqudz54rqd.onion//leaks/101archstreet
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

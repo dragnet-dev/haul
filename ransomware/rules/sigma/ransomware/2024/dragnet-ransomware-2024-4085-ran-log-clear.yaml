@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4085 — Event Log Clearing (metaencryptor)'
+id: aecfb369-893f-5862-a02e-1e64a34d5015
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2024-4085
+  Ransomware victim claim by metaencryptor: Carlex Glass Luxembourg S.A.; country: LU; sector: Manufacturing
+  First observed: 2024-07-31.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:b4935496481d47ffc684cf0a094e99b9/0AFC:7355d6ee6999e9389c2c7632900bc55c3d2ce207b128f2855fd76509624b7f8c/0AFC:7ce751aa15183bb846fe9e1aff476eb1a518f229b3255b27796d0fb3ddfabfb7d49a8534d6e93f30b5acab919b3bec5f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

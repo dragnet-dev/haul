@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1540 — Event Log Clearing (pysa)'
+id: 315a63d4-7e25-56b8-b255-4f98aa79d27c
+status: deprecated
+description: |
+  Detects event log clearing associated with pysa ransomware.
+  Incident: dragnet-ransomware-2021-1540
+  Ransomware victim claim by pysa: the NET - Northeast Tennessee Media Group; sector: Telecommunication
+  First observed: 2021-09-09.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

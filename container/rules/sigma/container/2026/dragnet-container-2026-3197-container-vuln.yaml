@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3197 — Vulnerable Base Image Pull'
+id: 85872e02-f62d-5019-afc3-0248e997ba38
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3197 (Tier 2, CVSS 9.8)
+  The UDFclient (before 0.8.8) custom strlcpy implementation has a buffer overflow. UDFclient's strlcpy is used only on systems with a C library (e.g., glibc) that lacks its own strlcpy.
+references:
+  - http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=861347
+  - http://www.13thmonkey.org/udfclient/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

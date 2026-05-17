@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4605 — Event Log Clearing (rancoz)'
+id: 691d6376-d639-51c4-b3e3-47b404390aae
+status: deprecated
+description: |
+  Detects event log clearing associated with rancoz ransomware.
+  Incident: dragnet-ransomware-2023-4605
+  Ransomware victim claim by rancoz: Air Comfort (aircomfort.ac); sector: Construction
+  First observed: 2023-06-14.
+references:
+  - http://ze677xuzard4lx4iul2yzf5ks4gqqzoulgj5u4n5n4bbbsxjbfr7eayd.onion/post/3.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

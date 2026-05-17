@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3153 — Shadow Copy Deletion (IMNCrew)'
+id: f084bfd2-b14b-5f1c-bf77-537eb1cfdc2a
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with IMNCrew ransomware.
+  Incident: dragnet-ransomware-2025-3153
+  Ransomware victim claim by IMNCrew: Apntelecom.com; country: US; sector: Telecommunication
+  First observed: 2025-07-04.
+references:
+  - http://imncrewwfkbjkhr2oylerfm5qtbzfphhmpcfag43xc2kfgvluqtlgoid.onion/files/data/apn.com.zip
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

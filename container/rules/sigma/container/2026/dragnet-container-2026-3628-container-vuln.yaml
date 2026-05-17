@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3628 — Vulnerable Base Image Pull'
+id: 8329e82a-0d97-553e-b034-dc377f12d9be
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3628 (Tier 2, CVSS 9.8)
+  The defaults settings for the CORS filter provided in Apache Tomcat 9.0.0.M1 to 9.0.8, 8.5.0 to 8.5.31, 8.0.0.RC1 to 8.0.52, 7.0.41 to 7.0.88 are insecure and enable 'supportsCredentials' for all origins. It is expected that users of the CORS filter will have configured it appropriately for their environment rather than using it in the default configuration. Therefore, it is expected that most users will not be impacted by this issue.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-8014
+  - https://github.com/advisories/GHSA-r4x2-3cq5-hqvp
+  - https://github.com/apache/tomcat
+  - https://github.com/apache/tomcat/commit/5877390a9605f56d9bd6859a54ccbfb16374a78b
+  - https://github.com/apache/tomcat/commit/60f596a21fd6041335a3a1a4015d4512439cecb5
+  - https://github.com/apache/tomcat/commit/d83a76732e6804739b81d8b2056365307637b42d
+  - https://github.com/apache/tomcat80/commit/2c9d8433bd3247a2856d4b2555447108758e813e
+  - http://tomcat.apache.org/security-7.html
+  - http://tomcat.apache.org/security-7.html#Fixed_in_Apache_Tomcat_7.0.89
+  - http://tomcat.apache.org/security-8.html
+  - http://tomcat.apache.org/security-8.html#Fixed_in_Apache_Tomcat_8.0.53
+  - http://tomcat.apache.org/security-8.html#Fixed_in_Apache_Tomcat_8.5.32
+  - http://tomcat.apache.org/security-9.html
+  - http://tomcat.apache.org/security-9.html#Fixed_in_Apache_Tomcat_9.0.9
+  - http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.10'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

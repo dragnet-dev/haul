@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4139 — Recovery Inhibition (lynx)'
+id: b44bb612-bc35-5cae-8711-3b4e6d424db2
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4139
+  Ransomware victim claim by lynx: Hunter Taubman Fischer & Li; country: US; sector: Business Services
+  First observed: 2025-01-05.
+references:
+  - http://lynxblog.net/leaks/677a806905a779c3d39a1d3c
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

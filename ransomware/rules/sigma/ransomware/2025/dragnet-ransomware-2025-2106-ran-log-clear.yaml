@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2106 — Event Log Clearing (crypto24)'
+id: 42e41718-284f-58b0-b50b-12f72942d80c
+status: deprecated
+description: |
+  Detects event log clearing associated with crypto24 ransomware.
+  Incident: dragnet-ransomware-2025-2106
+  Ransomware victim claim by crypto24: Bayu Buana Travel; country: ID; sector: Hospitality and Tourism
+  First observed: 2025-10-27.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

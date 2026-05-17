@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5171 — Vulnerable Base Image Pull'
+id: a1db57e2-d3ef-5919-b5ad-3c03f892e7d1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5171 (Tier 2, CVSS 9.4)
+  In PHP versions 8.1.* before 8.1.28, 8.2.* before 8.2.18, 8.3.* before 8.3.5, when using proc_open() command with array syntax, due to insufficient escaping, if the arguments of the executed command are controlled by a malicious user, the user can supply arguments that would execute arbitrary commands in Windows shell.
+references:
+  - http://www.openwall.com/lists/oss-security/2024/04/12/11
+  - http://www.openwall.com/lists/oss-security/2024/06/07/1
+  - https://access.redhat.com/security/cve/CVE-2024-1874
+  - https://flatt.tech/research/posts/batbadbut-you-cant-securely-execute-commands-on-windows/
+  - https://github.com/php/php-src/security/advisories/GHSA-pc52-254m-w9w7
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/KJZK3X6B7FBE32FETDSMRLJXTFTHKWSY/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PKGTQUOA2NTZ3RXN22CSAUJPIRUYRB4B/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/W45DBOH56NQDRTOM2DN2LNA2FZIMC3PK/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZGWIK3HMBACERGB4TSBB2JUOMPYY2VKY/
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-1874
+  - https://security.netapp.com/advisory/ntap-20240510-0009/
+  - https://www.cve.org/CVERecord?id=CVE-2024-1874
+  - https://www.kb.cert.org/vuls/id/123335
+  - https://www.vicarius.io/vsociety/posts/command-injection-vulnerability-in-php-on-windows-systems-cve-2024-1874-and-cve-2024-5585
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'azure linux:3.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

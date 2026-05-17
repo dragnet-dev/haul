@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5594 — Vulnerable Base Image Pull'
+id: 80f46320-9191-5a0a-be13-29e7243216cf
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5594 (Tier 2, CVSS 9.8)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to version 3.23.0, `xf_clipboard_format_equal` reads freed `lastSentFormats` memory because `xf_clipboard_formats_free` (called from the cliprdr channel thread during auto-reconnect) frees the array while the X11 event thread concurrently iterates it in `xf_clipboard_changed`, triggering a heap use after free. Version 3.23.0 fixes the issue.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-25997
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L1884
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L1889
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L265
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L616
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L831
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L851-L855
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_cliprdr.c#L868-L875
+  - https://github.com/FreeRDP/FreeRDP/commit/58409406afe7c2a8a71ed2dc8e22075be4f41c0c
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-q5j3-m6jf-3jq4
+  - https://access.redhat.com/errata/RHSA-2026:16014
+  - https://access.redhat.com/security/cve/CVE-2026-25997
+  - https://bugzilla.redhat.com/2442764
+  - https://bugzilla.redhat.com/2442768
+  - https://bugzilla.redhat.com/2442782
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

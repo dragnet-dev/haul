@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3622 — Event Log Clearing (interlock)'
+id: 85f627df-1972-596d-92c9-e7c46fbfe88f
+status: deprecated
+description: |
+  Detects event log clearing associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3622
+  Ransomware victim claim by interlock: Wier Boerner Allin; country: US; sector: Business Services
+  First observed: 2025-08-22.
+references:
+  - http://6oqw2koek4nbmbb7ic3y4jr6scqsypg5en4h6mcqyrgg3jkny4sgaiyd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

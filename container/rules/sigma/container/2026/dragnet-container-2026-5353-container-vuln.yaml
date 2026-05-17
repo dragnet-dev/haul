@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5353 — Vulnerable Base Image Pull'
+id: 546db5cf-7ba5-5dcd-ba2a-e46f9322d7ca
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5353 (Tier 2, CVSS 9.1)
+  In lightning-ai/pytorch-lightning version 2.3.2, a vulnerability exists in the `LightningApp` when running on a Windows host. The vulnerability occurs at the `/api/v1/upload_file/` endpoint, allowing an attacker to write or overwrite arbitrary files by providing a crafted filename. This can lead to potential remote code execution (RCE) by overwriting critical files or placing malicious files in sensitive locations.
+references:
+  - https://github.com/lightning-ai/pytorch-lightning/commit/330af381de88cff17515418a341cbc1f9f127f9a
+  - https://github.com/pytorch/pytorch
+  - https://huntr.com/bounties/2754298b-5af5-48ef-8b38-999093ddf2bd
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-8019
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

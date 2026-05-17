@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2043 — Event Log Clearing (coinbasecartel)'
+id: 99c4f577-c1f3-58a0-a5a0-7dd989aa4b96
+status: deprecated
+description: |
+  Detects event log clearing associated with coinbasecartel ransomware.
+  Incident: dragnet-ransomware-2025-2043
+  Ransomware victim claim by coinbasecartel: C*** | A******** - Contact us by monday; sector: Not Found
+  First observed: 2025-12-12.
+references:
+  - http://fjg4zi4opkxkvdz7mvwp7h6goe4tcby3hhkrz43pht4j3vakhy75znyd.onion/companies/secret
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

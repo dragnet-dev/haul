@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4142 — Vulnerable Base Image Pull'
+id: 3aa04fdd-3e1d-556d-9442-59eebace71da
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4142 (Tier 2, CVSS 9.8)
+  In Nim 1.2.4, the standard library browsers mishandles the URL argument to browsers.openDefaultBrowser. This argument can be a local file path that will be opened in the default explorer. An attacker can pass one argument to the underlying open command to execute arbitrary registered system commands.
+references:
+  - http://www.openwall.com/lists/oss-security/2021/02/04/1
+  - https://consensys.net/diligence/vulnerabilities/nim-browsers-argument-injection/
+  - https://github.com/nim-lang/Nim/blob/dc5a40f3f39c6ea672e6dc6aca7f8118a69dda99/lib/pure/browsers.nim#L48
+  - https://nim-lang.org/blog/2020/07/30/versions-126-and-108-released.html
+  - https://www.cve.org/CVERecord?id=CVE-2020-15692
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

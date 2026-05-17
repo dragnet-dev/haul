@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1449 — Recovery Inhibition (chort)'
+id: baaa2ae6-6cfe-5aca-89be-667a3d9bdeb5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with chort ransomware.
+  Incident: dragnet-ransomware-2024-1449
+  Ransomware victim claim by chort: hartwick.edu; country: US; sector: Education
+  First observed: 2024-11-17.
+references:
+  - http://hgxyonufefcglpekxma55fttev3lcfucrf7jvep2c3j6447cjroadead.onion/comp/hartwick.edu/index
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

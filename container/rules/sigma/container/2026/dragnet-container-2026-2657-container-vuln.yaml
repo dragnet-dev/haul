@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2657 — Vulnerable Base Image Pull'
+id: d7187915-db5b-55c4-8480-b359f26b5241
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2657 (Tier 2, CVSS 9.8)
+  The CClient::ProcessServerPacket method in engine/client/client.cpp in Teeworlds before 0.6.4 allows remote servers to write to arbitrary physical memory locations and possibly execute arbitrary code via vectors involving snap handling.
+references:
+  - http://www.openwall.com/lists/oss-security/2016/11/16/8
+  - http://www.openwall.com/lists/oss-security/2016/11/17/8
+  - http://www.securityfocus.com/bid/94381
+  - https://github.com/teeworlds/teeworlds/commit/ff254722a2683867fcb3e67569ffd36226c4bc62
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/C4JNSBXXPE7O32ZMFK7D7YL6EKLG7PRV/
+  - https://security.gentoo.org/glsa/201705-13
+  - https://www.cve.org/CVERecord?id=CVE-2016-9400
+  - https://www.teeworlds.com/?page=news&id=12086
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1293 — Shadow Copy Deletion (blacksuit)'
+id: 04df2bdf-bea1-5e1e-b3c2-da2bbaa6469a
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blacksuit ransomware.
+  Incident: dragnet-ransomware-2024-1293
+  Ransomware victim claim by blacksuit: SERVICES INFORMATIQUES POUR PROFESSIONNELS(SIP); country: BE; sector: Technology
+  First observed: 2024-04-07.
+references:
+  - http://weg7sdx54bevnvulapqu6bpzwztryeflq3s23tegbmnhkbpqz637f2yd.onion/?id=UzI2pi8oSEoGzVdn
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

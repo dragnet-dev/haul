@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3656 — Recovery Inhibition (malas)'
+id: 3de38d4e-94d7-55b6-a8a1-08ad3a2f7c0a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with malas ransomware.
+  Incident: dragnet-ransomware-2023-3656
+  Ransomware victim claim by malas: ICT-LabS; sector: Technology
+  First observed: 2023-04-09.
+references:
+  - http://malas2urovbyyavjzaezkt5ohljvyd5lt7vv7mnsgbf2y4bwlh72doqd.onion/posts/defaulters/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7700 — Recovery Inhibition (tridentlocker)'
+id: 91f72185-34ab-5d78-b76d-f573e73d83ba
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with tridentlocker ransomware.
+  Incident: dragnet-ransomware-2025-7700
+  Ransomware victim claim by tridentlocker: typecaseinc; country: US; sector: Not Found
+  First observed: 2025-11-06.
+references:
+  - http://tridentfrdy6jydwywfx4vx422vnto7pktao2gyx2qdcwjanogq454ad.onion/article/db746ab1-79d6-4fc6-8e75-07ebe37f26b7
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

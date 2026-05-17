@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1616 — Vulnerable Base Image Pull'
+id: f95207cc-f049-5e0b-a38e-ba1df48a197c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1616 (Tier 2, CVSS 9.8)
+  Xstream API versions up to 1.4.6 and version 1.4.10, if the security framework has not been initialized, may allow a remote attacker to run arbitrary shell commands by manipulating the processed input stream when unmarshaling XML or any supported format. e.g. JSON.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2013-7285
+  - https://github.com/x-stream/xstream/commit/6344867dce6767af7d0fe34fb393271a6456672d
+  - http://blog.diniscruz.com/2013/12/xstream-remote-code-execution-exploit.html
+  - http://markmail.org/message/kfqoqdfj5fnup5co?q=list:org.codehaus.xstream.dev&page=3
+  - http://seclists.org/oss-sec/2014/q1/69
+  - http://web.archive.org/web/20140204133306/http://blog.diniscruz.com/2013/12/xstream-remote-code-execution-exploit.html
+  - http://xstream.codehaus.org/security.html
+  - https://access.redhat.com/security/cve/CVE-2013-7285
+  - https://fisheye.codehaus.org/changelog/xstream?cs=2210
+  - https://lists.apache.org/thread.html/6d3d34adcf3dfc48e36342aa1f18ce3c20bb8e4c458a97508d5bfed1%40%3Cissues.activemq.apache.org%3E
+  - https://lists.apache.org/thread.html/6d3d34adcf3dfc48e36342aa1f18ce3c20bb8e4c458a97508d5bfed1@%3Cissues.activemq.apache.org%3E
+  - https://lists.apache.org/thread.html/dcf8599b80e43a6b60482607adb76c64672772dc2d9209ae2170f369%40%3Cissues.activemq.apache.org%3E
+  - https://lists.apache.org/thread.html/dcf8599b80e43a6b60482607adb76c64672772dc2d9209ae2170f369@%3Cissues.activemq.apache.org%3E
+  - https://securityblog.redhat.com/2014/01/23/java-deserialization-flaws-part-2-xml-deserialization/
+  - https://www.cve.org/CVERecord?id=CVE-2013-7285
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

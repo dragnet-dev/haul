@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1517 — Shadow Copy Deletion (LeakBazaar)'
+id: 473a1332-de7d-5d95-90a1-c70a87562a90
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with LeakBazaar ransomware.
+  Incident: dragnet-ransomware-2026-1517
+  Ransomware victim claim by LeakBazaar: Omax Autos; country: IN; sector: Manufacturing
+  First observed: 2026-04-13.
+references:
+  - https://mes4qo4rd6t3biyrm6q4twkquspzd7r4kg7va765nbdfxqgnc2w3pead.onion/company?dataBlobId=b4e457b5-f52e-4d0e-b806-0ccc984b227c
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

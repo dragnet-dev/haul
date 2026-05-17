@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3761 — Vulnerable Base Image Pull'
+id: 12639b84-20e5-5e27-89dc-c752f9f5fa58
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3761 (Tier 2, CVSS 9.8)
+  nsd-checkzone in NLnet Labs NSD 4.2.0 has a Stack-based Buffer Overflow in the dname_concatenate() function in dname.c.
+references:
+  - https://github.com/NLnetLabs/nsd/commit/91102da24d5949ccfec8fdab5bae2d01c4cabab5
+  - https://github.com/NLnetLabs/nsd/issues/20
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FDS4H7WVHQGCX3LF72F5K22VJXN7HDBB/
+  - https://www.cve.org/CVERecord?id=CVE-2019-13207
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

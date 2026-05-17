@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1142 — Event Log Clearing (blacklock)'
+id: ef4ea500-c3f6-5aca-a733-4e2ac9affeab
+status: deprecated
+description: |
+  Detects event log clearing associated with blacklock ransomware.
+  Incident: dragnet-ransomware-2024-1142
+  Ransomware victim claim by blacklock: Mullen Wylie, LLC; country: US; sector: Business Services
+  First observed: 2024-11-18.
+references:
+  - http://zdkexsh2e7yihw5uhg5hpsgq3dois2m5je7lzfagij2y6iw5ptl35gyd.onion/Data_Download/MULLENWYLIE
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

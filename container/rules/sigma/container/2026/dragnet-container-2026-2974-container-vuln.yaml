@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2974 — Vulnerable Base Image Pull'
+id: 9f257eae-96c6-5db0-ad4c-6e4d0a2170dd
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2974 (Tier 2, CVSS 9.8)
+  WTF/wtf/FastBitVector.h in WebKit, as distributed in Safari Technology Preview Release 46, allows remote attackers to cause a denial of service (buffer overflow) or possibly have unspecified other impact because it calls the FastBitVectorWordOwner::resizeSlow function (in WTF/wtf/FastBitVector.cpp) for a purpose other than initializing a bitvector size, and resizeSlow mishandles cases where the old array length is greater than the new array length.
+references:
+  - https://bugs.webkit.org/show_bug.cgi?id=181020
+  - https://github.com/dwfault/PoCs/blob/master/WebKit%20Misuse%20of%20WTF:wtf:FastBitVector%20result%20in%20potential%20BOF/WebKit%20Misuse%20of%20WTF:wtf:FastBitVector%20result%20in%20potential%20BOF.md
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

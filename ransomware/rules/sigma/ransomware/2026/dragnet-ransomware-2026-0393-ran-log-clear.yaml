@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0393 — Event Log Clearing (beast)'
+id: bd178156-b0f0-5024-9c67-c594d05eb9a2
+status: deprecated
+description: |
+  Detects event log clearing associated with beast ransomware.
+  Incident: dragnet-ransomware-2026-0393
+  Ransomware victim claim by beast: Communicate UK; country: GB; sector: Telecommunication
+  First observed: 2026-03-03.
+references:
+  - http://beast6azu4f7fxjakiayhnssybibsgjnmy77a6duufqw5afjzfjhzuqd.onion/card/communicate_uk
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0202 — Event Log Clearing (ransomexx)'
+id: da823bb2-6e9f-536c-8bbf-3f47baf32ae8
+status: deprecated
+description: |
+  Detects event log clearing associated with ransomexx ransomware.
+  Incident: dragnet-ransomware-2020-0202
+  Ransomware victim claim by ransomexx: R1 RCM (medical debt collection firm); country: US; sector: Financial Services
+  First observed: 2020-08-01.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

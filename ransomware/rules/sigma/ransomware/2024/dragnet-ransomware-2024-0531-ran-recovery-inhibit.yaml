@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0531 — Recovery Inhibition (alphalocker)'
+id: e5a24e7d-0315-5ae3-b81c-a66f9f2f76e1
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with alphalocker ransomware.
+  Incident: dragnet-ransomware-2024-0531
+  Ransomware victim claim by alphalocker: goftac.com/    firsttx.com  First Texas Alliance Corp   (FTAC); country: US; sector: Business Services
+  First observed: 2024-08-06.
+references:
+  - http://mydatae2d63il5oaxxangwnid5loq2qmtsol2ozr6vtb7yfm5ypzo6id.onion/blog_1-15
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

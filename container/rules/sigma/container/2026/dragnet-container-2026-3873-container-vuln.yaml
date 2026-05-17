@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3873 — Vulnerable Base Image Pull'
+id: ef336bef-fabe-5690-9ba5-cfb0ab3d48c5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3873 (Tier 2, CVSS 9.8)
+  GDAL through 3.0.1 has a poolDestroy double free in OGRExpatRealloc in ogr/ogr_expat.cpp when the 10MB threshold is exceeded.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-11/msg00022.html
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=16178
+  - https://github.com/OSGeo/gdal/commit/148115fcc40f1651a5d15fa34c9a8c528e7147bb
+  - https://lists.debian.org/debian-lts-announce/2019/11/msg00005.html
+  - https://lists.debian.org/debian-lts-announce/2022/01/msg00004.html
+  - https://lists.debian.org/debian-lts-announce/2022/09/msg00040.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CB7RRPCQP253XA5MYUOLHLRPKNGKVZNT/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/XVRC3EBQBFBVQC26XJE3AI3KQXC2NGTP/
+  - https://www.cve.org/CVERecord?id=CVE-2019-17545
+  - https://www.oracle.com//security-alerts/cpujul2021.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

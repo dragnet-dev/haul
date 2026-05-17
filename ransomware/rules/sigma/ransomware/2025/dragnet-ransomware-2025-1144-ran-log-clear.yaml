@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1144 — Event Log Clearing (bert)'
+id: e7ab78b2-7297-5b73-aced-0b07903d5ac9
+status: deprecated
+description: |
+  Detects event log clearing associated with bert ransomware.
+  Incident: dragnet-ransomware-2025-1144
+  Ransomware victim claim by bert: Yozgat City Hospital; country: TR; sector: Healthcare
+  First observed: 2025-04-09.
+references:
+  - http://bertblogsoqmm4ow7nqyh5ik7etsmefdbf25stauecytvwy7tkgizhad.onion/post/CCF89B4CDE0A489DB22B294925477C8A
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

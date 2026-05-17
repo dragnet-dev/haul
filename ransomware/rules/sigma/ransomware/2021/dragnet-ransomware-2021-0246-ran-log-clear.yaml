@@ -1,0 +1,34 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0246 — Event Log Clearing (blackbyte)'
+id: 73d6e1ff-fb5d-5c09-b87b-4843f28a35d7
+status: deprecated
+description: |
+  Detects event log clearing associated with blackbyte ransomware.
+  Incident: dragnet-ransomware-2021-0246
+  Associated with BlackByte.
+  Ransomware victim claim by blackbyte: MOTOR VEHICLE ACCIDENT FUND PENSION FUND; sector: Financial Services
+  First observed: 2021-11-30.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.blackbyte
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

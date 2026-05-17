@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5814 — Vulnerable Base Image Pull'
+id: 79688c3d-9482-5df4-9b8d-673f7427a2c4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5814 (Tier 2, CVSS 9.1)
+  Tor before 0.4.9.7 has an out-of-bounds read when an END, a TRUNCATE, or a TRUNCATED cell lacks a reason in its payload, aka TROVE-2026-011.
+references:
+  - https://forum.torproject.org/c/news/tor-release-announcement/28
+  - https://gitlab.torproject.org/tpo/core/tor/-/commit/8f98054b1982d00a14639864d03e9afd90b87481
+  - https://gitlab.torproject.org/tpo/core/tor/-/work_items/41254
+  - https://www.openwall.com/lists/oss-security/2026/05/06/8
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

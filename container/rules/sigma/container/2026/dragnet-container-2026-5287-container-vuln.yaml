@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5287 — Vulnerable Base Image Pull'
+id: f6ecf49d-cf0a-5353-b50e-45752c42d754
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5287 (Tier 2, CVSS 9.8)
+  sofa-hessian is an internal improved version of Hessian3/4 powered by Ant Group CO., Ltd. The SOFA Hessian protocol uses a blacklist mechanism to restrict deserialization of potentially dangerous classes for security protection. But there is a gadget chain that can bypass the SOFA Hessian blacklist protection mechanism, and this gadget chain only relies on JDK and does not rely on any third-party components. This issue is fixed by an update to the blacklist, users can upgrade to sofahessian version 3.5.5 to avoid this issue. Users unable to upgrade may maintain a blacklist themselves in the directory `external/serialize.blacklist`.
+references:
+  - https://github.com/sofastack/sofa-hessian
+  - https://github.com/sofastack/sofa-hessian/commit/764ef4b216aee6aeb4b111aec8947a4e8b53bb87
+  - https://github.com/sofastack/sofa-hessian/security/advisories/GHSA-c459-2m73-67hj
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-46983
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

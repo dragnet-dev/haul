@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7188 — Event Log Clearing (SilentRansomGroup)'
+id: 149b1be0-f0a2-55b4-b3f6-ad7cde3f127f
+status: deprecated
+description: |
+  Detects event log clearing associated with SilentRansomGroup ransomware.
+  Incident: dragnet-ransomware-2025-7188
+  Ransomware victim claim by SilentRansomGroup: Anders CPAs + Advisors; country: US; sector: Financial Services
+  First observed: 2025-01-17.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

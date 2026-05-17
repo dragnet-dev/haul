@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1102 — Shadow Copy Deletion (gunra)'
+id: 91ec6e56-0b88-5bff-ab3f-ceae04af1e4f
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with gunra ransomware.
+  Incident: dragnet-ransomware-2026-1102
+  Ransomware victim claim by gunra: NeoDerm; country: HK; sector: Healthcare
+  First observed: 2026-04-08.
+references:
+  - http://lgiil72vkmdtbc3qv4tyq6wedyjxqr2qd4ze7xl2cxgerdnymxj7soqd.onion/company/UT-1nslyVQKm6Hbe9YJFq
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

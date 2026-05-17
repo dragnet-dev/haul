@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4583 — Vulnerable Base Image Pull'
+id: fd203118-83e2-58b9-b22e-17bb815e5fb3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4583 (Tier 2, CVSS 9.6)
+  In uClibc and uClibc-ng before 1.0.39, incorrect handling of special characters in domain names returned by DNS servers via gethostbyname, getaddrinfo, gethostbyaddr, and getnameinfo can lead to output of wrong hostnames (leading to domain hijacking) or injection into applications (leading to remote code execution, XSS, applications crashes, etc.). In other words, a validation step, which is expected in any stub resolver, does not occur.
+references:
+  - https://github.com/wbx-github/uclibc-ng/commit/0f822af0445e5348ce7b7bd8ce1204244f31d174
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-43523
+  - https://uclibc-ng.org/
+  - https://www.openwall.com/lists/oss-security/2021/11/09/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

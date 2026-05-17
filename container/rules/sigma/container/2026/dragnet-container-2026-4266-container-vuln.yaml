@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4266 — Vulnerable Base Image Pull'
+id: 3846cb1e-30de-5dee-888d-2811bc2fed9b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4266 (Tier 2, CVSS 9.8)
+  In the standard library in Rust before 1.49.0, VecDeque::make_contiguous has a bug that pops the same element more than once under certain condition. This bug could result in a use-after-free or double free.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-36318
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1949189
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1949192
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-36317
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-36318
+  - https://errata.rockylinux.org/RLSA-2021:1935
+  - https://github.com/rust-lang/rust/issues/79808
+  - https://github.com/rust-lang/rust/pull/79814
+  - https://linux.oracle.com/cve/CVE-2020-36318.html
+  - https://linux.oracle.com/errata/ELSA-2021-1935.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-36318
+  - https://rustsec.org/advisories/CVE-2020-36318.html
+  - https://www.cve.org/CVERecord?id=CVE-2020-36318
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:1.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'oraclelinux:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

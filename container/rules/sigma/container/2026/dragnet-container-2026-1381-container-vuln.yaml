@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1381 — Vulnerable Base Image Pull'
+id: 64150b9d-3085-562f-a41d-f031373a11ac
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1381 (Tier 2, CVSS 9.3)
+  The decode_slice_header function in libavcodec/h264.c in FFmpeg before 1.1 allows remote attackers to have an unspecified impact via crafted H.264 data, which triggers an out-of-bounds array access.
+references:
+  - http://git.videolan.org/?p=ffmpeg.git%3Ba=commitdiff%3Bh=d6c184880ee2e09fd68c0ae217173832cee5afc1
+  - http://www.debian.org/security/2013/dsa-2793
+  - http://www.ffmpeg.org/security.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

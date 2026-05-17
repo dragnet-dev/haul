@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5023 — Vulnerable Base Image Pull'
+id: c9946823-2675-5259-a75c-02407cba43b7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5023 (Tier 2, CVSS 9.8)
+  SABnzbd is an open source automated Usenet download tool. A design flaw was discovered in SABnzbd that could allow remote code execution. Manipulating the Parameters setting in the Notification Script functionality allows code execution with the privileges of the SABnzbd process. Exploiting the vulnerabilities requires access to the web interface. Remote exploitation is possible if users[exposed their setup to the internet or other untrusted networks without setting a username/password. By default SABnzbd is only accessible from `localhost`, with no authentication required for the web interface. This issue has been patched in commits `e3a722` and `422b4f` which have been included in the 4.0.2 release. Users are advised to upgrade. Users unable to upgrade should ensure that a username and password have been set if their instance is web accessible.
+references:
+  - https://github.com/sabnzbd/sabnzbd/commit/422b4fce7bfd56e95a315be0400cdfdc585df7cc
+  - https://github.com/sabnzbd/sabnzbd/commit/e3a722664819d1c7c8fab97144cc299b1c18b429
+  - https://github.com/sabnzbd/sabnzbd/security/advisories/GHSA-hhgh-xgh3-985r
+  - https://sabnzbd.org/wiki/configuration/4.0/general
+  - https://security.gentoo.org/glsa/202312-11
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

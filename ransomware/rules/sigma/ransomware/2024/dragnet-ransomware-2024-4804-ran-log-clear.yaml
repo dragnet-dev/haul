@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4804 — Event Log Clearing (qiulong)'
+id: 2726235a-7b39-5a40-b03b-01e55a60f2d5
+status: deprecated
+description: |
+  Detects event log clearing associated with qiulong ransomware.
+  Incident: dragnet-ransomware-2024-4804
+  Ransomware victim claim by qiulong: www.rosalvoautomoveis.com.br; country: BR; sector: Business Services
+  First observed: 2024-04-19.
+references:
+  - http://62brsjf2w77ihz5paods33cdgqnon54gjns5nmag3hmqv6fcwamtkmad.onion/?p=30
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

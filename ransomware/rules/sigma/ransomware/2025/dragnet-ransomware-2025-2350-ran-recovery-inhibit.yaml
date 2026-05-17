@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2350 — Recovery Inhibition (direwolf)'
+id: 07de9a8e-6725-5c06-9d84-738c924a0604
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with direwolf ransomware.
+  Incident: dragnet-ransomware-2025-2350
+  Ransomware victim claim by direwolf: Immigration Advice Service; country: GB; sector: Business Services
+  First observed: 2025-08-14.
+references:
+  - http://direwolfcdkv5whaz2spehizdg22jsuf5aeje4asmetpbt6ri4jnd4qd.onion/articles/iasservices.org.uk.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

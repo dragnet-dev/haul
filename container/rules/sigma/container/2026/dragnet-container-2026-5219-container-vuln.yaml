@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5219 — Vulnerable Base Image Pull'
+id: ec67a469-de15-5a73-a913-86ac7eb36297
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5219 (Tier 2, CVSS 9.8)
+  A buffer overflow vulnerability exists in all versions of sngrep since v0.4.2, due to improper handling of 'Call-ID' and 'X-Call-ID' SIP headers. The functions sip_get_callid and sip_get_xcallid in sip.c use the strncpy function to copy header contents into fixed-size buffers without checking the data length. This flaw allows remote attackers to execute arbitrary code or cause a denial of service (DoS) through specially crafted SIP messages.
+
+references:
+  - https://github.com/irontec/sngrep/pull/480/commits/73c15c82d14c69df311e05fa75da734faafd365f
+  - https://github.com/irontec/sngrep/releases/tag/v1.8.1
+  - https://pentraze.com/vulnerability-reports/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

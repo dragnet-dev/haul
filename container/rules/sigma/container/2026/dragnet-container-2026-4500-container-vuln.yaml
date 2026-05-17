@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4500 — Vulnerable Base Image Pull'
+id: 0dcd0ef4-57a9-5e3d-8f53-0fb60dc6c676
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4500 (Tier 2, CVSS 9.6)
+  LedgerSMB does not check the origin of HTML fragments merged into the browser's DOM. By sending a specially crafted URL to an authenticated user, this flaw can be abused for remote code execution and information disclosure.
+references:
+  - https://huntr.dev/bounties/daf1384d-648a-43fd-9b35-5c37d8ead667
+  - https://ledgersmb.org/cve-2021-3693-cross-site-scripting
+  - https://ubuntu.com/security/notices/USN-5097-1
+  - https://ubuntu.com/security/notices/USN-7647-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-3693
+  - https://www.debian.org/security/2021/dsa-4962
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.04'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

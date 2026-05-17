@@ -1,0 +1,55 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3880 — Vulnerable Base Image Pull'
+id: 95ad9b6e-75f9-5206-bc6b-f7d1e1d36bdb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3880 (Tier 2, CVSS 9.8)
+  ReportLab through 3.5.26 allows remote code execution because of toColor(eval(arg)) in colors.py, as demonstrated by a crafted XML document with '<span color="' followed by arbitrary Python code.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-17626
+  - https://github.com/advisories/GHSA-qpg2-vx7j-3869
+  - https://github.com/MrBitBucket/reportlab-mirror
+  - https://github.com/pypa/advisory-database/tree/main/vulns/reportlab/PYSEC-2019-117.yaml
+  - http://lists.opensuse.org/opensuse-security-announce/2020-02/msg00002.html
+  - https://access.redhat.com/errata/RHSA-2020:0195
+  - https://access.redhat.com/errata/RHSA-2020:0197
+  - https://access.redhat.com/errata/RHSA-2020:0201
+  - https://access.redhat.com/errata/RHSA-2020:0230
+  - https://access.redhat.com/security/cve/CVE-2019-17626
+  - https://access.redhat.com/security/cve/cve-2019-17626
+  - https://bitbucket.org/rptlab/reportlab/issues/199/eval-in-colorspy-leads-to-remote-code
+  - https://bitbucket.org/rptlab/reportlab/src/default/CHANGES.md
+  - https://hg.reportlab.com/hg-public/reportlab/rev/51a521ad7dd3
+  - https://linux.oracle.com/cve/CVE-2019-17626.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

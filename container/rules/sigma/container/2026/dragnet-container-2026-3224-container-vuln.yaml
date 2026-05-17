@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3224 — Vulnerable Base Image Pull'
+id: 40036153-c298-5777-9cc4-0fa1da6422b2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3224 (Tier 2, CVSS 9.8)
+  In LibTIFF 4.0.6 and possibly other versions, the program processes BMP images without verifying that biWidth and biHeight in the bitmap-information header match the actual input, as demonstrated by a heap-based buffer over-read in bmp2tiff. NOTE: mentioning bmp2tiff does not imply that the activation point is in the bmp2tiff.c file (which was removed before the 4.0.7 release).
+references:
+  - http://bugzilla.maptools.org/show_bug.cgi?id=2690
+  - http://www.securityfocus.com/bid/98581
+  - https://access.redhat.com/security/cve/CVE-2017-9117
+  - https://gitlab.com/libtiff/libtiff/-/issues/89
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-9117
+  - https://ubuntu.com/security/notices/USN-3606-1
+  - https://usn.ubuntu.com/3606-1/
+  - https://www.cve.org/CVERecord?id=CVE-2017-9117
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

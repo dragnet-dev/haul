@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2115 — Event Log Clearing (crypto24)'
+id: ec1696f6-0d50-5c83-9c74-42cdcf8b6779
+status: deprecated
+description: |
+  Detects event log clearing associated with crypto24 ransomware.
+  Incident: dragnet-ransomware-2025-2115
+  Ransomware victim claim by crypto24: Iris Neofinanciera; country: CO; sector: Financial Services
+  First observed: 2025-04-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

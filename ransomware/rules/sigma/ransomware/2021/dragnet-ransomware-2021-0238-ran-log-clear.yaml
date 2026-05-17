@@ -1,0 +1,34 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0238 — Event Log Clearing (blackbyte)'
+id: 382a0129-50e3-5f6f-909d-0dfe85e36a04
+status: deprecated
+description: |
+  Detects event log clearing associated with blackbyte ransomware.
+  Incident: dragnet-ransomware-2021-0238
+  Associated with BlackByte.
+  Ransomware victim claim by blackbyte: H Hotels Collection; sector: Hospitality and Tourism
+  First observed: 2021-10-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.blackbyte
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

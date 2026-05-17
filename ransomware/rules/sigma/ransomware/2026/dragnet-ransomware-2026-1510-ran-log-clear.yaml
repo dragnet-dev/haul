@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1510 — Event Log Clearing (LeakBazaar)'
+id: 1a56718b-6de3-58c3-b0c2-a0ac663afdc0
+status: deprecated
+description: |
+  Detects event log clearing associated with LeakBazaar ransomware.
+  Incident: dragnet-ransomware-2026-1510
+  Ransomware victim claim by LeakBazaar: Disk Precision Group; country: SG; sector: Manufacturing
+  First observed: 2026-04-25.
+references:
+  - https://mes4qo4rd6t3biyrm6q4twkquspzd7r4kg7va765nbdfxqgnc2w3pead.onion/company?dataBlobId=64c4cd67-29dd-43d0-a4d7-e4ce2f7e3799
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,61 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5841 — Vulnerable Base Image Pull'
+id: d24e0fe7-6b2e-56f7-b029-9f06331c006b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5841 (Tier 2, CVSS 9.8)
+  Impact:
+
+The fix for CVE-2021-23337 (https://github.com/advisories/GHSA-35jh-r3h4-6jhm) added validation for the variable option in _.template but did not apply the same validation to options.imports key names. Both paths flow into the same Function() constructor sink.
+
+When an application passes untrusted input as options.imports key names, an attacker can inject default-parameter expressions that execute arbitrary code at template compilation time.
+
+Additionally, _.template uses assignInWith to merge imports, which enumerates inherited properties via for..in. If Object.prototype has been polluted by any other vector, the polluted keys are copied into the imports object and passed to Function().
+
+Patches:
+
+Users should upgrade to version 4.18.0.
+
+Workarounds:
+
+Do not pass untrusted input as key names in options.imports. Only use developer-controlled, static key names.
+references:
+  - https://access.redhat.com/errata/RHSA-2026:10710
+  - https://access.redhat.com/security/cve/CVE-2026-4800
+  - https://bugzilla.redhat.com/2453496
+  - https://cna.openjsf.org/security-advisories.html
+  - https://errata.almalinux.org/9/ALSA-2026-10710.html
+  - https://github.com/advisories/GHSA-35jh-r3h4-6jhm
+  - https://github.com/lodash/lodash
+  - https://github.com/lodash/lodash/commit/3469357cff396a26c363f8c1b5a91dde28ba4b1c
+  - https://github.com/lodash/lodash/security/advisories/GHSA-r5fr-rjxr-66jc
+  - https://linux.oracle.com/cve/CVE-2026-4800.html
+  - https://linux.oracle.com/errata/ELSA-2026-10713.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-4800
+  - https://www.cve.org/CVERecord?id=CVE-2026-4800
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:9'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

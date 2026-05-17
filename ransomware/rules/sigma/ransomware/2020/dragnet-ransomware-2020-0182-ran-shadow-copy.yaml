@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0182 — Shadow Copy Deletion (ragnarlocker)'
+id: c27c8008-d45c-5933-bb35-c1a6ba5e3c78
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with ragnarlocker ransomware.
+  Incident: dragnet-ransomware-2020-0182
+  Ransomware victim claim by ragnarlocker: LEAK post FINSA; sector: Not Found
+  First observed: 2020-11-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

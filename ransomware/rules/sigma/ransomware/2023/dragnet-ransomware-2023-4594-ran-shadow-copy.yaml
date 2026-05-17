@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4594 — Shadow Copy Deletion (ragnarlocker)'
+id: 5cd9b11e-6d95-5458-adac-3b79ef594c11
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with ragnarlocker ransomware.
+  Incident: dragnet-ransomware-2023-4594
+  Ransomware victim claim by ragnarlocker: Learning Partnership West - Leaked; country: GB; sector: Education
+  First observed: 2023-10-05.
+references:
+  - http://rgleaktxuey67yrgspmhvtnrqtgogur35lwdrup4d3igtbm3pupc4lyd.onion/?3qzIqHM4eugu6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3927 — Event Log Clearing (medusalocker)'
+id: dfc25847-4850-515a-9696-aa77ba54f7c2
+status: deprecated
+description: |
+  Detects event log clearing associated with medusalocker ransomware.
+  Incident: dragnet-ransomware-2023-3927
+  Ransomware victim claim by medusalocker: Protected: Name is hidden; sector: Not Found
+  First observed: 2023-11-29.
+references:
+  - http://z6wkgghtoawog5noty5nxulmmt2zs7c3yvwr22v4czbffdoly2kl4uad.onion/?p=323
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

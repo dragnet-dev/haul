@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4041 — Recovery Inhibition (lynx)'
+id: 292e26fa-ad3e-5026-aea2-499d6b9eeccd
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4041
+  Ransomware victim claim by lynx: Access Capital Partners SA; country: FR; sector: Financial Services
+  First observed: 2025-01-16.
+references:
+  - http://lynxblog.net/leaks/6787acfb05a779c3d3dac945
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

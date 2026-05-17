@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0658 — Recovery Inhibition (coinbasecartel)'
+id: c6672a55-4401-5283-8189-e7e61c8f6475
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with coinbasecartel ransomware.
+  Incident: dragnet-ransomware-2026-0658
+  Ransomware victim claim by coinbasecartel: Kementerian Pertanian; country: ID; sector: Agriculture and Food Production
+  First observed: 2026-04-23.
+references:
+  - http://fjg4zi4opkxkvdz7mvwp7h6goe4tcby3hhkrz43pht4j3vakhy75znyd.onion/companies/kementerian
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

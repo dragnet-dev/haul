@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-6023 — Shadow Copy Deletion (underground)'
+id: 39aa877c-bb67-5082-87d0-fdbc1890f3d5
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with underground ransomware.
+  Incident: dragnet-ransomware-2024-6023
+  Ransomware victim claim by underground: Triathlon.group; country: DE; sector: Transportation/Logistics
+  First observed: 2024-01-26.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packages/2c7730bd-8eaf-4762-a944-21327db0c5ad
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

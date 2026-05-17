@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2279 — Vulnerable Base Image Pull'
+id: 3fab182c-de61-50a5-9b32-51225e983f68
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2279 (Tier 2, CVSS 9.8)
+  Off-by-one error in the tokenadd function in jv_parse.c in jq allows remote attackers to cause a denial of service (crash) via a long JSON-encoded number, which triggers a heap-based buffer overflow.
+references:
+  - http://lists.opensuse.org/opensuse-updates/2016-05/msg00012.html
+  - http://lists.opensuse.org/opensuse-updates/2016-05/msg00014.html
+  - http://rhn.redhat.com/errata/RHSA-2016-1098.html
+  - http://rhn.redhat.com/errata/RHSA-2016-1099.html
+  - http://rhn.redhat.com/errata/RHSA-2016-1106.html
+  - http://www.openwall.com/lists/oss-security/2016/04/23/1
+  - http://www.openwall.com/lists/oss-security/2016/04/23/2
+  - https://access.redhat.com/security/cve/CVE-2015-8863
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=802231
+  - https://github.com/stedolan/jq/commit/8eb1367ca44e772963e704a700ef72ae2e12babd
+  - https://github.com/stedolan/jq/issues/995
+  - https://nvd.nist.gov/vuln/detail/CVE-2015-8863
+  - https://security.gentoo.org/glsa/201612-20
+  - https://www.cve.org/CVERecord?id=CVE-2015-8863
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

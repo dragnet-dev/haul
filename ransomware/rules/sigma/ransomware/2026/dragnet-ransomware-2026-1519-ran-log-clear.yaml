@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1519 — Event Log Clearing (linkc)'
+id: eff7dfd1-e33f-58d4-8bf7-e28421f5f69f
+status: deprecated
+description: |
+  Detects event log clearing associated with linkc ransomware.
+  Incident: dragnet-ransomware-2026-1519
+  Ransomware victim claim by linkc: Network Technology Services of New Jersey; country: US; sector: Technology
+  First observed: 2026-02-27.
+references:
+  - http://iywqjjaf2zioehzzauys3sktbcdmuzm2fsjkqsblnm7dt6axjfpoxwid.onion/article/b6ef723d-2e69-419e-9142-7cd511a5ee33
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

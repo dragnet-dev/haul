@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3693 — Recovery Inhibition (lynx)'
+id: d80fdf7f-adff-5e6c-8fbd-9126d7f3a5b3
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3693
+  Ransomware victim claim by lynx: Tricon Energy; country: US; sector: Energy
+  First observed: 2024-09-29.
+references:
+  - http://lynxblog.net/leaks/6718c680cbfc63d2fb223219
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

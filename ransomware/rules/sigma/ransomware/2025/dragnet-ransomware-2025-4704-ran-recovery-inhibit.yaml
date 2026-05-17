@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4704 — Recovery Inhibition (obscura)'
+id: 33d625ce-385f-56f3-9887-de2a1490789e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with obscura ransomware.
+  Incident: dragnet-ransomware-2025-4704
+  Ransomware victim claim by obscura: Plazadental; country: US; sector: Healthcare
+  First observed: 2025-08-29.
+references:
+  - http://obscurad3aphckihv7wptdxvdnl5emma6t3vikcf3c5oiiqndq6y6xad.onion/company.html?company=plazadental
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

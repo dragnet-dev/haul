@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3435 — Event Log Clearing (vect)'
+id: aac7ac53-5547-553c-b76f-e53987ea615d
+status: deprecated
+description: |
+  Detects event log clearing associated with vect ransomware.
+  Incident: dragnet-ransomware-2026-3435
+  Ransomware victim claim by vect: Verlat Energy; country: PE; sector: Energy
+  First observed: 2026-03-02.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

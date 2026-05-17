@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4105 — Vulnerable Base Image Pull'
+id: ae720ba3-3739-589a-be99-93031be2aff5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4105 (Tier 2, CVSS 9.8)
+  pandas through 1.0.3 can unserialize and execute commands from an untrusted file that is passed to the read_pickle() function, if __reduce__ makes an os.system call. NOTE: third parties dispute this issue because the read_pickle() function is documented as unsafe and it is the user's responsibility to use the function in a secure manner
+references:
+  - https://github.com/0FuzzingQ/vuln/blob/master/pandas%20unserialize.md
+  - https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_pickle.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

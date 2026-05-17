@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0259 — Event Log Clearing (ryuk)'
+id: b0dad09a-8dbb-5cb6-841a-7b98c417c706
+status: deprecated
+description: |
+  Detects event log clearing associated with ryuk ransomware.
+  Incident: dragnet-ransomware-2020-0259
+  Ransomware victim claim by ryuk: University of Vermont (UVM) Health Network; country: US; sector: Healthcare
+  First observed: 2020-10-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

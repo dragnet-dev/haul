@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4789 — Vulnerable Base Image Pull'
+id: 1432ef96-17cc-5127-a44f-33ed3c0ada80
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4789 (Tier 2, CVSS 9.8)
+  libImaging/TgaRleDecode.c in Pillow 9.1.0 has a heap buffer overflow in the processing of invalid TGA image files.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-30595
+  - https://github.com/pypa/advisory-database/tree/main/vulns/pillow/PYSEC-2022-43145.yaml
+  - https://github.com/python-pillow/Pillow
+  - https://github.com/python-pillow/Pillow/blob/main/src/libImaging/TgaRleDecode.c
+  - https://github.com/python-pillow/Pillow/commit/c846cc881ebe34e3518412c2e3636433d9947280
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-30595
+  - https://pillow.readthedocs.io/en/stable/releasenotes/9.1.1.html
+  - https://www.cve.org/CVERecord?id=CVE-2022-30595
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

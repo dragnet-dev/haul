@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5299 — Shadow Copy Deletion (underground)'
+id: 06bc486e-c459-5b44-8087-ead9eee8cfb9
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with underground ransomware.
+  Incident: dragnet-ransomware-2023-5299
+  Ransomware victim claim by underground: bulldogbag.com; country: CA; sector: Manufacturing
+  First observed: 2023-07-14.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packages/d40d2b0b-06db-45a2-a3c6-ab15fe6ae13b
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5368 — Vulnerable Base Image Pull'
+id: 1df31806-632b-52f6-9cff-ec507ac8eb98
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5368 (Tier 2, CVSS 9.8)
+  There exists a heap buffer overflow vulnerable in Abseil-cpp. The sized constructors, reserve(), and rehash() methods of absl::{flat,node}hash{set,map} did not impose an upper bound on their size argument. As a result, it was possible for a caller to pass a very large size that would cause an integer overflow when computing the size of the container's backing store, and a subsequent out-of-bounds memory write. Subsequent accesses to the container might also access out-of-bounds memory. We recommend upgrading past commit 5a0e2cb5e3958dd90bb8569a2766622cb74d90c1
+references:
+  - https://access.redhat.com/security/cve/CVE-2025-0838
+  - https://github.com/abseil/abseil-cpp/commit/5a0e2cb5e3958dd90bb8569a2766622cb74d90c1
+  - https://github.com/abseil/abseil-cpp/commit/caa7bb4457bfcafcd55a940204ef78c1bf1f417d
+  - https://lists.debian.org/debian-lts-announce/2025/04/msg00012.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-0838
+  - https://ubuntu.com/security/notices/USN-7505-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-0838
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:5.0'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

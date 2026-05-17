@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4704 — Vulnerable Base Image Pull'
+id: 1bac4915-6a4a-5a1b-8b70-e14ba8621da4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4704 (Tier 2, CVSS 9.8)
+  xrdp is an open source project which provides a graphical login to remote machines using Microsoft Remote Desktop Protocol (RDP).
+xrdp < v0.9.21 contain a Out of Bound Write in xrdp_mm_trans_process_drdynvc_channel_open() function. There are no known workarounds for this issue. Users are advised to upgrade.
+references:
+  - https://github.com/neutrinolabs/xrdp/security/advisories/GHSA-2f49-wwpm-78pj
+  - https://ubuntu.com/security/notices/USN-6474-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-23478
+  - https://www.debian.org/security/2023/dsa-5502
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

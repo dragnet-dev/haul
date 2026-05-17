@@ -1,0 +1,34 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1428 — Event Log Clearing (lapsus$)'
+id: 84facc61-1a88-56db-a844-b5bd3aab07ef
+status: deprecated
+description: |
+  Detects event log clearing associated with lapsus$ ransomware.
+  Incident: dragnet-ransomware-2022-1428
+  Associated with LAPSUS$.
+  Ransomware victim claim by lapsus$: Nvidia; country: US; sector: Technology
+  First observed: 2022-02-25.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.lapsus
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

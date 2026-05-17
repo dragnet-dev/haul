@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3351 — Vulnerable Base Image Pull'
+id: 13bf57dd-6cda-561e-ac30-ae63f3ed2d6a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3351 (Tier 2, CVSS 9.8)
+  The init_copy function in kernel.c in mruby 1.4.1 makes initialize_copy calls for TT_ICLASS objects, which allows attackers to cause a denial of service (mrb_hash_keys uninitialized pointer and application crash) or possibly have unspecified other impact.
+references:
+  - https://github.com/mruby/mruby/commit/b64ce17852b180dfeea81cf458660be41a78974d
+  - https://github.com/mruby/mruby/issues/4027
+  - https://lists.debian.org/debian-lts-announce/2022/05/msg00006.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

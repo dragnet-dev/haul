@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3083 — Recovery Inhibition (kraken)'
+id: 64abc0c0-d09f-50db-bcff-cb68f556aca2
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with kraken ransomware.
+  Incident: dragnet-ransomware-2024-3083
+  Ransomware victim claim by kraken: www.mgl.law; country: US; sector: Business Services
+  First observed: 2024-11-28.
+references:
+  - http://krakenccj3wr23452a4ibkbkuph4d6soyx2xgjoogtuamc3m7u7wemad.onion/news/6796c39fbd8bcd3c9bab65f15d632e8f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

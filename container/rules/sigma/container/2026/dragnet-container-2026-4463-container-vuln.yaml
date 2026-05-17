@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4463 — Vulnerable Base Image Pull'
+id: 5cae1ac4-a827-5194-a61b-ab2b1492b954
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4463 (Tier 2, CVSS 9.4)
+  radsecproxy is a generic RADIUS proxy that supports both UDP and TLS (RadSec) RADIUS transports. Missing input validation in radsecproxy's `naptr-eduroam.sh` and `radsec-dynsrv.sh` scripts can lead to configuration injection via crafted radsec peer discovery DNS records. Users are subject to Information disclosure, Denial of Service, Redirection of Radius connection to a non-authenticated server leading to non-authenticated network access. Updated example scripts are available in the master branch and 1.9 release. Note that the scripts are not part of the installation package and are not updated automatically. If you are using the examples, you have to update them manually. The dyndisc scripts work independently of the radsecproxy code. The updated scripts can be used with any version of radsecproxy.
+references:
+  - https://github.com/radsecproxy/radsecproxy/security/advisories/GHSA-56gw-9rj9-55rc
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HOC5AFG65NYLMMUTNSBOPC5F4LBAC7BR/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W7QK5M2SZVMCAFSRQMM6PRZZRQQ372XI/
+  - https://www.usenix.org/conference/usenixsecurity21/presentation/jeitner
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

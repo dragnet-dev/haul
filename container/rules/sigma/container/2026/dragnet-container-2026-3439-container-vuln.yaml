@@ -1,0 +1,56 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3439 — Vulnerable Base Image Pull'
+id: 72b934f8-0506-5a96-b5e8-6be33027da9b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3439 (Tier 2, CVSS 9.1)
+  An issue was discovered in wifipcap/wifipcap.cpp in TCPFLOW through 1.5.0-alpha. There is an integer overflow in the function handle_prism during caplen processing. If the caplen is less than 144, one can cause an integer overflow in the function handle_80211, which will result in an out-of-bounds read and may allow access to sensitive memory (or a denial of service).
+references:
+  - https://github.com/simsong/tcpflow/commit/a4e1cd14eb5ccc51ed271b65b3420f7d692c40eb
+  - https://github.com/simsong/tcpflow/issues/182
+  - https://lists.debian.org/debian-lts-announce/2020/11/msg00046.html
+  - https://ubuntu.com/security/notices/USN-3955-1
+  - https://usn.ubuntu.com/3955-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-14938
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

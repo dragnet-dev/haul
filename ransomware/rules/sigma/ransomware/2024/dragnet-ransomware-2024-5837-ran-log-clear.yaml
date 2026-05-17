@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5837 — Event Log Clearing (snatch)'
+id: 23e00c0a-7816-51be-974b-4f028728ae2a
+status: deprecated
+description: |
+  Detects event log clearing associated with snatch ransomware.
+  Incident: dragnet-ransomware-2024-5837
+  Ransomware victim claim by snatch: Malabar Gold & Diamonds; country: IN; sector: Business Services
+  First observed: 2024-01-11.
+references:
+  - http://hl66646wtlp2naoqnhattngigjp5palgqmbwixepcjyq5i534acgqyad.onion/news.php?id=c8fb3770-f964-4d21-b3a8-e2dfec46ee85
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

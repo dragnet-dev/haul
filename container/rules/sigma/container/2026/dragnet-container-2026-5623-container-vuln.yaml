@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5623 — Vulnerable Base Image Pull'
+id: ad319578-556c-52e7-a700-8a859123d32a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5623 (Tier 2, CVSS 9.8)
+  mchange-commons-java, a library that provides Java utilities, includes code that mirrors early implementations of JNDI functionality, including support for remote `factoryClassLocation` values, by which code can be downloaded and invoked within a running application. If an attacker can provoke an application to read a maliciously crafted `jaxax.naming.Reference` or serialized object, they can provoke the download and execution of malicious code. Implementations of this functionality within the JDK were disabled by default behind a System property that defaults to `false`, `com.sun.jndi.ldap.object.trustURLCodebase`. However, since mchange-commons-java includes an independent implementation of JNDI derefencing, libraries (such as c3p0) that resolve references via that implementation could be provoked to download and execute malicious code even after the JDK was hardened. Mirroring the JDK patch, mchange-commons-java's JNDI functionality is gated by configuration parameters that default to restrictive values starting in version 0.4.0. No known workarounds are available. Versions prior to 0.4.0 should be avoided on application CLASSPATHs.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-27727
+  - https://github.com/swaldman/mchange-commons-java
+  - https://github.com/swaldman/mchange-commons-java/security/advisories/GHSA-m2cm-222f-qw44
+  - https://mogwailabs.de/en/blog/2025/02/c3p0-you-little-rascal
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-27727
+  - https://www.cve.org/CVERecord?id=CVE-2026-27727
+  - https://www.mchange.com/projects/c3p0/#configuring_security
+  - https://www.mchange.com/projects/c3p0/#security-note
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

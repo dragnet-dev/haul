@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5358 — Recovery Inhibition (werewolves)'
+id: 2c2c706e-801b-5217-b94e-d630b106fe00
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with werewolves ransomware.
+  Incident: dragnet-ransomware-2023-5358
+  Ransomware victim claim by werewolves: avrora24.ru; country: RU; sector: Consumer Services
+  First observed: 2023-09-22.
+references:
+  - https://werewolves.pro/en/krasnoyarsk-amaks-hotels-ru.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

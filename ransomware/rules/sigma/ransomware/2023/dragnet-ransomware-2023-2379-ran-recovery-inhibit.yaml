@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2379 — Recovery Inhibition (interlock)'
+id: 5b062ddd-a5fb-55ae-a8f5-b3f6158e788e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2023-2379
+  Ransomware victim claim by interlock: Milano; country: MX; sector: Consumer Services
+  First observed: 2023-12-01.
+references:
+  - http://ljurl2gqwtgfqzk6pkz5ggtdrdrpzpzzkdvf4jhpkk33dnwkcsmdi4ad.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

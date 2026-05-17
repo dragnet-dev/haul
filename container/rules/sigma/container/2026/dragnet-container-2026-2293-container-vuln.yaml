@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2293 — Vulnerable Base Image Pull'
+id: e4f12d3e-5510-5f62-9e64-2f8900b68945
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2293 (Tier 2, CVSS 9.8)
+  In Docker Notary before 0.1, the checkRoot function in gotuf/client/client.go does not check expiry of root.json files, despite a comment stating that it does. Even if a user creates a new root.json file after a key compromise, an attacker can produce update files referring to an old root.json file.
+references:
+  - https://docs.docker.com/notary/changelog/
+  - https://github.com/theupdateframework/notary/blob/master/docs/resources/ncc_docker_notary_audit_2015_07_31.pdf
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

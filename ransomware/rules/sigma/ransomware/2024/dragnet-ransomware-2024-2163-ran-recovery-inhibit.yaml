@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2163 — Recovery Inhibition (flocker)'
+id: b7924bb3-f7e8-5a9a-a4b7-b06c5b4d612a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with flocker ransomware.
+  Incident: dragnet-ransomware-2024-2163
+  Ransomware victim claim by flocker: Rutgers University; country: US; sector: Education
+  First observed: 2024-04-26.
+references:
+  - http://flock4cvoeqm4c62gyohvmncx6ck2e7ugvyqgyxqtrumklhd5ptwzpqd.onion/?p=139
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

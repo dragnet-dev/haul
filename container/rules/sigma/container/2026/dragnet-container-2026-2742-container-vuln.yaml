@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2742 — Vulnerable Base Image Pull'
+id: 4eef008f-2641-5b49-a456-db3d23b4db1f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2742 (Tier 2, CVSS 9.8)
+  avcodec 2.2.x, as used in VideoLAN VLC media player 2.2.7-x before 2017-06-29, allows out-of-bounds heap memory write due to calling memcpy() with a wrong size, leading to a denial of service (application crash) or possibly code execution.
+references:
+  - http://www.securitytracker.com/id/1038816
+  - https://trac.videolan.org/vlc/ticket/18467
+  - https://ubuntu.com/security/notices/USN-4805-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-10699
+  - https://www.debian.org/security/2017/dsa-4045
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

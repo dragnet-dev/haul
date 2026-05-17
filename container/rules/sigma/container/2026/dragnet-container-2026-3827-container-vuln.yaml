@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3827 — Vulnerable Base Image Pull'
+id: 155c555b-0ad0-518b-ba2c-54b66abf5608
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3827 (Tier 2, CVSS 9.8)
+  GORM before 1.9.10 allows SQL injection via incomplete parentheses. NOTE: Misusing Gorm by passing untrusted user input where Gorm expects trusted SQL fragments is a vulnerability in the application, not in Gorm
+references:
+  - https://github.com/go-gorm/gorm/issues/2517#issuecomment-638145427
+  - https://github.com/go-gorm/gorm/pull/2519
+  - https://github.com/go-gorm/gorm/pull/2674
+  - https://github.com/jinzhu/gorm/releases/tag/v1.9.10
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

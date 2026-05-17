@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1226 — Event Log Clearing (blacknevas)'
+id: 75e103ee-b8cf-5b6f-a4d3-b0d184799c40
+status: deprecated
+description: |
+  Detects event log clearing associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2025-1226
+  Ransomware victim claim by blacknevas: T. Choithram And Sons, LLC; country: US; sector: Consumer Services
+  First observed: 2025-09-29.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/publications/details/d5deb426-7ff6-4951-a75e-4dcd304dd8fd
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

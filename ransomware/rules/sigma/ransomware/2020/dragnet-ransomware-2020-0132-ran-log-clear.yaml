@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0132 — Event Log Clearing (netwalker)'
+id: 8510c33f-7452-51a2-bee4-797cf75f3cfb
+status: deprecated
+description: |
+  Detects event log clearing associated with netwalker ransomware.
+  Incident: dragnet-ransomware-2020-0132
+  Ransomware victim claim by netwalker: Alfanar; sector: Manufacturing
+  First observed: 2020-07-09.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

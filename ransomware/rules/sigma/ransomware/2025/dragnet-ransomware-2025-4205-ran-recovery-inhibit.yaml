@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4205 — Recovery Inhibition (lynx)'
+id: 397deb9f-b9a4-5ee4-a1bc-ba38b4c0ae32
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4205
+  Ransomware victim claim by lynx: Rossi Real Estate (ROSSIDG.LOCAL); country: US; sector: Business Services
+  First observed: 2025-01-29.
+references:
+  - http://lynxblog.net/leaks/6787976705a779c3d3da3ebf
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

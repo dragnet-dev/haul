@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7138 — Recovery Inhibition (shinyhunters)'
+id: 03ff7f3b-f4e2-58e2-aab9-3079ea311811
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with shinyhunters ransomware.
+  Incident: dragnet-ransomware-2025-7138
+  Ransomware victim claim by shinyhunters: Albertsons (Jewel Osco, etc); country: US; sector: Consumer Services
+  First observed: 2025-07-14.
+references:
+  - https://breachforums.hn//albertsons.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

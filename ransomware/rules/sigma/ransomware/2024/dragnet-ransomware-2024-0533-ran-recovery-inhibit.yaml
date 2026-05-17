@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0533 — Recovery Inhibition (alphalocker)'
+id: f8fd702b-5b14-5319-ae59-9457ff04dfc5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with alphalocker ransomware.
+  Incident: dragnet-ransomware-2024-0533
+  Ransomware victim claim by alphalocker: https://geodis.com; country: TH; sector: Transportation/Logistics
+  First observed: 2024-04-18.
+references:
+  - http://mydatae2d63il5oaxxangwnid5loq2qmtsol2ozr6vtb7yfm5ypzo6id.onion/blog_1-14
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

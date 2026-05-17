@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4102 — Vulnerable Base Image Pull'
+id: c5b04799-3920-5872-bcb4-3dc3a99b8b50
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4102 (Tier 2, CVSS 9.1)
+  tcprewrite in Tcpreplay through 4.3.2 has a heap-based buffer over-read during a get_c operation. The issue is being triggered in the function get_ipv6_next() at common/get.c.
+references:
+  - https://github.com/appneta/tcpreplay/issues/576
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/4YAT4AGTHQKB74ETOQPJMV67TSDIAPOC/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UOSEIQ3D2OONCJEVMGC2TYBC2QX4E5EJ/
+  - https://ubuntu.com/security/notices/USN-5205-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-12740
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

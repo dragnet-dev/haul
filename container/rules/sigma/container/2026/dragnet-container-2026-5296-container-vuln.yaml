@@ -1,0 +1,60 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5296 — Vulnerable Base Image Pull'
+id: 486b6ccc-4405-50f1-9f11-91c8d32f432a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5296 (Tier 2, CVSS 9.1)
+  GStreamer is a library for constructing graphs of media-handling components. An OOB-read vulnerability has been detected in the format_channel_mask function in gst-discoverer.c. The vulnerability affects the local array position, which is defined with a fixed size of 64 elements. However, the function gst_discoverer_audio_info_get_channels may return a guint channels value greater than 64. This causes the for loop to attempt access beyond the bounds of the position array, resulting in an OOB-read when an index greater than 63 is used. This vulnerability can result in reading unintended bytes from the stack. Additionally, the dereference of value->value_nick after the OOB-read can lead to further memory corruption or undefined behavior. This vulnerability is fixed in 1.24.10.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-47600
+  - https://securitylab.github.com/advisories/GHSL-2024-248_Gstreamer/
+  - https://access.redhat.com/errata/RHSA-2025:7243
+  - https://access.redhat.com/security/cve/CVE-2024-47600
+  - https://bugzilla.redhat.com/2331717
+  - https://bugzilla.redhat.com/2331724
+  - https://bugzilla.redhat.com/2331738
+  - https://bugzilla.redhat.com/2331742
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331717
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331724
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331738
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331742
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-47541
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-47542
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-47600
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

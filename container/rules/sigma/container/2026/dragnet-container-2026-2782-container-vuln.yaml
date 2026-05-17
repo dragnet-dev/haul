@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2782 — Vulnerable Base Image Pull'
+id: 82f69b85-e9a3-57fe-9ad5-d78023a18d6c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2782 (Tier 2, CVSS 9.8)
+  Buffer overflow in ioquake3 before 2017-08-02 allows remote attackers to cause a denial of service (application crash) or possibly have unspecified other impact via a crafted packet.
+references:
+  - http://www.debian.org/security/2017/dsa-3941
+  - http://www.debian.org/security/2017/dsa-3948
+  - https://github.com/ioquake/ioq3/commit/d2b1d124d4055c2fcbe5126863487c52fd58cca1
+  - https://www.cve.org/CVERecord?id=CVE-2017-11721
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4191 — Shadow Copy Deletion (nokoyawa)'
+id: a09f2450-4a5b-5382-9a76-022e3d8fca0f
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with nokoyawa ransomware.
+  Incident: dragnet-ransomware-2023-4191
+  Ransomware victim claim by nokoyawa: Stockmann Natursteine & Fliesen; country: DE; sector: Construction
+  First observed: 2023-04-15.
+references:
+  - http://nokoleakb76znymx443veg4n6fytx6spck6pc7nkr4dvfuygpub6jsid.onion/leak/643b271f3ace4551e2e01b6a
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

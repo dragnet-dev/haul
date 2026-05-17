@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-3155 — Event Log Clearing (vicesociety)'
+id: 13ef348f-09b0-53e9-8127-a18b0d0f7f00
+status: deprecated
+description: |
+  Detects event log clearing associated with vicesociety ransomware.
+  Incident: dragnet-ransomware-2022-3155
+  Ransomware victim claim by vicesociety: Whitehouse Independent School District; sector: Education
+  First observed: 2022-12-20.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

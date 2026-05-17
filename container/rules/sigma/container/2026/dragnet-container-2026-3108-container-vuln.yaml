@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3108 — Vulnerable Base Image Pull'
+id: 044f4ead-d503-5bbd-adf4-9bc9d8cea687
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3108 (Tier 2, CVSS 9.1)
+  The main function in plistutil.c in libimobiledevice libplist through 1.12 allows attackers to obtain sensitive information from process memory or cause a denial of service (buffer over-read) via Apple Property List data that is too short.
+references:
+  - http://www.securityfocus.com/bid/95702
+  - https://access.redhat.com/security/cve/CVE-2017-5545
+  - https://github.com/libimobiledevice/libplist/commit/7391a506352c009fe044dead7baad9e22dd279ee
+  - https://github.com/libimobiledevice/libplist/issues/87
+  - https://lists.debian.org/debian-lts-announce/2020/04/msg00002.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-5545
+  - https://www.cve.org/CVERecord?id=CVE-2017-5545
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

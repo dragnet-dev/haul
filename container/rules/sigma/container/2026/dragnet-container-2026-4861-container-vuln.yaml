@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4861 — Vulnerable Base Image Pull'
+id: cc0856d4-b52c-5775-8515-6a521932e3e6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4861 (Tier 2, CVSS 9.1)
+  python-jwt is a module for generating and verifying JSON Web Tokens. Versions prior to 3.3.4 are subject to Authentication Bypass by Spoofing, resulting in identity spoofing, session hijacking or authentication bypass. An attacker who obtains a JWT can arbitrarily forge its contents without knowing the secret key. Depending on the application, this may for example enable the attacker to spoof other user's identities, hijack their sessions, or bypass authentication. Users should upgrade to version 3.3.4. There are no known workarounds.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-39227
+  - https://github.com/davedoesdev/python-jwt
+  - https://github.com/davedoesdev/python-jwt/commit/6c5075469847b9e8b6e5336077d989d77a4d2bf1
+  - https://github.com/davedoesdev/python-jwt/commit/88ad9e67c53aa5f7c43ec4aa52ed34b7930068c9
+  - https://github.com/davedoesdev/python-jwt/security/advisories/GHSA-5p8v-58qm-c7fp
+  - https://github.com/pypa/advisory-database/blob/main/vulns/python-jwt/PYSEC-2022-259.yaml
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-39227
+  - https://www.cve.org/CVERecord?id=CVE-2022-39227
+  - https://www.vicarius.io/vsociety/posts/authentication-bypass-in-python-jwt
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

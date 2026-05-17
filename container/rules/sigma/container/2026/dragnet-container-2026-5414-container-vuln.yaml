@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5414 — Vulnerable Base Image Pull'
+id: 27c194e0-e040-5d64-a7e4-f220cd191ba9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5414 (Tier 2, CVSS 9.8)
+  Spotipy is a lightweight Python library for the Spotify Web API. The `CacheHandler` class creates a cache file to store the auth token. Prior to version 2.25.1, the file created has `rw-r--r--` (644) permissions by default, when it could be locked down to `rw-------` (600) permissions. This leads to overly broad exposure of the spotify auth token. If this token can be read by an attacker (another user on the machine, or a process running as another user), it can be used to perform administrative actions on the Spotify account, depending on the scope granted to the token. Version 2.25.1 tightens the cache file permissions.
+references:
+  - https://github.com/spotipy-dev/spotipy
+  - https://github.com/spotipy-dev/spotipy/blob/master/spotipy/cache_handler.py#L93-L98
+  - https://github.com/spotipy-dev/spotipy/commit/1ca453f6ef87a2a9e9876f52b6cb38d13532ccf2
+  - https://github.com/spotipy-dev/spotipy/releases/tag/2.25.1
+  - https://github.com/spotipy-dev/spotipy/security/advisories/GHSA-pwhh-q4h6-w599
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-27154
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

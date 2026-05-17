@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4688 — Event Log Clearing (obscura)'
+id: 080031b9-747d-55f0-bc3e-05174a434b29
+status: deprecated
+description: |
+  Detects event log clearing associated with obscura ransomware.
+  Incident: dragnet-ransomware-2025-4688
+  Ransomware victim claim by obscura: Cape Dara Resort Pattaya; country: TH; sector: Hospitality and Tourism
+  First observed: 2025-10-20.
+references:
+  - http://obscurad3aphckihv7wptdxvdnl5emma6t3vikcf3c5oiiqndq6y6xad.onion/leaks/11
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

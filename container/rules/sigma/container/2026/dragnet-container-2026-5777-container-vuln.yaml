@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5777 — Vulnerable Base Image Pull'
+id: 9c758260-58dc-5492-a998-f5b4c76b667f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5777 (Tier 2, CVSS 9.8)
+  rust-openssl provides OpenSSL bindings for the Rust programming language.  From 0.10.39 to before 0.10.78, EVP_DigestFinal() always writes EVP_MD_CTX_size(ctx) to the out buffer. If out is smaller than that, MdCtxRef::digest_final() writes past its end, usually corrupting the stack. This is reachable from safe Rust. This vulnerability is fixed in 0.10.78.
+references:
+  - https://github.com/rust-openssl/rust-openssl
+  - https://github.com/rust-openssl/rust-openssl/commit/826c3888b77add418b394770e2b2e3a72d9f92fe
+  - https://github.com/rust-openssl/rust-openssl/commit/826c3888b77add418b394770e2b2e3a72d9f92fe (openssl-v0.10.78)
+  - https://github.com/rust-openssl/rust-openssl/pull/2608
+  - https://github.com/rust-openssl/rust-openssl/releases/tag/openssl-v0.10.78
+  - https://github.com/rust-openssl/rust-openssl/security/advisories/GHSA-ghm9-cr32-g9qj
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-41681
+  - https://www.cve.org/CVERecord?id=CVE-2026-41681
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

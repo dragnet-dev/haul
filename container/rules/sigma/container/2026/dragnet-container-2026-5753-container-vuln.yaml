@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5753 — Vulnerable Base Image Pull'
+id: 4b443ecf-3e99-5717-88a1-6671701163fe
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5753 (Tier 2, CVSS 9.8)
+  In Exim before 4.99.2, when JSON lookup is enabled, an out-of-bounds heap write can occur when a JSON operator encounters malformed JSON in an untrusted header, because of an incorrect implementation of \ skipping.
+references:
+  - https://code.exim.org/exim/exim/commit/9fdc057e71b87c87a0d3d2288b2810a0efaaba57
+  - https://exim.org/static/doc/security/CVE-2026-40685.txt
+  - https://exim.org/static/doc/security/cve-2026-04.1/CVE2026-40685.assessment
+  - https://lists.exim.org/lurker/message/20260429.121733.f58d9686.en.html
+  - https://ubuntu.com/security/notices/USN-8228-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-40685
+  - https://www.openwall.com/lists/oss-security/2026/04/30/21
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

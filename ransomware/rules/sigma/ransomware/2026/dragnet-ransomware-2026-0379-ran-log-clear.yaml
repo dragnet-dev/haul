@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0379 — Event Log Clearing (AuditTeam)'
+id: c4341a5e-5bf2-5018-b390-df7ab45e83f1
+status: deprecated
+description: |
+  Detects event log clearing associated with AuditTeam ransomware.
+  Incident: dragnet-ransomware-2026-0379
+  Ransomware victim claim by AuditTeam: Tr***ic; country: SN; sector: Transportation/Logistics
+  First observed: 2026-05-10.
+references:
+  - http://6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad.onion/entity/A62A883688D9CFC1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

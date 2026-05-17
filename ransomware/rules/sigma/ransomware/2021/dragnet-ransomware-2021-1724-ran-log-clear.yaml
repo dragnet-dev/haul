@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1724 — Event Log Clearing (snatch)'
+id: a3041dd2-bd9e-5f38-bb68-dac8d281a4d4
+status: deprecated
+description: |
+  Detects event log clearing associated with snatch ransomware.
+  Incident: dragnet-ransomware-2021-1724
+  Ransomware victim claim by snatch: Fittingbox; country: FR; sector: Technology
+  First observed: 2021-12-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

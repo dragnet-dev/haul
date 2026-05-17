@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2652 — Vulnerable Base Image Pull'
+id: 0198f514-932a-5bf8-ab08-fba3cad7dc5d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2652 (Tier 2, CVSS 9.1)
+  go-jose before 1.0.4 suffers from an invalid curve attack for the ECDH-ES algorithm. When deriving a shared key using ECDH-ES for an encrypted message, go-jose neglected to check that the received public key on a message is on the same curve as the static private key of the receiver, thus making it vulnerable to an invalid curve attack.
+references:
+  - http://www.openwall.com/lists/oss-security/2016/11/03/1
+  - https://github.com/square/go-jose/commit/c7581939a3656bb65e89d64da0a52364a33d2507
+  - https://hackerone.com/reports/164590
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-9121
+  - https://pkg.go.dev/vuln/GO-2020-0010
+  - https://www.openwall.com/lists/oss-security/2016/11/03/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

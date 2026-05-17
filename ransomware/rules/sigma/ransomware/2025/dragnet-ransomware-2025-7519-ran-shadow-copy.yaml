@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7519 — Shadow Copy Deletion (stormous)'
+id: cdba5ec5-9af8-5585-85c3-f924286fc9df
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with stormous ransomware.
+  Incident: dragnet-ransomware-2025-7519
+  Ransomware victim claim by stormous: www.francetravail.fr; country: FR; sector: Public Sector
+  First observed: 2025-10-27.
+references:
+  - http://zib7duoiglvzvnpjs5faly6bio4xhwiby2lupsnxrkjnx46gmwdfyrid.onion/francetravail.fr/README/README.txt
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

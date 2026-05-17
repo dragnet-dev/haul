@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5891 — Vulnerable Base Image Pull'
+id: 0704abb5-8c86-5911-b893-aa9b3d0d380c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5891 (Tier 2, CVSS 9)
+  Use after free in Dawn in Google Chrome prior to 147.0.7727.101 allowed a remote attacker who had compromised the renderer process to potentially perform a sandbox escape via a crafted HTML page. (Chromium security severity: High)
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-6310
+  - https://chromereleases.googleblog.com/2026/04/stable-channel-update-for-desktop_15.html
+  - https://issues.chromium.org/issues/497969820
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-6310
+  - https://www.cve.org/CVERecord?id=CVE-2026-6310
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

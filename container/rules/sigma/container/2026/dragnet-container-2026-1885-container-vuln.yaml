@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1885 — Vulnerable Base Image Pull'
+id: 9c71f2f2-d59d-52ba-ae96-d7ddf251dbb1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1885 (Tier 2, CVSS 10)
+  NaCl in 2015 allowed the CLFLUSH instruction, making rowhammer attacks possible.
+references:
+  - https://googleprojectzero.blogspot.com/2015/03/exploiting-dram-rowhammer-bug-to-gain.html
+  - https://www.exploit-db.com/exploits/36310/
+  - https://www.exploit-db.com/exploits/36311/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

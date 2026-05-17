@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2003 — Recovery Inhibition (darkpower)'
+id: 6ef3702b-06dd-577c-aeb7-82c9c159090e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with darkpower ransomware.
+  Incident: dragnet-ransomware-2023-2003
+  Ransomware victim claim by darkpower: imtenan.com; sector: Not Found
+  First observed: 2023-03-11.
+references:
+  - http://powerj7kmpzkdhjg4szvcxxgktgk36ezpjxvtosylrpey7svpmrjyuyd.onion/128f21bc1e8845e79485651923c68d27
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

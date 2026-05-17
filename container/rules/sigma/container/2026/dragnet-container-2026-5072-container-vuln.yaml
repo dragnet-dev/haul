@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5072 — Vulnerable Base Image Pull'
+id: 0a0a3072-0b84-55df-b85d-8314fd56c286
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5072 (Tier 2, CVSS 9.8)
+  log_blackbox.c in libqb before 2.0.8 allows a buffer overflow via long log messages because the header size is not considered.
+references:
+  - https://access.redhat.com/errata/RHSA-2023:6578
+  - https://access.redhat.com/security/cve/CVE-2023-39976
+  - https://bugzilla.redhat.com/2230708
+  - https://errata.almalinux.org/9/ALSA-2023-6578.html
+  - https://github.com/ClusterLabs/libqb/commit/1bbaa929b77113532785c408dd1b41cd0521ffc8
+  - https://github.com/ClusterLabs/libqb/compare/v2.0.7...v2.0.8
+  - https://github.com/ClusterLabs/libqb/pull/490
+  - https://linux.oracle.com/cve/CVE-2023-39976.html
+  - https://linux.oracle.com/errata/ELSA-2023-6578.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KECNF7LFBPE57XSBT6EM7ACVMIBP63WH/
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-39976
+  - https://ubuntu.com/security/notices/USN-6308-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-39976
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:22.04'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

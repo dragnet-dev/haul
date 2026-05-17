@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3880 — Recovery Inhibition (kraken)'
+id: 76335788-4a24-5b41-a917-e7693223b681
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with kraken ransomware.
+  Incident: dragnet-ransomware-2025-3880
+  Ransomware victim claim by kraken: www.kvhealth.net; country: US; sector: Healthcare
+  First observed: 2025-03-20.
+references:
+  - http://krakenccj3wr23452a4ibkbkuph4d6soyx2xgjoogtuamc3m7u7wemad.onion/news/88ac508322dfc8cac987d1d612c69d5d
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

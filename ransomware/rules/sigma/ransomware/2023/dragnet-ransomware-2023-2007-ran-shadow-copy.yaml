@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2007 — Shadow Copy Deletion (darkpower)'
+id: c7c3ad8f-fe62-5ee4-948f-e5012e500da6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with darkpower ransomware.
+  Incident: dragnet-ransomware-2023-2007
+  Ransomware victim claim by darkpower: rcc.gob.pe; country: PE; sector: Public Sector
+  First observed: 2023-03-11.
+references:
+  - http://powerj7kmpzkdhjg4szvcxxgktgk36ezpjxvtosylrpey7svpmrjyuyd.onion/480a8b87123a4065a38a961cf6c89b85
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

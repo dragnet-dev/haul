@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3152 — Event Log Clearing (IMNCrew)'
+id: d13d14c0-8c2e-5c63-8c0a-d77553461dbf
+status: deprecated
+description: |
+  Detects event log clearing associated with IMNCrew ransomware.
+  Incident: dragnet-ransomware-2025-3152
+  Ransomware victim claim by IMNCrew: Abdainsurance.co.id; country: ID; sector: Financial Services
+  First observed: 2025-05-05.
+references:
+  - http://imncrewwfkbjkhr2oylerfm5qtbzfphhmpcfag43xc2kfgvluqtlgoid.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

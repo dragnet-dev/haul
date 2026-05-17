@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5435 — Vulnerable Base Image Pull'
+id: 0a68f114-18dc-58b3-a7dd-69cd40829182
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5435 (Tier 2, CVSS 9.8)
+  libcoap versions up to and including 4.3.5, prior to commit 30db3ea, contain a stack-based buffer overflow in address resolution when attacker-controlled hostname data is copied into a fixed 256-byte stack buffer without proper bounds checking. A remote attacker can trigger a crash and potentially achieve remote code execution depending on compiler options and runtime memory protections. Exploitation requires the proxy logic to be enabled (i.e., the proxy request handling code path in an application using libcoap).
+references:
+  - https://github.com/obgm/libcoap/commit/30db3ea
+  - https://github.com/obgm/libcoap/pull/1737
+  - https://libcoap.net/
+  - https://www.vulncheck.com/advisories/libcoap-stack-based-buffer-overflow-in-address-resolution-dos-or-potential-rce
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

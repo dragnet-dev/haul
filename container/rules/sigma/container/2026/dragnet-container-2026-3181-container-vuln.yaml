@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3181 — Vulnerable Base Image Pull'
+id: 470c4ea6-a006-58e8-ac88-bad4c78dba93
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3181 (Tier 2, CVSS 9.8)
+  Google gRPC before 2017-02-22 has an out-of-bounds write related to the gpr_free function in core/lib/support/alloc.c.
+references:
+  - http://www.securityfocus.com/bid/97694
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=655
+  - https://github.com/grpc/grpc/pull/9833
+  - https://www.cve.org/CVERecord?id=CVE-2017-7861
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0712 — Event Log Clearing (arcusmedia)'
+id: 4ffbab80-80f2-5c59-b65f-67d2c1273655
+status: deprecated
+description: |
+  Detects event log clearing associated with arcusmedia ransomware.
+  Incident: dragnet-ransomware-2024-0712
+  Ransomware victim claim by arcusmedia: Meerapfel Family; country: DE; sector: Agriculture and Food Production
+  First observed: 2024-12-29.
+references:
+  - http://arcuufpr5xxbbkin4mlidt7itmr6znlppk63jbtkeguuhszmc5g7qdyd.onion/?p=390
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

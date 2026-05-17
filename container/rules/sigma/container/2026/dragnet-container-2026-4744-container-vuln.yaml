@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4744 — Vulnerable Base Image Pull'
+id: 8f62ab9d-a033-53e6-9b24-cccdbc8a7be4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4744 (Tier 2, CVSS 9.8)
+  seatd-launch in seatd 0.6.x before 0.6.4 allows removing files with escalated privileges when installed setuid root. The attack vector is a user-supplied socket pathname.
+references:
+  - https://github.com/kennylevinsen/seatd/commit/10658dc5439db429af0088295a051c53925a4416
+  - https://github.com/kennylevinsen/seatd/commit/7cffe0797fdb17a9c08922339465b1b187394335
+  - https://github.com/kennylevinsen/seatd/compare/0.6.3...0.6.4
+  - https://github.com/kennylevinsen/seatd/tags
+  - https://lists.sr.ht/~kennylevinsen/seatd-announce/%3CETEO7R.QG8B1KGD531R1%40kl.wtf%3E
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-25643
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5367 — Vulnerable Base Image Pull'
+id: db2ffe9d-8472-5c34-b72d-0cb9508c3e80
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5367 (Tier 2, CVSS 9.9)
+  An attacker can bypass the sandboxing of Nasal scripts and arbitrarily write to any file path that the user has permission to modify at the operating-system level.
+references:
+  - https://gitlab.com/flightgear/flightgear/-/commit/ad37afce28083fad7f79467b3ffdead753584358
+  - https://gitlab.com/flightgear/flightgear/-/issues/3025
+  - https://gitlab.com/flightgear/simgear/-/commit/5bb023647114267141a7610e8f1ca7d6f4f5a5a8
+  - https://lists.debian.org/debian-lts-announce/2025/01/msg00028.html
+  - https://lists.debian.org/debian-lts-announce/2025/01/msg00029.html
+  - https://ubuntu.com/security/notices/USN-7965-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-0781
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

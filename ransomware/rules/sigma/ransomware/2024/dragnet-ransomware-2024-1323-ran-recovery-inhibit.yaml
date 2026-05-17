@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1323 — Recovery Inhibition (bluebox)'
+id: 8be8e116-3e64-5ae0-bf53-5e83e3053f22
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with bluebox ransomware.
+  Incident: dragnet-ransomware-2024-1323
+  Ransomware victim claim by bluebox: PH ARCHITECTURE; country: FR; sector: Business Services
+  First observed: 2024-12-03.
+references:
+  - http://zu3wfrmrkl4ltqqnpt3owp3cwa33rqwod4gpe3ttb5o4vf2is2gzm6qd.onion/2024/12/03/PH-ARCHITECTURE-French-architectural-design-company/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

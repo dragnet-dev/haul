@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2714 — Vulnerable Base Image Pull'
+id: 6b4a861c-19ea-5fcc-8a11-d30c37d58a85
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2714 (Tier 2, CVSS 9.8)
+  samtools htslib library version 1.4.0 and earlier is vulnerable to buffer overflow in the CRAM rANS codec resulting in potential arbitrary code execution
+references:
+  - https://github.com/samtools/htslib/blob/1.4.1/NEWS
+  - https://github.com/samtools/htslib/pull/514
+  - https://ubuntu.com/security/notices/USN-4802-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-1000206
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

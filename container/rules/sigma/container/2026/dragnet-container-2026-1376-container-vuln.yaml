@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1376 — Vulnerable Base Image Pull'
+id: b37b0606-252e-5580-8b16-d1c8dcbe699f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1376 (Tier 2, CVSS 9.3)
+  Off-by-one error in the adpcm_decode_frame function in libavcodec/adpcm.c in FFmpeg before 1.0.4 allows remote attackers to have an unspecified impact via crafted DK4 data, which triggers an out-of-bounds array access.
+references:
+  - http://git.videolan.org/?p=ffmpeg.git%3Ba=commitdiff%3Bh=85a14dbd5dca34320f58b1ba11dd6dd0df4fb3be
+  - http://git.videolan.org/?p=ffmpeg.git%3Ba=commitdiff%3Bh=f18c873ab5ee3c78d00fdcc2582b39c133faecb4
+  - http://www.debian.org/security/2013/dsa-2793
+  - http://www.ffmpeg.org/security.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

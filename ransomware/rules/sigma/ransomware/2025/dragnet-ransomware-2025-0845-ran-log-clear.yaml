@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0845 — Event Log Clearing (anubis)'
+id: 236c6e67-8987-53f4-b653-c93f0ab0a062
+status: deprecated
+description: |
+  Detects event log clearing associated with anubis ransomware.
+  Incident: dragnet-ransomware-2025-0845
+  Ransomware victim claim by anubis: TRAF Industrial Products Inc; country: CA; sector: Manufacturing
+  First observed: 2025-08-28.
+references:
+  - http://om6q4a6cyipxvt7ioudxt24cw4oqu4yodmqzl25mqd2hgllymrgu4aqd.onion/r/W07Z3fHiCrQnuxtcI6+OeUyKUE+zjZxPbOeWqYeRUNZzfARcNo9zJSFasId0IgfxssIH7R0Dn5xSPwdUEwBRFZ1Z0hNM3Bz
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

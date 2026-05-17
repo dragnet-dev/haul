@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2581 — Event Log Clearing (nightsky)'
+id: 5b480828-76aa-554d-8a07-1e2f174e84a9
+status: deprecated
+description: |
+  Detects event log clearing associated with nightsky ransomware.
+  Incident: dragnet-ransomware-2022-2581
+  Ransomware victim claim by nightsky: AKIJ GROUP; sector: Manufacturing
+  First observed: 2022-01-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

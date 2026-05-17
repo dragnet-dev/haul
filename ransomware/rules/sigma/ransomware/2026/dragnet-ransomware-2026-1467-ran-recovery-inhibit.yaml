@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1467 — Recovery Inhibition (lamashtu)'
+id: 59eaffe4-f195-5c47-8816-e96e865dcb1a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lamashtu ransomware.
+  Incident: dragnet-ransomware-2026-1467
+  Ransomware victim claim by lamashtu: Acros Sport GmbH; country: DE; sector: Manufacturing
+  First observed: 2026-05-08.
+references:
+  - http://lamashtux5j74mcm7lwwgn5yrvuwtrpxjoyendif3v3hrztjesfoyayd.onion/post/06c81a25e0ea35fe55853582ddab86e3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

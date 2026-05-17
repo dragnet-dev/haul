@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1732 — Event Log Clearing (darkvault)'
+id: a5e2dfbd-f158-5fda-aa51-54d4f9dc0558
+status: deprecated
+description: |
+  Detects event log clearing associated with darkvault ransomware.
+  Incident: dragnet-ransomware-2024-1732
+  Ransomware victim claim by darkvault: blankstyle.com; country: US; sector: Business Services
+  First observed: 2024-07-26.
+references:
+  - http://mdhby62yvvg6sd5jmx5gsyucs7ynb5j45lvvdh4dsymg43puitu7tfid.onion//post/YmY2NTk1YTk1M2QxNDFjODQzMTcxMD
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

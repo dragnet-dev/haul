@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2600 — Event Log Clearing (onyx)'
+id: 3620a96e-e086-562d-8cdd-48851a7e9cc4
+status: deprecated
+description: |
+  Detects event log clearing associated with onyx ransomware.
+  Incident: dragnet-ransomware-2022-2600
+  Ransomware victim claim by onyx: www.artisticstairs.com; sector: Construction
+  First observed: 2022-11-21.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2275 — Event Log Clearing (frag)'
+id: 35b4405c-4a02-532d-8dfe-184560a3ddff
+status: deprecated
+description: |
+  Detects event log clearing associated with frag ransomware.
+  Incident: dragnet-ransomware-2024-2275
+  Ransomware victim claim by frag: Woodbine Hospitality; country: CA; sector: Hospitality and Tourism
+  First observed: 2024-11-21.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

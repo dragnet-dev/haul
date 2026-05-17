@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4715 — Vulnerable Base Image Pull'
+id: b7e17be0-3419-594f-bb24-a1ac9ccfeb1b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4715 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE. In versions up to and including 2.11.1 when in a dialog set (or forking) scenario, a hash key shared by multiple UAC dialogs can potentially be prematurely freed when one of the dialogs is destroyed . The issue may cause a dialog set to be registered in the hash table multiple times (with different hash keys) leading to undefined behavior such as dialog list collision which eventually leading to endless loop. A patch is available in commit db3235953baa56d2fb0e276ca510fefca751643f which will be included in the next release. There are no known workarounds for this issue.
+references:
+  - http://packetstormsecurity.com/files/166226/Asterisk-Project-Security-Advisory-AST-2022-005.html
+  - http://seclists.org/fulldisclosure/2022/Mar/1
+  - https://github.com/pjsip/pjproject/commit/db3235953baa56d2fb0e276ca510fefca751643f
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-ffff-m5fm-qm62
+  - https://lists.debian.org/debian-lts-announce/2022/03/msg00035.html
+  - https://lists.debian.org/debian-lts-announce/2022/03/msg00040.html
+  - https://lists.debian.org/debian-lts-announce/2022/11/msg00021.html
+  - https://lists.debian.org/debian-lts-announce/2023/08/msg00038.html
+  - https://lists.debian.org/debian-lts-announce/2024/09/msg00030.html
+  - https://security.gentoo.org/glsa/202210-37
+  - https://ubuntu.com/security/notices/USN-6422-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-23608
+  - https://www.debian.org/security/2022/dsa-5285
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

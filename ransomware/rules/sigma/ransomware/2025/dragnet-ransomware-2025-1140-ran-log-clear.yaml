@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1140 — Event Log Clearing (bert)'
+id: 6960b0bd-305f-5939-a015-a614991ccdfb
+status: deprecated
+description: |
+  Detects event log clearing associated with bert ransomware.
+  Incident: dragnet-ransomware-2025-1140
+  Ransomware victim claim by bert: National Ticket Company; country: US; sector: Business Services
+  First observed: 2025-04-04.
+references:
+  - http://bertblogsoqmm4ow7nqyh5ik7etsmefdbf25stauecytvwy7tkgizhad.onion/post/C108276DD3C74A978A6F0A70EFEF1579
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

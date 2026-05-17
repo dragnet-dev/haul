@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2353 — Event Log Clearing (direwolf)'
+id: 8989d814-cfd3-5ba3-9037-7d37611504ce
+status: deprecated
+description: |
+  Detects event log clearing associated with direwolf ransomware.
+  Incident: dragnet-ransomware-2025-2353
+  Ransomware victim claim by direwolf: IoTechWorld; country: IN; sector: Technology
+  First observed: 2025-05-14.
+references:
+  - http://direwolfcdkv5whaz2spehizdg22jsuf5aeje4asmetpbt6ri4jnd4qd.onion/articles/iotechworld.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

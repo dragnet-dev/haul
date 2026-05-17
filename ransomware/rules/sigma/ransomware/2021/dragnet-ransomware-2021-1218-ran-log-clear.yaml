@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1218 — Event Log Clearing (mountlocker)'
+id: af01e417-785c-5c47-a189-0464945f0cb7
+status: deprecated
+description: |
+  Detects event log clearing associated with mountlocker ransomware.
+  Incident: dragnet-ransomware-2021-1218
+  Ransomware victim claim by mountlocker: ECU Worldwide; sector: Transportation/Logistics
+  First observed: 2021-02-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

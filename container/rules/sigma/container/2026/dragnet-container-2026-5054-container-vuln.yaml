@@ -1,0 +1,49 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5054 — Vulnerable Base Image Pull'
+id: ff570a89-7285-518c-9695-74c2d15f70ac
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5054 (Tier 2, CVSS 9.8)
+  An issue was discovered in the Linux kernel before 6.3.4. fs/ksmbd/connection.c in ksmbd has an off-by-one error in memory allocation (because of ksmbd_smb2_check_message) that may lead to out-of-bounds access.
+references:
+  - https://cdn.kernel.org/pub/linux/kernel/v6.x/ChangeLog-6.3.4
+  - https://git.kernel.org/linus/443d61d1fa9faa60ef925513d83742902390100f (6.4-rc3)
+  - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/ksmbd?id=443d61d1fa9faa60ef925513d83742902390100f
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-38429
+  - https://security.netapp.com/advisory/ntap-20250103-0009/
+  - https://ubuntu.com/security/notices/USN-6338-1
+  - https://ubuntu.com/security/notices/USN-6338-2
+  - https://ubuntu.com/security/notices/USN-6339-1
+  - https://ubuntu.com/security/notices/USN-6339-2
+  - https://ubuntu.com/security/notices/USN-6339-3
+  - https://ubuntu.com/security/notices/USN-6339-4
+  - https://ubuntu.com/security/notices/USN-6344-1
+  - https://ubuntu.com/security/notices/USN-6350-1
+  - https://ubuntu.com/security/notices/USN-6351-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-38429
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:5.0'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

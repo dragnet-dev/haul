@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0538 — Event Log Clearing (alphalocker)'
+id: 615ac8e5-4e25-550e-bf2f-89c046bab498
+status: deprecated
+description: |
+  Detects event log clearing associated with alphalocker ransomware.
+  Incident: dragnet-ransomware-2024-0538
+  Ransomware victim claim by alphalocker: https://www.mikeferry.com; country: US; sector: Business Services
+  First observed: 2024-01-24.
+references:
+  - http://mydatae2d63il5oaxxangwnid5loq2qmtsol2ozr6vtb7yfm5ypzo6id.onion/blog_1-7
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

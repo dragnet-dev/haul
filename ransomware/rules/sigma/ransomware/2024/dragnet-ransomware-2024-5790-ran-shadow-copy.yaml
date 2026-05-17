@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5790 — Shadow Copy Deletion (sensayq)'
+id: 34cd4137-2279-5977-a5ec-687e642046f6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with sensayq ransomware.
+  Incident: dragnet-ransomware-2024-5790
+  Ransomware victim claim by sensayq: Premium Broking House; country: IN; sector: Financial Services
+  First observed: 2024-06-04.
+references:
+  - http://159.69.60.54/r/d0GbgAmYUqwQvYnyAfck3b5gqvuiTCpZfAsO9eyFd4xNuYYM2AzNyZ23hINnmQrJbt+hQEMUyP1N6+C08VURjdm81M3lS
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

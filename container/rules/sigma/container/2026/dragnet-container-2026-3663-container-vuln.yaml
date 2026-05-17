@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3663 — Vulnerable Base Image Pull'
+id: 76531dcd-fd78-54ac-8a52-fbbedbafca30
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3663 (Tier 2, CVSS 9.8)
+  NASA CFITSIO prior to 3.43 is affected by: Buffer Overflow. The impact is: arbitrary code execution. The component is: over 40 source code files were changed. The attack vector is: remote unauthenticated attacker. The fixed version is: 3.43. NOTE: this CVE refers to the issues not covered by CVE-2018-3846, CVE-2018-3847, CVE-2018-3848, and CVE-2018-3849. One example is ftp_status in drvrnet.c mishandling a long string beginning with a '4' character.
+references:
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=892458
+  - https://github.com/astropy/astropy/pull/7274
+  - https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio3420.tar.gz
+  - https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio3430.tar.gz
+  - https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/docs/changes2.txt
+  - https://www.cve.org/CVERecord?id=CVE-2019-1010060
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

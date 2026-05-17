@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1131 — Recovery Inhibition (blacklock)'
+id: ea83cbbd-d47a-5895-abc6-1650a6a95932
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blacklock ransomware.
+  Incident: dragnet-ransomware-2024-1131
+  Ransomware victim claim by blacklock: Fleet Equipment Center, Inc.; country: US; sector: Transportation/Logistics
+  First observed: 2024-11-18.
+references:
+  - http://zdkexsh2e7yihw5uhg5hpsgq3dois2m5je7lzfagij2y6iw5ptl35gyd.onion/Data_Download/FLEET
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

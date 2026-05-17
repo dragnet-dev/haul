@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4575 — Vulnerable Base Image Pull'
+id: f0a5d54d-f8f0-5fc3-9e2a-34bcc4d9323b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4575 (Tier 2, CVSS 9.8)
+  An issue was discovered in net/tipc/crypto.c in the Linux kernel before 5.14.16. The Transparent Inter-Process Communication (TIPC) functionality allows remote attackers to exploit insufficient validation of user-supplied sizes for the MSG_CRYPTO message type.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-43267
+  - https://www.sentinelone.com/labs/tipc-remote-linux-kernel-heap-overflow-allows-arbitrary-code-execution/
+  - https://github.com/torvalds/linux/commit/fa40d9734a57bcbfa79a280189799f76c88f7bb0
+  - http://www.openwall.com/lists/oss-security/2022/02/10/1
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-20317.json
+  - https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-43267.json
+  - https://access.redhat.com/security/cve/CVE-2021-43267
+  - https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.14.16
+  - https://git.kernel.org/linus/fa40d9734a57bcbfa79a280189799f76c88f7bb0 (5.15)
+  - https://linux.oracle.com/cve/CVE-2021-43267.html
+  - https://linux.oracle.com/errata/ELSA-2021-4647.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CVWL7HZV5T5OEKJPO2D67RMFMKBBXGGB/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/RDDEW4APTYKJK365HC2JZIVXYUV7ZRN7/
+  - https://security.netapp.com/advisory/ntap-20211125-0002/
+  - https://ubuntu.com/security/notices/USN-5165-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'photon os:4.0'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

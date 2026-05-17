@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5665 — Vulnerable Base Image Pull'
+id: c9952bc5-49a9-5db5-aece-b996ecd38247
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5665 (Tier 2, CVSS 9.8)
+  Authlib is a Python library which builds OAuth and OpenID Connect servers. From version 1.6.5 to before version 1.6.7, previous tests involving passing a malicious JWT containing alg: none and an empty signature was passing the signature verification step without any changes to the application code when a failure was expected.. This issue has been patched in version 1.6.7.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-28802
+  - https://github.com/authlib/authlib
+  - https://github.com/authlib/authlib/commit/a61c2acb807496e67f32051b5f1b1d5ccf8f0a75
+  - https://github.com/authlib/authlib/commit/b87c32ed07b8ae7f805873e1c9cafd1016761df7
+  - https://github.com/authlib/authlib/security/advisories/GHSA-7wc2-qxgw-g8gg
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-28802
+  - https://www.cve.org/CVERecord?id=CVE-2026-28802
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

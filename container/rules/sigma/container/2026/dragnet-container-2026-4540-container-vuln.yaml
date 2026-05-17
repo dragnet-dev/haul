@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4540 — Vulnerable Base Image Pull'
+id: 9b4b7453-91d6-5363-a438-bbaadf809529
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4540 (Tier 2, CVSS 9.8)
+  An out-of-bounds write vulnerability exists in the RS-274X aperture macro variables handling functionality of Gerbv 2.7.0 and dev (commit b5f1eacd) and the forked version of Gerbv (commit 71493260). A specially-crafted gerber file can lead to code execution. An attacker can provide a malicious file to trigger this vulnerability.
+references:
+  - https://lists.debian.org/debian-lts-announce/2023/09/msg00040.html
+  - https://talosintelligence.com/vulnerability_reports/TALOS-2021-1404
+  - https://talosintelligence.com/vulnerability_reports/TALOS-2021-1405
+  - https://ubuntu.com/security/notices/USN-6209-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-40394
+  - https://www.debian.org/security/2022/dsa-5306
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

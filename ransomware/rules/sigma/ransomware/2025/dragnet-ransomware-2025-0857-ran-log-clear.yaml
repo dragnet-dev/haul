@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0857 — Event Log Clearing (apos)'
+id: c4c94de5-f646-57f1-9920-8d834797fb4d
+status: deprecated
+description: |
+  Detects event log clearing associated with apos ransomware.
+  Incident: dragnet-ransomware-2025-0857
+  Ransomware victim claim by apos: Netcom-World; country: US; sector: Telecommunication
+  First observed: 2025-03-04.
+references:
+  - http://yrz6bayqwhleymbeviter7ejccxm64sv2ppgqgderzgdhutozcbbhpqd.onion/data/05e04e89-a2bf-49a8-adaf-8687ac1ae891
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

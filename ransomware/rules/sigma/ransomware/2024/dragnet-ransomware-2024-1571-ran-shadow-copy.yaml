@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1571 — Shadow Copy Deletion (cloak)'
+id: 5061b208-1d5e-548a-9ba3-7fbab91d15a3
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cloak ransomware.
+  Incident: dragnet-ransomware-2024-1571
+  Ransomware victim claim by cloak: Speditionweise.de; country: DE; sector: Transportation/Logistics
+  First observed: 2024-04-08.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

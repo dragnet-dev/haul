@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1260 — Shadow Copy Deletion (blackshrantac)'
+id: 315fd4e9-0d4e-5780-9bcb-6b1ee773e2e9
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blackshrantac ransomware.
+  Incident: dragnet-ransomware-2025-1260
+  Ransomware victim claim by blackshrantac: Rasen Insaat Ve Yatirim Ticaret A.S.; country: TR; sector: Construction
+  First observed: 2025-11-29.
+references:
+  - http://b2ykcy2gcug4gnccm6hnrb5xapnresmyjjqgvhafaypppwgo4feixwyd.onion/targets/33
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

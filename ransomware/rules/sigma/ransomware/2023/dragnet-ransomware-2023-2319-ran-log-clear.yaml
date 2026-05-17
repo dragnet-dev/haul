@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2319 — Event Log Clearing (hunters)'
+id: 9613062d-ef4f-58ee-9d48-80a4388e4c3e
+status: deprecated
+description: |
+  Detects event log clearing associated with hunters ransomware.
+  Incident: dragnet-ransomware-2023-2319
+  Ransomware victim claim by hunters: First Housing Development; country: US; sector: Construction
+  First observed: 2023-11-28.
+references:
+  - https://hunters55rdxciehoqzwv7vgyv6nt37tbwax2reroyzxhou7my5ejyid.onion/companies/6252497650
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

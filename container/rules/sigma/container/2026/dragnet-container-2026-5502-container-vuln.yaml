@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5502 — Vulnerable Base Image Pull'
+id: 6d190cf3-e73d-54c4-b40f-6c7c0e87ebdb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5502 (Tier 2, CVSS 9.8)
+  Fast DDS is a C++ implementation of the DDS (Data Distribution Service) standard of the OMG (Object Management Group
+). Prior to versions 3.4.1, 3.3.1, and 2.6.11, a heap buffer overflow exists in the Fast-DDS DATA_FRAG receive path. An un
+authenticated sender can transmit a single malformed RTPS DATA_FRAG packet where `fragmentSize` and `sampleSize` are craft
+ed to violate internal assumptions. Due to a 4-byte alignment step during fragment metadata initialization, the code write
+s past the end of the allocated payload buffer, causing immediate crash (DoS) and potentially enabling memory corruption (
+RCE risk). Versions 3.4.1, 3.3.1, and 2.6.11 patch the issue.
+references:
+  - https://github.com/eProsima/Fast-DDS/commit/0c3824ef4991628de5dfba240669dc6172d63b46
+  - https://github.com/eProsima/Fast-DDS/commit/955c8a15899dc6eb409e080fe7dc89e142d5a514
+  - https://github.com/eProsima/Fast-DDS/commit/d6dd58f4ecd28cd1c3bc4ef0467be9110fa94659
+  - https://security-tracker.debian.org/tracker/CVE-2025-62799
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1135 — Recovery Inhibition (blacklock)'
+id: c39429f5-a069-56b8-ac21-b6e231ec5ba4
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blacklock ransomware.
+  Incident: dragnet-ransomware-2024-1135
+  Ransomware victim claim by blacklock: Kandelaar Electrotechniek; country: NL; sector: Technology
+  First observed: 2024-12-14.
+references:
+  - http://zdkexsh2e7yihw5uhg5hpsgq3dois2m5je7lzfagij2y6iw5ptl35gyd.onion/Data_Download/kandelaar.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

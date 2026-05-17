@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7134 — Shadow Copy Deletion (shinyhunters)'
+id: 4cfb13a2-7bc0-5baf-b74e-d3406f112af8
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with shinyhunters ransomware.
+  Incident: dragnet-ransomware-2025-7134
+  Ransomware victim claim by shinyhunters: 1-800Accountant; country: US; sector: Financial Services
+  First observed: 2025-08-17.
+references:
+  - https://breachforums.hn//
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

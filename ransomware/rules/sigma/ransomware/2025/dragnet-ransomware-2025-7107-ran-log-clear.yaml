@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7107 — Event Log Clearing (securotrop)'
+id: 1b763f34-92a5-5bfa-aa04-43742d43372a
+status: deprecated
+description: |
+  Detects event log clearing associated with securotrop ransomware.
+  Incident: dragnet-ransomware-2025-7107
+  Ransomware victim claim by securotrop: Bronze Craft; country: US; sector: Manufacturing
+  First observed: 2025-07-21.
+references:
+  - http://securo45z554mw7rgrt7wcgv5eenj2xmxyrsdj3fcjsvindu63s4bsid.onion/BronzeCraft/info.txt
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

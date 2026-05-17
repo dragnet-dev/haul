@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1343 — Event Log Clearing (BrainCipher)'
+id: e02a4c12-4392-5319-b14e-842c0a50cde1
+status: deprecated
+description: |
+  Detects event log clearing associated with BrainCipher ransomware.
+  Incident: dragnet-ransomware-2024-1343
+  Ransomware victim claim by BrainCipher: K&S Tool & Mfg Co.; country: US; sector: Manufacturing
+  First observed: 2024-10-28.
+references:
+  - http://vkvsgl7lhipjirmz6j5ubp3w3bwvxgcdbpi3fsbqngfynetqtw4w5hyd.onion/r/XjD23yLSNt6SSaYtTGcelmlyHOZGgX5N0KtmBBKNEHMruMOP35kf82QqZPkacL+mMlabiRa1mjS6+qG609TNTY1V3T1pk
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

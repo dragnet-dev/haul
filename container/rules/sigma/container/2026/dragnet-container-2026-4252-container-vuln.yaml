@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4252 — Vulnerable Base Image Pull'
+id: 1ffc872b-4a9a-554a-83ff-a11e3fdaa965
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4252 (Tier 2, CVSS 9.8)
+  The encoding/xml package in Go (all versions) does not correctly preserve the semantics of attribute namespace prefixes during tokenization round-trips, which allows an attacker to craft inputs that behave in conflicting ways during different stages of processing in affected downstream applications.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-29509
+  - https://github.com/golang/go/issues/43168
+  - https://github.com/mattermost/xml-roundtrip-validator/blob/master/advisories/unstable-attributes.md
+  - https://github.com/russellhaering/gosaml2/commit/42606dafba60c58c458f14f75c4c230459672ab9
+  - https://github.com/russellhaering/gosaml2/security/advisories/GHSA-xhqq-x44f-9fgg
+  - https://mattermost.com/blog/coordinated-disclosure-go-xml-vulnerabilities/
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-29509
+  - https://pkg.go.dev/vuln/GO-2021-0060
+  - https://security.netapp.com/advisory/ntap-20210129-0006
+  - https://security.netapp.com/advisory/ntap-20210129-0006/
+  - https://www.cve.org/CVERecord?id=CVE-2020-29509
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'photon os:4.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

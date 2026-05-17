@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1532 — Shadow Copy Deletion (lockbit2)'
+id: a8430edf-f348-5de8-ae35-53f09ed2c7ca
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with lockbit2 ransomware.
+  Incident: dragnet-ransomware-2022-1532
+  Ransomware victim claim by lockbit2: cachibi.co; country: CO; sector: Not Found
+  First observed: 2022-03-12.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

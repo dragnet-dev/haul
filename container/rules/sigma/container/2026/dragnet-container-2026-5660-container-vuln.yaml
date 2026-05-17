@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5660 — Vulnerable Base Image Pull'
+id: 6c2c0550-d05f-5d68-a5c0-426bfd1d2ac2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5660 (Tier 2, CVSS 9.1)
+  A flaw was found in Undertow. When Undertow receives an HTTP request where the first header line starts with one or more spaces, it incorrectly processes the request by stripping these leading spaces. This behavior, which violates HTTP standards, can be exploited by a remote attacker to perform request smuggling. Request smuggling allows an attacker to bypass security mechanisms, access restricted information, or manipulate web caches, potentially leading to unauthorized actions or data exposure.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-28369
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2443262
+  - https://github.com/undertow-io/undertow
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-28369
+  - https://www.cve.org/CVERecord?id=CVE-2026-28369
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2289 — Vulnerable Base Image Pull'
+id: 769f080e-2243-5732-aafd-c4aaca7d1023
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2289 (Tier 2, CVSS 9.8)
+  Heap-based buffer overflow in the PdfParser::ReadXRefSubsection function in base/PdfParser.cpp in PoDoFo allows attackers to have unspecified impact via vectors related to m_offsets.size.
+references:
+  - http://www.openwall.com/lists/oss-security/2017/02/01/20
+  - http://www.openwall.com/lists/oss-security/2017/02/02/15
+  - https://marc.info/?l=oss-security&m=148601605717859&w=2
+  - https://sourceforge.net/p/podofo/code/1672
+  - https://sourceforge.net/p/podofo/mailman/message/34205419/
+  - https://www.cve.org/CVERecord?id=CVE-2015-8981
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

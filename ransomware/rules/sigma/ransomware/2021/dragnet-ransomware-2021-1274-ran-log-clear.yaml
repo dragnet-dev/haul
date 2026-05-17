@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1274 — Event Log Clearing (payloadbin)'
+id: 23aa236e-30d2-5f0a-b87f-d06ccd464913
+status: deprecated
+description: |
+  Detects event log clearing associated with payloadbin ransomware.
+  Incident: dragnet-ransomware-2021-1274
+  Ransomware victim claim by payloadbin: www.myyp.com; sector: Not Found
+  First observed: 2021-09-25.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

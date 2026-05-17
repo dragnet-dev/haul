@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2824 — Recovery Inhibition (secpo)'
+id: 1dfce05b-831c-540a-ac24-e871acdaf5d9
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with secpo ransomware.
+  Incident: dragnet-ransomware-2026-2824
+  Ransomware victim claim by secpo: Mike Brandner Law; country: US; sector: Business Services
+  First observed: 2026-04-14.
+references:
+  - http://secponewsxgrlnirowclps2kllzaotaf5w2bsvktdnz4qhjr2jnwvvyd.onion/post/cfa329c3p019f2lo3.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

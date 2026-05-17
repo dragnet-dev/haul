@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2823 — Recovery Inhibition (secpo)'
+id: 3d67f1e6-8d6d-5a31-b8a7-b609d509fa4f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with secpo ransomware.
+  Incident: dragnet-ransomware-2026-2823
+  Ransomware victim claim by secpo: JM Bozeman Enterprises; country: US; sector: Business Services
+  First observed: 2026-04-14.
+references:
+  - http://secponewsxgrlnirowclps2kllzaotaf5w2bsvktdnz4qhjr2jnwvvyd.onion/post/0c986a6f8168f240/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

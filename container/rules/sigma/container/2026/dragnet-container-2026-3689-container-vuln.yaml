@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3689 — Vulnerable Base Image Pull'
+id: ca8249d4-c3e0-54c5-b4c8-cf6e607df19b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3689 (Tier 2, CVSS 9.8)
+  In Teeworlds 0.7.2, there is an integer overflow in CDataFileReader::Open() in engine/shared/datafile.cpp that can lead to a buffer overflow and possibly remote code execution, because size-related multiplications are mishandled.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-07/msg00046.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00077.html
+  - https://github.com/teeworlds/teeworlds/commit/4d529dcd2d01022e979ebfa0b91167dee37cdb8e
+  - https://github.com/teeworlds/teeworlds/issues/2070
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5KCS2CFDYJFBLZ4QKVPNJWHOZEGQ2LBC/
+  - https://www.cve.org/CVERecord?id=CVE-2019-10879
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

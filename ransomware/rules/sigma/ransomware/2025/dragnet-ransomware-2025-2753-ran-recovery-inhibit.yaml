@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2753 — Recovery Inhibition (flocker)'
+id: d402a2a0-381b-53aa-8b65-e83d8b5ff92f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with flocker ransomware.
+  Incident: dragnet-ransomware-2025-2753
+  Ransomware victim claim by flocker: I*******n.com; sector: Consumer Services
+  First observed: 2025-06-30.
+references:
+  - http://flock4cvoeqm4c62gyohvmncx6ck2e7ugvyqgyxqtrumklhd5ptwzpqd.onion/?p=460
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

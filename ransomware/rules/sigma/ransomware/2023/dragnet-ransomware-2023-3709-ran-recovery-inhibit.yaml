@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3709 — Recovery Inhibition (malas)'
+id: 74d3b576-5290-550e-a6cb-13b6f6c00737
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with malas ransomware.
+  Incident: dragnet-ransomware-2023-3709
+  Ransomware victim claim by malas: SkyFORS; sector: Technology
+  First observed: 2023-04-09.
+references:
+  - http://malas2urovbyyavjzaezkt5ohljvyd5lt7vv7mnsgbf2y4bwlh72doqd.onion/posts/defaulters/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7179 — Event Log Clearing (silent)'
+id: 05ce9db9-9153-50b1-bd9b-fc994fce26c6
+status: deprecated
+description: |
+  Detects event log clearing associated with silent ransomware.
+  Incident: dragnet-ransomware-2025-7179
+  Ransomware victim claim by silent: Advanced Simulation Technology inc. (ASTi); country: US; sector: Technology
+  First observed: 2025-04-25.
+references:
+  - http://silentbgdghp3zeldwpumnwabglreql7jcffhx5vqkvtf2lshc4n5zid.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

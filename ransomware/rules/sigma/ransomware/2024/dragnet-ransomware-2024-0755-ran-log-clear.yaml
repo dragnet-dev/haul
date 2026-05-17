@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0755 — Event Log Clearing (beast)'
+id: 179ac9f4-97ad-5b48-8e9e-e1f3ec51f7d8
+status: deprecated
+description: |
+  Detects event log clearing associated with beast ransomware.
+  Incident: dragnet-ransomware-2024-0755
+  Ransomware victim claim by beast: Camelot Electronics Technology Co., Ltd.; country: CN; sector: Technology
+  First observed: 2024-03-27.
+references:
+  - http://beast6azu4f7fxjakiayhnssybibsgjnmy77a6duufqw5afjzfjhzuqd.onion/card/camelot_electronics_technology_co___ltd_
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

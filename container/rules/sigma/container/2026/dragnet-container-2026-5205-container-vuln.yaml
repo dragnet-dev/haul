@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5205 — Vulnerable Base Image Pull'
+id: 19bad8e8-4173-5cf9-a230-22cea40e1e34
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5205 (Tier 2, CVSS 9.8)
+  The uAMQP is a C library for AMQP 1.0 communication to Azure Cloud Services. When processing an incorrect `AMQP_VALUE` failed state, may cause a double free problem. This may cause a RCE. Update submodule with commit 2ca42b6e4e098af2d17e487814a91d05f6ae4987.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-27099
+  - https://github.com/Azure/azure-uamqp-c/commit/2ca42b6e4e098af2d17e487814a91d05f6ae4987
+  - https://github.com/Azure/azure-uamqp-c/security/advisories/GHSA-6rh4-fj44-v4jj
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-27099
+  - https://www.cve.org/CVERecord?id=CVE-2024-27099
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

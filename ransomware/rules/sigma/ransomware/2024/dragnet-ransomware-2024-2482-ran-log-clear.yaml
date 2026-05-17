@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2482 — Event Log Clearing (hellogookie)'
+id: fa5503c4-8c57-55d4-8382-c6f107dd71d6
+status: deprecated
+description: |
+  Detects event log clearing associated with hellogookie ransomware.
+  Incident: dragnet-ransomware-2024-2482
+  Ransomware victim claim by hellogookie: Hey cisco!; country: US; sector: Technology
+  First observed: 2024-04-19.
+references:
+  - http://hellogookie256cvccntvenyxrvn7ht73bs6ss3oj2ocfkjt5y6vq6gfi2tad.onion/news/473748aaaa880d98c509a58e1c39021c
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1469 — Event Log Clearing (pysa)'
+id: 99aa5142-48fe-5df4-a0cb-f903be0d2cc2
+status: deprecated
+description: |
+  Detects event log clearing associated with pysa ransomware.
+  Incident: dragnet-ransomware-2021-1469
+  Ransomware victim claim by pysa: Ocean View Nursing & Rehabilitation; sector: Healthcare
+  First observed: 2021-10-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

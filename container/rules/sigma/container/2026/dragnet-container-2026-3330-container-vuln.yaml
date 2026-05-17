@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3330 — Vulnerable Base Image Pull'
+id: 8928d7c2-e2d2-5ab7-95f4-daa8841f07b6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3330 (Tier 2, CVSS 9.8)
+  Stack-based buffer overflow in the get_key function in parse.c in abcm2ps through 8.13.20 allows remote attackers to cause a denial of service (application crash) or possibly have unspecified other impact.
+references:
+  - https://drive.google.com/open?id=1HE9cht7WJPauA66acyJrEywXX8R4Hg-2
+  - https://github.com/leesavide/abcm2ps/commit/dc0372993674d0b50fedfbf7b9fad1239b8efc5f
+  - https://github.com/leesavide/abcm2ps/issues/17
+  - https://lists.debian.org/debian-lts-announce/2022/04/msg00015.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/IGDXW2I3MY3QH4PJXLJET5QZZXMXTNWO/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LSTB65NYYCKU7O6RF5B6CYY5IA6CA66Y/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W6DUTXB4EC3TQHTTAAIBKJ54GJTF6Y7V/
+  - https://ubuntu.com/security/notices/USN-5961-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-10771
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

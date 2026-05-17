@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2399 — Event Log Clearing (karakurt)'
+id: b38dc6c4-0c26-5330-b049-cccd9e36f4e0
+status: deprecated
+description: |
+  Detects event log clearing associated with karakurt ransomware.
+  Incident: dragnet-ransomware-2023-2399
+  Ransomware victim claim by karakurt: Peachtree Orthopedics; sector: Healthcare
+  First observed: 2023-05-12.
+references:
+  - https://3f7nxkjway3d223j27lyad7v5cgmyaifesycvmwq7i7cbs23lb6llryd.onion/companies/f3a3a719-e72c-4bfe-bcf1-aabc18381c16
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

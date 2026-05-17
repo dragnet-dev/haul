@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3891 — Recovery Inhibition (kraken)'
+id: 42b0181d-4280-5768-b04d-e7168daf051e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with kraken ransomware.
+  Incident: dragnet-ransomware-2025-3891
+  Ransomware victim claim by kraken: www.wheelsauto.com; country: CA; sector: Transportation/Logistics
+  First observed: 2025-07-10.
+references:
+  - http://krakenccj3wr23452a4ibkbkuph4d6soyx2xgjoogtuamc3m7u7wemad.onion/news/988a6b2df55fa9b26f35b0b156311c8c
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

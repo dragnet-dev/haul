@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2174 — Shadow Copy Deletion (desolator)'
+id: 567f449a-0a45-5225-859b-5e92f99122b6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with desolator ransomware.
+  Incident: dragnet-ransomware-2025-2174
+  Ransomware victim claim by desolator: Construseñales S.A.; country: CO; sector: Construction
+  First observed: 2025-08-28.
+references:
+  - http://po4tq2brx4rgwbdx4mac24fz34uuuf7oigosebp32n2462m2vxl6biqd.onion/victim/242d6188-7cf7-4f6e-a8cd-de66cb1237b5
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

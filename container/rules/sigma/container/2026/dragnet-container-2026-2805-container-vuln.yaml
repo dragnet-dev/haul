@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2805 — Vulnerable Base Image Pull'
+id: 326874a5-18f5-5c51-a7aa-8f5c4341d867
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2805 (Tier 2, CVSS 9.8)
+  The zmq3 input and output modules in rsyslog before 8.28.0 interpreted description fields as format strings, possibly allowing a format string attack with unspecified impact.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-12588
+  - https://github.com/rsyslog/rsyslog/blob/master/ChangeLog
+  - https://github.com/rsyslog/rsyslog/commit/062d0c671a29f7c6f7dff4a2f1f35df375bbb30b
+  - https://github.com/rsyslog/rsyslog/pull/1565
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-12588
+  - https://security.netapp.com/advisory/ntap-20241227-0009/
+  - https://www.cve.org/CVERecord?id=CVE-2017-12588
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,49 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5585 — Vulnerable Base Image Pull'
+id: c14e9ca6-e729-501f-be71-ccacec181676
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5585 (Tier 2, CVSS 9.8)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to version 3.23.0, `xf_AppUpdateWindowFromSurface` reads from a freed `xfAppWindow` because the RDPGFX DVC thread obtains a bare pointer via `xf_rail_get_window` without any lifetime protection, while the main thread can concurrently delete the window through a fastpath window-delete order. Version 3.23.0 fixes the issue.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-25953
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_rail.c#L1230-L1237
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_rail.c#L257-L290
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_rail.c#L643-L647
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_window.c#L1394-L1428
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_window.c#L1462-L1470
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_window.c#L1484-L1491
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/libfreerdp/gdi/gfx.c#L254-L286
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/libfreerdp/gdi/gfx.c#L278-L279
+  - https://github.com/FreeRDP/FreeRDP/commit/1994e9844212a6dfe0ff12309fef520e888986b5
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-p6rq-rxpc-rh3p
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-25953
+  - https://ubuntu.com/security/notices/USN-8105-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-25953
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

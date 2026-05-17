@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3689 — Recovery Inhibition (lynx)'
+id: 0209faa4-f641-58d3-b04a-8960b33a75e5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3689
+  Ransomware victim claim by lynx: The Greenhouse People; country: GB; sector: Business Services
+  First observed: 2024-07-16.
+references:
+  - http://lynxblog.net/leaks/6697936c9e33e89b00de841f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

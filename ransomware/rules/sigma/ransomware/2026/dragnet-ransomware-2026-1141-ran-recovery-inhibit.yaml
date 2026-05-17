@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1141 — Recovery Inhibition (handala)'
+id: 6ab74e3c-f574-505c-9e90-c087b5e2a6da
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1141
+  Ransomware victim claim by handala: North Country Business Products Breached: 2,680 POS Terminals Disabled Nationwide; country: US; sector: Technology
+  First observed: 2026-03-28.
+references:
+  - https://handala-hack.tw/north-country-business-products-breached-2680-pos-terminals-disabled-nationwide/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

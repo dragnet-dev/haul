@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4196 — Recovery Inhibition (noname)'
+id: 54d3fbf5-cf60-5f99-a5ee-a2866ca59f95
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with noname ransomware.
+  Incident: dragnet-ransomware-2023-4196
+  Ransomware victim claim by noname: nobleweb.com; country: US; sector: Technology
+  First observed: 2023-09-11.
+references:
+  - http://noname2j6zkgnt7ftxsjju5tfd3s45s4i3egq5bqtl72kgum4ldc6qyd.onion/wp/nobleweb-com/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

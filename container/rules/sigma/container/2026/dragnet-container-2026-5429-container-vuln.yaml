@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5429 — Vulnerable Base Image Pull'
+id: ceed41dd-b54b-5e27-a9f2-d6343c4c9b2c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5429 (Tier 2, CVSS 9.8)
+  PyTorch is a Python package that provides tensor computation with strong GPU acceleration and deep neural networks built on a tape-based autograd system. In version 2.5.1 and prior, a Remote Command Execution (RCE) vulnerability exists in PyTorch when loading a model using torch.load with weights_only=True. This issue has been patched in version 2.6.0.
+references:
+  - https://github.com/pypa/advisory-database/tree/main/vulns/torch/PYSEC-2025-41.yaml
+  - https://github.com/pytorch/pytorch
+  - https://github.com/pytorch/pytorch/commit/8d4b8a920a2172523deb95bf20e8e52d50649c04
+  - https://github.com/pytorch/pytorch/security/advisories/GHSA-53q9-r3pm-6pq6
+  - https://lists.debian.org/debian-lts-announce/2025/12/msg00000.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-32434
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

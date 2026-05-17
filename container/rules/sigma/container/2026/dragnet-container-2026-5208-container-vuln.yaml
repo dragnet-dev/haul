@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5208 — Vulnerable Base Image Pull'
+id: 7971430f-9cd7-5919-9c5d-2b4d05739a52
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5208 (Tier 2, CVSS 9.8)
+  pgx is a PostgreSQL driver and toolkit for Go. SQL injection can occur if an attacker can cause a single query or bind message to exceed 4 GB in size. An integer overflow in the calculated message size can cause the one large message to be sent as multiple messages under the attacker's control. The problem is resolved in v4.18.2 and v5.5.4. As a workaround, reject user input large enough to cause a single query or bind message to exceed 4 GB in size.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-27304
+  - https://github.com/jackc/pgproto3/commit/945c2126f6db8f3bea7eeebe307c01fe92bca007
+  - https://github.com/jackc/pgproto3/security/advisories/GHSA-7jwh-3vrq-q3m8
+  - https://github.com/jackc/pgx
+  - https://github.com/jackc/pgx/commit/adbb38f298c76e283ffc7c7a3f571036fea47fd4
+  - https://github.com/jackc/pgx/commit/c543134753a0c5d22881c12404025724cb05ffd8
+  - https://github.com/jackc/pgx/commit/f94eb0e2f96782042c96801b5ac448f44f0a81df
+  - https://github.com/jackc/pgx/security/advisories/GHSA-mrww-27vc-gghv
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-27304
+  - https://www.cve.org/CVERecord?id=CVE-2024-27304
+  - https://www.youtube.com/watch?v=Tfg1B8u1yvE
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

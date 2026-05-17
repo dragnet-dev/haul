@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3734 — Vulnerable Base Image Pull'
+id: 8687a431-3a88-560c-bcfe-8124852c386c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3734 (Tier 2, CVSS 9.8)
+  dhcp6.c in dhcpcd before 6.11.7 and 7.x before 7.2.2 has a buffer over-read in the D6_OPTION_PD_EXCLUDE feature.
+references:
+  - http://www.securityfocus.com/bid/108172
+  - https://bugs.debian.org/928440
+  - https://roy.marples.name/archives/dhcpcd-discuss/0002428.html
+  - https://roy.marples.name/cgit/dhcpcd.git/commit/?&id=896ef4a54b0578985e5e1360b141593f1d62837b
+  - https://roy.marples.name/cgit/dhcpcd.git/commit/?&id=c1ebeaafeb324bac997984abdcee2d4e8b61a8a8
+  - https://roy.marples.name/cgit/dhcpcd.git/commit/?h=dhcpcd-7&id=896ef4a54b0578985e5e1360b141593f1d62837b
+  - https://roy.marples.name/cgit/dhcpcd.git/commit/?h=dhcpcd-7&id=c1ebeaafeb324bac997984abdcee2d4e8b61a8a8
+  - https://www.cve.org/CVERecord?id=CVE-2019-11766
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3654 — Recovery Inhibition (lynx)'
+id: f65cbc86-ab6e-5309-b34f-bf490587bbfd
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3654
+  Ransomware victim claim by lynx: Model Die & Mold; country: US; sector: Manufacturing
+  First observed: 2024-10-04.
+references:
+  - http://lynxblog.net/leaks/672a5664dab69e0ba2c3c066
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

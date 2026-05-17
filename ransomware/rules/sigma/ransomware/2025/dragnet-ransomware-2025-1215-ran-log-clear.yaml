@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1215 — Event Log Clearing (blacknevas)'
+id: f4f47bf4-1e3c-55fa-9b61-8040c01f6f65
+status: deprecated
+description: |
+  Detects event log clearing associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2025-1215
+  Ransomware victim claim by blacknevas: KINAS SOLICITORS; country: GB; sector: Business Services
+  First observed: 2025-06-09.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/41d35858-aae9-405c-9441-c13f700ca975
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

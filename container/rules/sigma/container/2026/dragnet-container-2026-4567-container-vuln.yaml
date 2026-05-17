@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4567 — Vulnerable Base Image Pull'
+id: c8cc6896-8a74-5e57-a239-78812c079380
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4567 (Tier 2, CVSS 9.8)
+  A buffer overflow vulnerability in stm32_mw_usb_host of STMicroelectronics in versions before 3.5.1 allows an attacker to execute arbitrary code when the descriptor contains more endpoints than USBH_MAX_NUM_ENDPOINTS. The library is typically integrated when using a RTOS such as FreeRTOS on STM32 MCUs.
+references:
+  - https://github.com/STMicroelectronics/stm32_mw_usb_host
+  - https://github.com/STMicroelectronics/stm32_mw_usb_host/pull/4
+  - https://ubuntu.com/security/notices/USN-7472-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-42553
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

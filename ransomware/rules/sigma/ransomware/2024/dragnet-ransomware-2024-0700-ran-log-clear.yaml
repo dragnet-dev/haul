@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0700 — Event Log Clearing (arcusmedia)'
+id: b2f7057c-6adc-55ed-bba2-5cbe8b78ec09
+status: deprecated
+description: |
+  Detects event log clearing associated with arcusmedia ransomware.
+  Incident: dragnet-ransomware-2024-0700
+  Ransomware victim claim by arcusmedia: GOLD RH S.A.S; country: CO; sector: Manufacturing
+  First observed: 2024-05-11.
+references:
+  - http://arcuufpr5xxbbkin4mlidt7itmr6znlppk63jbtkeguuhszmc5g7qdyd.onion/?p=65
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

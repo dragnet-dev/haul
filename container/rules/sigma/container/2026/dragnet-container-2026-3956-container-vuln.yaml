@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3956 — Vulnerable Base Image Pull'
+id: 06e31885-215c-5cc5-a600-43ab3db82980
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3956 (Tier 2, CVSS 9.1)
+  parseWildcardRules in Gin-Gonic CORS middleware before 1.6.0 mishandles a wildcard at the end of an origin string, e.g., https://example.community/* is allowed when the intention is that only https://example.com/* should be allowed, and http://localhost.example.com/* is allowed when the intention is that only http://localhost/* should be allowed.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-25211
+  - https://github.com/advisories/GHSA-869c-j7wc-8jqv
+  - https://github.com/gin-contrib/cors/commit/27b723a473efd80d5a498fa9f5933c80204c850d
+  - https://github.com/gin-contrib/cors/compare/v1.5.0...v1.6.0
+  - https://github.com/gin-contrib/cors/pull/106
+  - https://github.com/gin-contrib/cors/pull/57
+  - https://github.com/gin-contrib/cors/releases/tag/v1.6.0
+  - https://github.com/gin-gonic/gin
+  - https://lists.debian.org/debian-lts-announce/2025/08/msg00024.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-25211
+  - https://www.cve.org/CVERecord?id=CVE-2019-25211
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3964 — Event Log Clearing (metaencryptor)'
+id: 2586dce8-619a-5b82-8086-a870360740cb
+status: deprecated
+description: |
+  Detects event log clearing associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3964
+  Ransomware victim claim by metaencryptor: TANATEX Chemicals; sector: Manufacturing
+  First observed: 2023-11-01.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:d069e2c170d1108298788f5694475c3d0581f22316f9ab24467b8f09db83487f/0AFC:2091d234b53db8b32397a5125e8cd4046b954019fc967599a1529d8b7484a782/0AFC:58201d1596d55590b4c5881889e99f3f4ae10f76c6bfe4cdd3edca3e3b6de7ee
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

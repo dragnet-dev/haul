@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5193 — Vulnerable Base Image Pull'
+id: 3804ba15-98be-517a-9dd2-63b7051eff2d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5193 (Tier 2, CVSS 9.8)
+  darkhttpd before 1.15 uses strcmp (which is not constant time) to verify authentication, which makes it easier for remote attackers to bypass authentication via a timing side channel.
+references:
+  - http://www.openwall.com/lists/oss-security/2024/01/25/1
+  - https://github.com/emikulic/darkhttpd/commit/f477619d49f3c4de9ad59bd194265a48ddc03f04
+  - https://github.com/emikulic/darkhttpd/compare/v1.14...v1.15
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

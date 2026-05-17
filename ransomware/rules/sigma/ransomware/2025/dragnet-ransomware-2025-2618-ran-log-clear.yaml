@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2618 — Event Log Clearing (embargo)'
+id: 75310681-1ba1-5267-9a74-626cbe6c3b03
+status: deprecated
+description: |
+  Detects event log clearing associated with embargo ransomware.
+  Incident: dragnet-ransomware-2025-2618
+  Ransomware victim claim by embargo: allstarflooring.com; country: US; sector: Manufacturing
+  First observed: 2025-05-24.
+references:
+  - http://embargobe3n5okxyzqphpmk3moinoap2snz5k6765mvtkk7hhi544jid.onion/#/post/bbc8cef2-ec0f-4e5d-9c2c-d447559f7e86
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

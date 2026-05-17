@@ -1,0 +1,68 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3807 — Vulnerable Base Image Pull'
+id: 7e04a7f2-4fdf-5439-aea3-157ce5e6c8ff
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3807 (Tier 2, CVSS 9.1)
+  A flaw was found in all python-ecdsa versions before 0.13.3, where it did not correctly verify whether signatures used DER encoding. Without this verification, a malformed signature could be accepted, making the signature malleable. Without proper verification, an attacker could use a malleable signature to create false transactions.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-14859
+  - https://github.com/advisories/GHSA-8qxj-f9rh-9fg2
+  - https://github.com/pypa/advisory-database/tree/main/vulns/ecdsa/PYSEC-2020-163.yaml
+  - https://github.com/tlsfuzzer/python-ecdsa/commit/3427fa29f319b27898a28601955807abb44c0830
+  - https://github.com/tlsfuzzer/python-ecdsa/commit/9080d1d5ac533da0de00466aaffb49bee808bb4e
+  - https://github.com/tlsfuzzer/python-ecdsa/commit/b0ea52bb3aa9a16c9a4a91fdc0041edbfed10b31
+  - https://github.com/warner/python-ecdsa
+  - https://github.com/warner/python-ecdsa/issues/114
+  - https://github.com/warner/python-ecdsa/pull/115
+  - https://github.com/warner/python-ecdsa/pull/124
+  - https://github.com/warner/python-ecdsa/releases/tag/python-ecdsa-0.13.3
+  - https://access.redhat.com/security/cve/CVE-2019-14859
+  - https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2019-14859
+  - https://en.bitcoinwiki.org/wiki/Transaction_Malleability
+  - https://pypi.org/project/ecdsa/0.13.3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.04'
+      - 'ubuntu:19.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

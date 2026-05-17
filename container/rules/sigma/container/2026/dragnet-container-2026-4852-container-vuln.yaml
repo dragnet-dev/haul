@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4852 — Vulnerable Base Image Pull'
+id: 6285094d-ade2-5b7a-a0c9-3b9e0c888e00
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4852 (Tier 2, CVSS 9.8)
+  A prototype pollution vulnerability exists in the function copy in dom.js in the xmldom (published as @xmldom/xmldom) package before 0.8.3 for Node.js via the p variable. NOTE: the vendor states "we are in the process of marking this report as invalid"; however, some third parties takes the position that "A prototype injection/Prototype pollution is not just when global objects are polluted with recursive merge or deep cloning but also when a target object is polluted."
+references:
+  - http://users.encs.concordia.ca/~mmannan/publications/JS-vulnerability-aisaccs2022.pdf
+  - https://dl.acm.org/doi/abs/10.1145/3488932.3497769
+  - https://dl.acm.org/doi/pdf/10.1145/3488932.3497769
+  - https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L1
+  - https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L3
+  - https://github.com/xmldom/xmldom/issues/436
+  - https://github.com/xmldom/xmldom/issues/436#issuecomment-1319412826
+  - https://github.com/xmldom/xmldom/issues/436#issuecomment-1327776560
+  - https://github.com/xmldom/xmldom/pull/437
+  - https://github.com/xmldom/xmldom/security/advisories/GHSA-9pgh-qqpf-7wqj
+  - https://lists.debian.org/debian-lts-announce/2022/10/msg00023.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-37616
+  - https://ubuntu.com/security/notices/USN-6102-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-37616
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

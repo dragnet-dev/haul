@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0373 — Event Log Clearing (AuditTeam)'
+id: 2a9e73bb-0da0-58c8-93e1-199325952527
+status: deprecated
+description: |
+  Detects event log clearing associated with AuditTeam ransomware.
+  Incident: dragnet-ransomware-2026-0373
+  Ransomware victim claim by AuditTeam: joycity; country: KR; sector: Technology
+  First observed: 2026-03-05.
+references:
+  - http://6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad.onion/entity/8672CA95161255F7
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5734 — Vulnerable Base Image Pull'
+id: 5079a355-d056-5814-8d2c-8cefb720a182
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5734 (Tier 2, CVSS 9.9)
+  Wasmtime is a runtime for WebAssembly. From 25.0.0 to before 36.0.7, 42.0.2, and 43.0.1, Wasmtime with its Winch (baseline) non-default compiler backend may allow properly constructed guest Wasm to access host memory outside of its linear-memory sandbox. This vulnerability requires use of the Winch compiler (-Ccompiler=winch). By default, Wasmtime uses its Cranelift backend, not Winch. With Winch, the same incorrect assumption is present in theory on both aarch64 and x86-64. The aarch64 case has an observed-working proof of concept, while the x86-64 case is theoretical and may not be reachable in practice. This Winch compiler bug can allow the Wasm guest to access memory before or after the linear-memory region, independently of whether pre- or post-guard regions are configured. The accessible range in the initial bug proof-of-concept is up to 32KiB before the start of memory, or ~4GiB after the start of memory, independently of the size of pre- or post-guard regions or the use of explicit or guard-region-based bounds checking. However, the underlying bug assumes a 32-bit memory offset stored in a 64-bit register has its upper bits cleared when it may not, and so closely related variants of the initial proof-of-concept may be able to access truly arbitrary memory in-process. This could result in a host process segmentation fault (DoS), an arbitrary data leak from the host process, or with a write, potentially an arbitrary RCE. This vulnerability is fixed in 36.0.7, 42.0.2, and 43.0.1.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-34987
+  - https://github.com/bytecodealliance/wasmtime
+  - https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-xx5w-cvp6-jv83
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-34987
+  - https://rustsec.org/advisories/RUSTSEC-2026-0095.html
+  - https://www.cve.org/CVERecord?id=CVE-2026-34987
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

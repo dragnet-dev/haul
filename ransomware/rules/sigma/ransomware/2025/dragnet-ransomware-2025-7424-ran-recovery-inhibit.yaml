@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7424 — Recovery Inhibition (skira)'
+id: f85e403e-2c22-5613-bdbc-c6ee19562cf5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with skira ransomware.
+  Incident: dragnet-ransomware-2025-7424
+  Ransomware victim claim by skira: City government office in Van; country: TR; sector: Public Sector
+  First observed: 2025-03-06.
+references:
+  - http://mtgc3qvyedjnfu7cen2zsupdppi5ys5g2hm6xwujvoepw25p4dy6huid.onion/news/van.bel.tr.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

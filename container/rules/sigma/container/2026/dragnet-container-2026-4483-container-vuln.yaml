@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4483 — Vulnerable Base Image Pull'
+id: 6a8809b5-1bf9-5f43-8010-52c9db1916ca
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4483 (Tier 2, CVSS 9.8)
+  libspf2 before 1.2.11 has a four-byte heap-based buffer overflow that might allow remote attackers to execute arbitrary code (via an unauthenticated e-mail message from anywhere on the Internet) with a crafted SPF DNS record, because of incorrect sprintf usage in SPF_record_expand_data in spf_expand.c. The vulnerable code may be part of the supply chain of a site's e-mail infrastructure (e.g., with additional configuration, Exim can use libspf2; the Postfix web site links to unofficial patches for use of libspf2 with Postfix; older versions of spfquery relied on libspf2) but most often is not.
+references:
+  - https://github.com/shevek/libspf2/commit/28faf4624a6a371b11afdb9820078d3b0ee3803d
+  - https://github.com/shevek/libspf2/tree/8131fe140704eaae695e76b5cd09e39bd1dd220b
+  - https://lists.debian.org/debian-lts-announce/2022/01/msg00015.html
+  - https://nathanielbennett.com/blog/libspf2-cve-jan-2022-disclosure
+  - https://security.gentoo.org/glsa/202401-22
+  - https://ubuntu.com/security/notices/USN-6584-1
+  - https://ubuntu.com/security/notices/USN-6584-2
+  - https://www.cve.org/CVERecord?id=CVE-2021-33912
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

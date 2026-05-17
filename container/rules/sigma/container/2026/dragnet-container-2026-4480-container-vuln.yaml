@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4480 — Vulnerable Base Image Pull'
+id: 4b22f362-5182-54c9-9a9a-79733d568cf3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4480 (Tier 2, CVSS 9.8)
+  ConnMan (aka Connection Manager) 1.30 through 1.39 has a stack-based buffer overflow in uncompress in dnsproxy.c via NAME, RDATA, or RDLENGTH (for A or AAAA).
+references:
+  - http://www.openwall.com/lists/oss-security/2021/06/09/1
+  - http://www.openwall.com/lists/oss-security/2022/01/25/1
+  - https://lists.debian.org/debian-lts-announce/2022/02/msg00009.html
+  - https://lore.kernel.org/connman/
+  - https://seclists.org/oss-sec/2021/q2/196
+  - https://security.gentoo.org/glsa/202107-29
+  - https://ubuntu.com/security/notices/USN-6236-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-33833
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

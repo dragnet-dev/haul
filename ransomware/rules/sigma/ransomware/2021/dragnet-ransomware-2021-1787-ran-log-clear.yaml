@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1787 — Event Log Clearing (suncrypt)'
+id: b47a1f3b-2fa9-5110-b798-c828eda0bb6c
+status: deprecated
+description: |
+  Detects event log clearing associated with suncrypt ransomware.
+  Incident: dragnet-ransomware-2021-1787
+  Ransomware victim claim by suncrypt: Read more; sector: Not Found
+  First observed: 2021-11-30.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

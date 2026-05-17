@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4226 — Vulnerable Base Image Pull'
+id: 61eda34f-be16-585d-96d6-d0755c6ab1e3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4226 (Tier 2, CVSS 9.8)
+  libtac in pam_tacplus through 1.5.1 lacks a check for a failure of RAND_bytes()/RAND_pseudo_bytes(). This could lead to use of a non-random/predictable session_id.
+references:
+  - https://github.com/kravietz/pam_tacplus/pull/163
+  - https://tools.ietf.org/html/rfc8907
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

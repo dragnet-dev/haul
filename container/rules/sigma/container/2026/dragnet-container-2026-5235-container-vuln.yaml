@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5235 — Vulnerable Base Image Pull'
+id: 76808e80-d982-5035-85cc-cd395e39c2ac
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5235 (Tier 2, CVSS 9.8)
+  HDF5 library through 1.14.3 has memory corruption in H5A__close resulting in the corruption of the instruction pointer and causing denial of service or potential code execution.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-32608
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-32608
+  - https://www.cve.org/CVERecord?id=CVE-2024-32608
+  - https://www.hdfgroup.org/2024/05/new-hdf5-cve-issues-fixed-in-1-14-4/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

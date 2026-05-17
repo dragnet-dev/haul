@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5700 — Vulnerable Base Image Pull'
+id: e32d3893-e77e-5a9b-994e-cef9c85990da
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5700 (Tier 2, CVSS 9.8)
+  flatted is a circular JSON parser. Prior to version 3.4.2, the parse() function in flatted can use attacker-controlled string values from the parsed JSON as direct array index keys, without validating that they are numeric. Since the internal input buffer is a JavaScript Array, accessing it with the key "__proto__" returns Array.prototype via the inherited getter. This object is then treated as a legitimate parsed value and assigned as a property of the output object, effectively leaking a live reference to Array.prototype to the consumer. Any code that subsequently writes to that property will pollute the global prototype. This issue has been patched in version 3.4.2.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-33228
+  - https://github.com/WebReflection/flatted
+  - https://github.com/WebReflection/flatted/commit/885ddcc33cf9657caf38c57c7be45ae1c5272802
+  - https://github.com/WebReflection/flatted/releases/tag/v3.4.2
+  - https://github.com/WebReflection/flatted/security/advisories/GHSA-rf6f-7fwh-wjgh
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-33228
+  - https://www.cve.org/CVERecord?id=CVE-2026-33228
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

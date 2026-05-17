@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1765 — Recovery Inhibition (ms13089)'
+id: 54efc70b-b28d-57f8-b842-7fe370e2749d
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with ms13089 ransomware.
+  Incident: dragnet-ransomware-2026-1765
+  Ransomware victim claim by ms13089: sjl-legal.com; country: LU; sector: Business Services
+  First observed: 2026-01-15.
+references:
+  - http://msleakjir7pxbe6onlqe5uwgvdmy6nq4mnwfy7ojswbhnleenm77vgad.onion/SJL/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

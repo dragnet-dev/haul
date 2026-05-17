@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2816 — Vulnerable Base Image Pull'
+id: 8639a249-5c54-5f41-b079-0c02e1d8ce76
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2816 (Tier 2, CVSS 9.8)
+  The secureCompare method in lib/SimpleSAML/Utils/Crypto.php in SimpleSAMLphp 1.14.13 and earlier, when used with PHP before 5.6, allows attackers to conduct session fixation attacks or possibly bypass authentication by leveraging missing character conversions before an XOR operation.
+references:
+  - https://github.com/FriendsOfPHP/security-advisories/blob/master/simplesamlphp/simplesamlphp/CVE-2017-12868.yaml
+  - https://github.com/simplesamlphp/simplesamlphp
+  - https://github.com/simplesamlphp/simplesamlphp/commit/4bc629658e7b7d17c9ac3fe0da7dc5df71f1b85e
+  - https://lists.debian.org/debian-lts-announce/2017/12/msg00007.html
+  - https://lists.debian.org/debian-lts-announce/2018/06/msg00017.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-12868
+  - https://simplesamlphp.org/security/201705-01
+  - https://www.cve.org/CVERecord?id=CVE-2017-12868
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

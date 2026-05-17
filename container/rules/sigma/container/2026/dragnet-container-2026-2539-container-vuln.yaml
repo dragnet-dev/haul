@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2539 — Vulnerable Base Image Pull'
+id: c39cf5eb-7479-5b37-a6dd-a6623356995d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2539 (Tier 2, CVSS 9.8)
+  An issue was discovered in phpMyAdmin. Some data is passed to the PHP unserialize() function without verification that it's valid serialized data. The unserialization can result in code execution because of the interaction with object instantiation and autoloading. All 4.6.x versions (prior to 4.6.4), 4.4.x versions (prior to 4.4.15.8), and 4.0.x versions (prior to 4.0.10.17) are affected.
+references:
+  - http://www.phpmyadmin.net/security/PMASA-2016-43/
+  - http://www.securityfocus.com/bid/95055
+  - https://lists.debian.org/debian-lts-announce/2018/07/msg00006.html
+  - https://security.gentoo.org/glsa/201701-32
+  - https://www.cve.org/CVERecord?id=CVE-2016-6620
+  - https://www.phpmyadmin.net/security/PMASA-2016-43
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

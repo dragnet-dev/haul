@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2696 — Vulnerable Base Image Pull'
+id: 15239c71-d7d2-5100-80ff-fb65b2d5fe80
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2696 (Tier 2, CVSS 9.8)
+  A heap-overflow flaw exists in the -tr loader of iucode-tool starting with v1.4 and before v2.1.1, potentially leading to SIGSEGV, or heap corruption.
+references:
+  - http://www.securityfocus.com/bid/95432
+  - https://gitlab.com/iucode-tool/iucode-tool/issues/3
+  - https://security-tracker.debian.org/tracker/CVE-2017-0357
+  - https://ubuntu.com/security/notices/USN-3186-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-0357
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

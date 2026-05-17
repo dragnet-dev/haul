@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4313 — Vulnerable Base Image Pull'
+id: 39866f1f-6113-5cee-9ee3-64b41f70c222
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4313 (Tier 2, CVSS 9.8)
+  All versions of bson before 1.1.4 are vulnerable to Deserialization of Untrusted Data. The package will ignore an unknown value for an object's _bsotype, leading to cases where an object is serialized as a document rather than the intended BSON type.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-7610
+  - https://github.com/mongodb/js-bson/commit/3809c1313a7b2a8001065f0271199df9fa3d16a8
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-7610
+  - https://snyk.io/vuln/SNYK-JS-BSON-561052
+  - https://www.cve.org/CVERecord?id=CVE-2020-7610
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4866 — Vulnerable Base Image Pull'
+id: a2f799f1-ac2f-5b66-b45e-eed3dc214eba
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4866 (Tier 2, CVSS 9.8)
+  xmldom is a pure JavaScript W3C standard-based (XML DOM Level 2 Core) `DOMParser` and `XMLSerializer` module. xmldom parses XML that is not well-formed because it contains multiple top level elements, and adds all root nodes to the `childNodes` collection of the `Document`, without reporting any error or throwing. This breaks the assumption that there is only a single root node in the tree, which led to issuance of CVE-2022-39299 as it is a potential issue for dependents. Update to @xmldom/xmldom@~0.7.7, @xmldom/xmldom@~0.8.4 (dist-tag latest) or @xmldom/xmldom@>=0.9.0-beta.4 (dist-tag next). As a workaround, please one of the following approaches depending on your use case: instead of searching for elements in the whole DOM, only search in the `documentElement`or reject a document with a document that has more then 1 `childNode`.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-39353
+  - https://github.com/jindw/xmldom/issues/150
+  - https://github.com/xmldom/xmldom
+  - https://github.com/xmldom/xmldom/commit/52a708360c35aa160fcca8621720d71fd0f95f1a
+  - https://github.com/xmldom/xmldom/commit/7ff7c10ab2961703ac1752e95b4ff60ee4ee6643
+  - https://github.com/xmldom/xmldom/commit/c02f786216bed70825f9a351c65e61500f51e931
+  - https://github.com/xmldom/xmldom/releases/tag/0.7.7
+  - https://github.com/xmldom/xmldom/releases/tag/0.8.4
+  - https://github.com/xmldom/xmldom/releases/tag/0.9.0-beta.4
+  - https://github.com/xmldom/xmldom/security/advisories/GHSA-crh6-fp67-6883
+  - https://lists.debian.org/debian-lts-announce/2023/01/msg00000.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-39353
+  - https://ubuntu.com/security/notices/USN-6102-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-39353
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

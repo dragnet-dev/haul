@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4079 — Vulnerable Base Image Pull'
+id: 2c9b33a9-98b5-5d6d-95f1-24b94f5ff825
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4079 (Tier 2, CVSS 9.8)
+  An issue was discovered in DAViCal Andrew's Web Libraries (AWL) through 0.60. Long-term session cookies, uses to provide long-term session continuity, are not generated securely, enabling a brute-force attack that may be successful.
+references:
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956650
+  - https://gitlab.com/davical-project/awl/-/commit/535505c9acd0dda9cf664c38f5f8cb8dd61dc0cd
+  - https://gitlab.com/davical-project/awl/-/issues/18
+  - https://lists.debian.org/debian-lts-announce/2020/04/msg00011.html
+  - https://www.cve.org/CVERecord?id=CVE-2020-11729
+  - https://www.debian.org/security/2020/dsa-4660
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

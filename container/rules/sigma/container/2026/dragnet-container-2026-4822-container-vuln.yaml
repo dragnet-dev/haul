@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4822 — Vulnerable Base Image Pull'
+id: 4f610f4f-80c6-5f9c-a210-16c4d19351b7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4822 (Tier 2, CVSS 9.8)
+  In Das U-Boot through 2022.07-rc5, an integer signedness error and resultant stack-based buffer overflow in the "i2c md" command enables the corruption of the return address pointer of the do_i2c_md function.
+references:
+  - https://cert-portal.siemens.com/productcert/html/ssa-577017.html
+  - https://github.com/u-boot/u-boot/commit/8f8c04bf1ebbd2f72f1643e7ad9617dafa6e5409
+  - https://lists.debian.org/debian-lts-announce/2025/05/msg00001.html
+  - https://lists.denx.de/pipermail/u-boot/2022-June/486113.html
+  - https://source.denx.de/u-boot/u-boot/-/commit/8f8c04bf1ebbd2f72f1643e7ad9617dafa6e5409
+  - https://ubuntu.com/security/notices/USN-5764-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-34835
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

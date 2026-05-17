@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5478 — Vulnerable Base Image Pull'
+id: db04a650-eaba-5e1f-b2d5-96192a158e56
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5478 (Tier 2, CVSS 10)
+  ADOdb is a PHP database class library that provides abstractions for performing queries and managing databases. In versions 5.22.9 and below, improper escaping of a query parameter may allow an attacker to execute arbitrary SQL statements when the code using ADOdb connects to a sqlite3 database and calls the metaColumns(), metaForeignKeys() or metaIndexes() methods with a crafted table name. This is fixed in version 5.22.10. To workaround this issue, only pass controlled data to metaColumns(), metaForeignKeys() and metaIndexes() method's $table parameter.
+references:
+  - https://github.com/ADOdb/ADOdb
+  - https://github.com/ADOdb/ADOdb/commit/5b8bd52cdcffefb4ecded1b399c98cfa516afe03
+  - https://github.com/ADOdb/ADOdb/issues/1083
+  - https://github.com/ADOdb/ADOdb/security/advisories/GHSA-vf2r-cxg9-p7rf
+  - https://lists.debian.org/debian-lts-announce/2025/10/msg00020.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-54119
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

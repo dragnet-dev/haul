@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0384 — Event Log Clearing (aurora)'
+id: 418540a3-84f6-576e-91ba-47cd10a858ed
+status: deprecated
+description: |
+  Detects event log clearing associated with aurora ransomware.
+  Incident: dragnet-ransomware-2026-0384
+  Ransomware victim claim by aurora: Bayou Title, Inc.; country: US; sector: Financial Services
+  First observed: 2026-04-29.
+references:
+  - http://u6lieui2dakbctcjea2bz4r4q32r7t36nwljovqbv7mxs6o2smgxixid.onion/blog/bayou-title-inc-2d5014bd
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5443 — Vulnerable Base Image Pull'
+id: 35c3f2be-e5c3-5bb7-a737-5438ee292148
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5443 (Tier 2, CVSS 9.8)
+  An issue was discovered in GoBGP before 3.35.0. pkg/packet/rtr/rtr.go does not verify that the input length corresponds to a situation in which all bytes are available for an RTR message.
+references:
+  - https://github.com/osrg/gobgp
+  - https://github.com/osrg/gobgp/commit/5693c58a4815cc6327b8d3b6980f0e5aced28abe
+  - https://github.com/osrg/gobgp/compare/v3.34.0...v3.35.0
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-43973
+  - https://ubuntu.com/security/notices/USN-7661-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-43973
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

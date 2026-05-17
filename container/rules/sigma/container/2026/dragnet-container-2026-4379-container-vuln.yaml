@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4379 — Vulnerable Base Image Pull'
+id: 1d7a8c78-739e-59ac-a4dd-2b4f96e0352a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4379 (Tier 2, CVSS 9)
+  Pug is an npm package which is a high-performance template engine.  In pug before version 3.0.1, if a remote attacker was able to control the `pretty` option of the pug compiler, e.g. if you spread a user provided object such as the query parameters of a request into the pug template inputs, it was possible for them to achieve remote code execution on the node.js backend. This is fixed in version 3.0.1.  This advisory applies to multiple pug packages including "pug", "pug-code-gen".  pug-code-gen has a backported fix at version 2.0.3. This advisory is not exploitable if there is no way for un-trusted input to be passed to pug as the `pretty` option, e.g. if you compile templates in advance before applying user input to them, you do not need to upgrade.
+references:
+  - https://access.redhat.com/security/cve/CVE-2021-21353
+  - https://github.com/pugjs/pug/commit/991e78f7c4220b2f8da042877c6f0ef5a4683be0
+  - https://github.com/pugjs/pug/issues/3312
+  - https://github.com/pugjs/pug/pull/3314
+  - https://github.com/pugjs/pug/releases/tag/pug%403.0.1
+  - https://github.com/pugjs/pug/security/advisories/GHSA-p493-635q-r6gr
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-21353
+  - https://www.cve.org/CVERecord?id=CVE-2021-21353
+  - https://www.npmjs.com/package/pug
+  - https://www.npmjs.com/package/pug-code-gen
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

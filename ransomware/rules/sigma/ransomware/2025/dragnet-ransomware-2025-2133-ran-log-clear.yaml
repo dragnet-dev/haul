@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2133 — Event Log Clearing (crypto24)'
+id: 4ed05943-9f8b-52d6-8597-a726bd81c22b
+status: deprecated
+description: |
+  Detects event log clearing associated with crypto24 ransomware.
+  Incident: dragnet-ransomware-2025-2133
+  Ransomware victim claim by crypto24: U.S. Vanadium Holding Company LLC; country: US; sector: Manufacturing
+  First observed: 2025-10-20.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2310 — Vulnerable Base Image Pull'
+id: 4033bb76-8bc5-5731-aaaf-f9f609326b36
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2310 (Tier 2, CVSS 9.8)
+  mediaserver in Android 6.x before 2016-03-01 allows remote attackers to execute arbitrary code or cause a denial of service (memory corruption) via a crafted media file, related to decoder/ih264d_parse_islice.c and decoder/ih264d_parse_pslice.c, aka internal bug 25928803.
+references:
+  - http://source.android.com/security/bulletin/2016-03-01.html
+  - http://www.securityfocus.com/bid/84235
+  - https://android.googlesource.com/platform/external/libavc/+/4a524d3a8ae9aa20c36430008e6bd429443f8f1d
+  - https://www.cve.org/CVERecord?id=CVE-2016-0816
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

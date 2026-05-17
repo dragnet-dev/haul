@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5418 — Vulnerable Base Image Pull'
+id: 92ae2b06-64f6-5c31-9a5b-50ff8c1ffaba
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5418 (Tier 2, CVSS 9.8)
+  ReadWPGImage in WPG in GraphicsMagick before 1.3.46 mishandles palette buffer allocation, resulting in out-of-bounds access to heap memory in ReadBlob.
+references:
+  - http://www.graphicsmagick.org/NEWS.html
+  - https://foss.heptapod.net/graphicsmagick/graphicsmagick/-/commit/883ebf8cae6dfa5873d975fe3476b1a188ef3f9f
+  - https://github.com/advisories/GHSA-v5xf-gj23-85jx
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-27796
+  - https://sourceforge.net/p/graphicsmagick/bugs/750
+  - https://sourceforge.net/p/graphicsmagick/bugs/750/
+  - https://ubuntu.com/security/notices/USN-7433-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-27796
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2023'
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:24.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

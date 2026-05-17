@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3013 — Event Log Clearing (gunra)'
+id: d72c8c8d-eac4-5968-979a-2afc0f4cfd8a
+status: deprecated
+description: |
+  Detects event log clearing associated with gunra ransomware.
+  Incident: dragnet-ransomware-2025-3013
+  Ransomware victim claim by gunra: Grupo Jorge Batista; country: BR; sector: Consumer Services
+  First observed: 2025-05-12.
+references:
+  - http://gunrabxbig445sjqa535uaymzerj6fp4nwc6ngc2xughf2pedjdhk4ad.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

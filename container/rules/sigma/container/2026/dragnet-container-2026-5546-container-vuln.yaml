@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5546 — Vulnerable Base Image Pull'
+id: 527b74b2-e271-5964-8788-c64fc0cd69c1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5546 (Tier 2, CVSS 9.1)
+  Suricata is a network IDS, IPS and NSM engine. Prior to version 8.0.3 and 7.0.14, an unsigned integer overflow can lead to a heap use-after-free condition when generating excessive amounts of alerts for a single packet. Versions 8.0.3 and 7.0.14 contain a patch. As a workaround, do not run untrusted rulesets or run with less than 65536 signatures that can match on the same packet.
+references:
+  - https://github.com/OISF/suricata/commit/549d7bf60616de8e54686a188196453b5b22f715
+  - https://github.com/OISF/suricata/commit/5789a3d3760dbf33d93fc56c27bd9529e5bdc8f2
+  - https://github.com/OISF/suricata/commit/ac1eb394181530430fb7262969f423a1bf8f209b
+  - https://github.com/OISF/suricata/security/advisories/GHSA-mqr8-m3m4-2hw5
+  - https://redmine.openinfosecfoundation.org/issues/8190
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

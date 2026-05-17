@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1683 — Vulnerable Base Image Pull'
+id: cae214f2-eda8-5b52-89c5-bbe4d0e9b10f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1683 (Tier 2, CVSS 10)
+  Stack-based buffer overflow in the chkNum function in lib/cgraph/scan.l in Graphviz 2.34.0 allows remote attackers to have unspecified impact via vectors related to a "badly formed number" and a "long digit list."
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2014-1236
+  - https://github.com/ellson/graphviz/commit/1d1bdec6318746f6f19f245db589eddc887ae8ff
+  - http://osvdb.org/101851
+  - http://seclists.org/oss-sec/2014/q1/46
+  - http://seclists.org/oss-sec/2014/q1/51
+  - http://seclists.org/oss-sec/2014/q1/54
+  - http://secunia.com/advisories/55666
+  - http://secunia.com/advisories/56244
+  - http://www.debian.org/security/2014/dsa-2843
+  - http://www.mandriva.com/security/advisories?name=MDVSA-2014:024
+  - http://www.securityfocus.com/bid/64737
+  - https://access.redhat.com/security/cve/CVE-2014-1236
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1050872
+  - https://security.gentoo.org/glsa/201702-06
+  - https://ubuntu.com/security/notices/USN-2083-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:12.10'
+      - 'ubuntu:13.04'
+      - 'ubuntu:13.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

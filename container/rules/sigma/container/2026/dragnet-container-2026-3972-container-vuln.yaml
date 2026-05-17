@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3972 — Vulnerable Base Image Pull'
+id: 79501823-33f7-5bc1-929c-4c5af724120f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3972 (Tier 2, CVSS 9.8)
+  Plataformatec Devise version 4.5.0 and earlier, using the lockable module contains a CWE-367 vulnerability in The `Devise::Models::Lockable` class, more specifically at the `#increment_failed_attempts` method. File location: lib/devise/models/lockable.rb that can result in Multiple concurrent requests can prevent an attacker from being blocked on brute force attacks. This attack appear to be exploitable via Network connectivity - brute force attacks. This vulnerability appears to have been fixed in 4.6.0 and later.
+references:
+  - https://github.com/plataformatec/devise
+  - https://github.com/plataformatec/devise/issues/4981
+  - https://github.com/plataformatec/devise/pull/4996
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-5421
+  - https://www.cve.org/CVERecord?id=CVE-2019-5421
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5779 — Vulnerable Base Image Pull'
+id: c30d21ad-cf78-5288-b45b-ab977424d224
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5779 (Tier 2, CVSS 9.8)
+  A flaw was found in gnutls. Servers configured with RSA-PSK (Rivest–Shamir–Adleman – Pre-Shared Key) wrongfully matched usernames containing a NUL character with truncated usernames. A remote attacker could exploit this by sending a specially crafted username, leading to an authentication bypass. This vulnerability allows an attacker to gain unauthorized access by circumventing the authentication process.
+references:
+  - https://access.redhat.com/errata/RHSA-2026:13274
+  - https://access.redhat.com/security/cve/CVE-2026-42010
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2467289
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-42010
+  - https://www.cve.org/CVERecord?id=CVE-2026-42010
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

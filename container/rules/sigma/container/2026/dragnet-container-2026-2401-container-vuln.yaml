@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2401 — Vulnerable Base Image Pull'
+id: 012473c8-d4cc-5d41-9575-0e3814c3f7db
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2401 (Tier 2, CVSS 9.8)
+  Heap-based buffer overflow in the encode_msg function in encode_msg.c in the SEAS module in Kamailio (formerly OpenSER and SER) before 4.3.5 allows remote attackers to cause a denial of service (memory corruption and process crash) or possibly execute arbitrary code via a large SIP packet.
+references:
+  - http://packetstormsecurity.com/files/136477/Kamailio-4.3.4-Heap-Overflow.html
+  - http://www.debian.org/security/2016/dsa-3535
+  - http://www.debian.org/security/2016/dsa-3537
+  - http://www.kamailio.org/pub/kamailio/4.3.5/ChangeLog
+  - http://www.openwall.com/lists/oss-security/2016/02/15/4
+  - http://www.securityfocus.com/archive/1/537926/100/0/threaded
+  - https://census-labs.com/news/2016/03/30/kamailio-seas-heap-overflow/
+  - https://github.com/kamailio/kamailio/commit/f50c9c853e7809810099c970780c30b0765b0643
+  - https://ubuntu.com/security/notices/USN-7416-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-2385
+  - https://www.exploit-db.com/exploits/39638/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,39 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1204 — Shadow Copy Deletion (mosesstaff)'
+id: 1e38b4f6-4abf-59fc-8eb7-86efb4fb621e
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with mosesstaff ransomware.
+  Incident: dragnet-ransomware-2021-1204
+  Associated with Leviathan.
+  Ransomware victim claim by mosesstaff: Ehud Leviathan Engineering; sector: Manufacturing
+  First observed: 2021-12-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+  - dragnet.actor.leviathan
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

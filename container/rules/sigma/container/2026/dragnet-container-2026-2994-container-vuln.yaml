@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2994 — Vulnerable Base Image Pull'
+id: e148e838-2bdf-57ef-b82a-b10746eefe22
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2994 (Tier 2, CVSS 9.8)
+  NGINX before 1.13.6 has a buffer overflow for years that exceed four digits, as demonstrated by a file with a modification date in 1969 that causes an integer overflow (or a false modification date far in the future), when encountered by the autoindex module.
+references:
+  - http://nginx.org/en/CHANGES
+  - https://access.redhat.com/security/cve/CVE-2017-20005
+  - https://github.com/nginx/nginx/commit/0206ebe76f748bb39d9de4dd4b3fce777fdfdccf
+  - https://github.com/nginx/nginx/commit/b900cc28fcbb4cf5a32ab62f80b59292e1c85b4b
+  - https://lists.debian.org/debian-lts-announce/2021/06/msg00009.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-20005
+  - https://security.netapp.com/advisory/ntap-20210805-0006/
+  - https://trac.nginx.org/nginx/ticket/1368
+  - https://ubuntu.com/security/notices/USN-5109-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-20005
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

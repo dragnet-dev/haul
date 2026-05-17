@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4752 — Vulnerable Base Image Pull'
+id: 89e1b99b-c443-5cd3-b462-9e91242141a8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4752 (Tier 2, CVSS 9.8)
+  In pgjdbc before 42.3.3, an attacker (who controls the jdbc URL or properties) can call java.util.logging.FileHandler to write to arbitrary files through the loggerFile and loggerLevel connection properties. An example situation is that an attacker could create an executable JSP file under a Tomcat web root. NOTE: the vendor's position is that there is no pgjdbc vulnerability; instead, it is a vulnerability for any application to use the pgjdbc driver with untrusted connection properties
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-26520
+  - https://github.com/pgjdbc/pgjdbc
+  - https://github.com/pgjdbc/pgjdbc/pull/2454/commits/017b929977b4f85795f9ad2fa5de6e80978b8ccc
+  - https://github.com/pgjdbc/pgjdbc/security/advisories/GHSA-673j-qm5f-xpv8
+  - https://jdbc.postgresql.org/documentation/changelog.html#version_42.3.3
+  - https://jdbc.postgresql.org/documentation/head/tomcat.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-26520
+  - https://www.cve.org/CVERecord?id=CVE-2022-26520
+  - https://www.debian.org/security/2022/dsa-5196
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

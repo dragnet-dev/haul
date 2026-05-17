@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0428 — Recovery Inhibition (blackwater)'
+id: 0847c7fd-7e32-5cb8-b7d5-fd96f9d87f58
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0428
+  Ransomware victim claim by blackwater: Tuopu; country: CN; sector: Manufacturing
+  First observed: 2026-05-02.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=6e83285b-52f9-3757-acd4-92fe305b6a2e
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

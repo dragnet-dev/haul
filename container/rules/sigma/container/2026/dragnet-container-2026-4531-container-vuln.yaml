@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4531 — Vulnerable Base Image Pull'
+id: 5b25383d-8ed0-50aa-b90f-38637603231c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4531 (Tier 2, CVSS 9.8)
+  OctoRPKI does not escape a URI with a filename containing "..", this allows a repository to create a file, (ex. rsync://example.org/repo/../../etc/cron.daily/evil.roa), which would then be written to disk outside the base cache folder. This could allow for remote code execution on the host machine OctoRPKI is running on.
+references:
+  - https://github.com/cloudflare/cfrpki
+  - https://github.com/cloudflare/cfrpki/commit/a053a808feeb3115c76b6cc263ee55598ce6e8cd
+  - https://github.com/cloudflare/cfrpki/commit/eb9cc4db7b7b79e44f56dfaa959fccdfb2af8284
+  - https://github.com/cloudflare/cfrpki/security/advisories/GHSA-3jhm-87m6-x959
+  - https://github.com/cloudflare/cfrpki/security/advisories/GHSA-cqh2-vc2f-q4fh
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-3907
+  - https://pkg.go.dev/vuln/GO-2022-0248
+  - https://www.cve.org/CVERecord?id=CVE-2021-3907
+  - https://www.debian.org/security/2021/dsa-5033
+  - https://www.debian.org/security/2022/dsa-5041
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

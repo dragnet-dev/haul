@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3648 — Recovery Inhibition (lynx)'
+id: ce009932-a6ae-5fb5-a719-0bf07467c795
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3648
+  Ransomware victim claim by lynx: LINTEC & LINNHOFF Holdings; country: DE; sector: Manufacturing
+  First observed: 2024-12-20.
+references:
+  - http://lynxblog.net/leaks/67b33ed044fac8dca1099389
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

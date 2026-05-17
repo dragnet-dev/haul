@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3496 — Vulnerable Base Image Pull'
+id: 8b1854eb-eb57-5546-947f-7f63977dbad3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3496 (Tier 2, CVSS 9.1)
+  An exploitable arbitrary memory read vulnerability exists in the MQTT packet-parsing functionality of Cesanta Mongoose 6.13. It is a heap-based buffer over-read in mg_mqtt_next_subscribe_topic. A specially crafted MQTT SUBSCRIBE packet can cause an arbitrary out-of-bounds memory read potentially resulting in information disclosure and denial of service. An attacker needs to send a specially crafted MQTT packet over the network to trigger this vulnerability.
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-18765
+  - https://github.com/TiffanyBlue/PoCbyMyself/blob/master/mongoose6.13/mqtt/Cesanta%20Mongoose%20MQTT%20mg_mqtt_next_subscribe_topic%20heap%20buffer%20overflow.md
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-18765
+  - https://twitter.com/thracky/status/1059472674940993541
+  - https://www.cve.org/CVERecord?id=CVE-2018-18765
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

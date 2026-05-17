@@ -1,0 +1,67 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5198 — Vulnerable Base Image Pull'
+id: c3fbd3d5-965b-544e-8c48-a2059b782439
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5198 (Tier 2, CVSS 9.8)
+  The various Is methods (IsPrivate, IsLoopback, etc) did not work as expected for IPv4-mapped IPv6 addresses, returning false for addresses which would return true in their traditional IPv4 forms.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-24790
+  - https://github.com/golang/go/commit/051bdf3fd12a40307606ff9381138039c5f452f0 (1.21)
+  - https://github.com/golang/go/commit/12d5810cdb1f73cf23d7a86462143e9463317fca (1.22)
+  - https://github.com/golang/go/issues/67680
+  - http://www.openwall.com/lists/oss-security/2024/06/04/1
+  - https://access.redhat.com/errata/RHSA-2025:7256
+  - https://access.redhat.com/security/cve/CVE-2024-24790
+  - https://bugzilla.redhat.com/2237777
+  - https://bugzilla.redhat.com/2237778
+  - https://bugzilla.redhat.com/2279814
+  - https://bugzilla.redhat.com/2292787
+  - https://bugzilla.redhat.com/2295310
+  - https://bugzilla.redhat.com/2315719
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2237777
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2237778
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

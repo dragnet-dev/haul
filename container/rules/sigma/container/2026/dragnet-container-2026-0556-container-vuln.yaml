@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0556 — Vulnerable Base Image Pull'
+id: 9e36b14b-02f4-55fd-b810-4716e9a2ae79
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0556 (Tier 2, CVSS 10)
+  apt-get in apt before 0.7.21 does not check for the correct error code from gpgv, which causes apt to treat a repository as valid even when it has been signed with a key that has been revoked or expired, which might allow remote attackers to trick apt into installing malicious repositories.
+references:
+  - http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=433091
+  - http://secunia.com/advisories/34829
+  - http://secunia.com/advisories/34832
+  - http://secunia.com/advisories/34874
+  - http://www.debian.org/security/2009/dsa-1779
+  - http://www.securityfocus.com/bid/34630
+  - https://bugs.launchpad.net/ubuntu/+source/apt/+bug/356012
+  - https://exchange.xforce.ibmcloud.com/vulnerabilities/50086
+  - https://usn.ubuntu.com/762-1/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

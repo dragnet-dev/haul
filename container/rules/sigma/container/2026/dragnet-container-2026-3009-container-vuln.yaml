@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3009 — Vulnerable Base Image Pull'
+id: e1392f3a-5975-5a1b-8b3b-8ed0f12d3415
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3009 (Tier 2, CVSS 9.8)
+  A specially crafted x509 certificate can cause a single out of bounds byte overwrite in wolfSSL through 3.10.2 resulting in potential certificate validation vulnerabilities, denial of service and possible remote code execution. In order to trigger this vulnerability, the attacker needs to supply a malicious x509 certificate to either a server or a client application using this library.
+references:
+  - http://www.talosintelligence.com/reports/TALOS-2017-0293/
+  - https://talosintelligence.com/vulnerability_reports/TALOS-2017-0293
+  - https://www.cve.org/CVERecord?id=CVE-2017-2800
+  - https://www.exploit-db.com/exploits/41984/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

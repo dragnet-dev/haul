@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2017 — Recovery Inhibition (darkrace)'
+id: ef89dd8e-f201-5ca3-a8a1-38cf665cc6b7
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with darkrace ransomware.
+  Incident: dragnet-ransomware-2023-2017
+  Ransomware victim claim by darkrace: vaud-promotion; country: CH; sector: Public Sector
+  First observed: 2023-06-07.
+references:
+  - http://wkrlpub5k52rjigwxfm6m7ogid55kamgc5azxlq7zjgaopv33tgx2sqd.onion/fee884bc2398/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

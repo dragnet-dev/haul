@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4114 — Vulnerable Base Image Pull'
+id: 77d39040-dbaa-5d64-81b1-c881ab80ac32
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4114 (Tier 2, CVSS 9.8)
+  An issue was discovered in janus-gateway (aka Janus WebRTC Server) through 0.10.0. janus_get_codec_from_pt in utils.c has a Buffer Overflow via long value in an SDP Offer packet.
+references:
+  - https://github.com/meetecho/janus-gateway/blob/v0.10.0/utils.c#L381
+  - https://github.com/meetecho/janus-gateway/blob/v0.10.0/utils.c#L401
+  - https://github.com/meetecho/janus-gateway/pull/2229
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

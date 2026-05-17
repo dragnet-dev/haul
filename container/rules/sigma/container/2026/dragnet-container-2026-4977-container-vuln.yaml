@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4977 — Vulnerable Base Image Pull'
+id: ae773e24-f90e-521e-b548-c976c03a948b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4977 (Tier 2, CVSS 9.8)
+  strongSwan 5.9.8 and 5.9.9 potentially allows remote code execution because it uses a variable named "public" for two different purposes within the same function. There is initially incorrect access control, later followed by an expired pointer dereference. One attack vector is sending an untrusted client certificate during EAP-TLS. A server is affected only if it loads plugins that implement TLS-based EAP methods (EAP-TLS, EAP-TTLS, EAP-PEAP, or EAP-TNC). This is fixed in 5.9.10.
+references:
+  - https://github.com/strongswan/strongswan/releases
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-26463
+  - https://security.netapp.com/advisory/ntap-20230517-0010/
+  - https://www.cve.org/CVERecord?id=CVE-2023-26463
+  - https://www.strongswan.org/blog/2023/03/02/strongswan-vulnerability-%28cve-2023-26463%29.html
+  - https://www.strongswan.org/blog/2023/03/02/strongswan-vulnerability-(cve-2023-26463).html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'cbl-mariner:2.0'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

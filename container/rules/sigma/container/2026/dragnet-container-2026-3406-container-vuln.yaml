@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3406 — Vulnerable Base Image Pull'
+id: 0bf4f362-a3db-5749-8988-cf76727ffdd3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3406 (Tier 2, CVSS 9.8)
+  An issue was discovered in the HDF HDF5 1.8.20 library. There is a memcpy parameter overlap in the function H5O_link_decode in H5Olink.c.
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-13869
+  - https://github.com/TeamSeri0us/pocs/tree/master/hdf5
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-13869
+  - https://www.cve.org/CVERecord?id=CVE-2018-13869
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

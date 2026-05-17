@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1322 — Event Log Clearing (hive)'
+id: 87e7c6b6-c840-5773-8ce8-bc9347506202
+status: deprecated
+description: |
+  Detects event log clearing associated with hive ransomware.
+  Incident: dragnet-ransomware-2022-1322
+  Ransomware victim claim by hive: SuperAlloy Industrial Co., Ltd.; country: GB; sector: Manufacturing
+  First observed: 2022-06-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

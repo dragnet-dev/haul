@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3542 — Event Log Clearing (insomnia)'
+id: 0fcf6f4f-a5bf-5509-b2bb-5a369052c291
+status: deprecated
+description: |
+  Detects event log clearing associated with insomnia ransomware.
+  Incident: dragnet-ransomware-2025-3542
+  Ransomware victim claim by insomnia: Carlyle Senior Care of Florence; country: US; sector: Healthcare
+  First observed: 2025-10-31.
+references:
+  - http://i62huw7ve22rpyw6lnq3kmfump2dmsg4xpveec3ere73njwatrz74gad.onion/Company/CarlyleSeniorCare/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

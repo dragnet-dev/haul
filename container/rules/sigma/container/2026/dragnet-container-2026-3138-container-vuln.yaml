@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3138 — Vulnerable Base Image Pull'
+id: c3b432f5-542e-5705-9369-25176d713fa0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3138 (Tier 2, CVSS 9.8)
+  A deserialization flaw was discovered in the jackson-databind, versions before 2.6.7.1, 2.7.9.1 and 2.8.9, which could allow an unauthenticated user to perform code execution by sending the maliciously crafted input to the readValue method of the ObjectMapper.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-7525
+  - https://github.com/advisories/GHSA-qxxx-2pp7-5hmx
+  - https://github.com/FasterXML/jackson-databind
+  - https://github.com/FasterXML/jackson-databind/commit/3bfbb835e530055c1941ddf87fde0b08d08dcd38
+  - https://github.com/FasterXML/jackson-databind/commit/60d459cedcf079c6106ae7da2ac562bc32dcabe1
+  - https://github.com/FasterXML/jackson-databind/commit/680d75b011edd67a2d2a2e9980998a968194c2ef
+  - https://github.com/FasterXML/jackson-databind/commit/6ce32ffd18facac6abdbbf559c817b47fcb622c1
+  - https://github.com/FasterXML/jackson-databind/commit/90042692085deeb05ae75c569c9909f7dba24415
+  - https://github.com/FasterXML/jackson-databind/commit/fa87c1ddbe803ebb7295f5c2ebfe38e12f6e6162
+  - https://github.com/FasterXML/jackson-databind/commit/fd8dec2c7fab8b4b4bd60502a0f1d63ec23c24da
+  - https://github.com/FasterXML/jackson-databind/issues/1599
+  - https://github.com/FasterXML/jackson-databind/issues/1723
+  - http://www.oracle.com/technetwork/security-advisory/cpuapr2018-3678067.html
+  - http://www.oracle.com/technetwork/security-advisory/cpujul2018-4258247.html
+  - http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

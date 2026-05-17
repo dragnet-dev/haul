@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7713 — Recovery Inhibition (VanHelsing)'
+id: 113a1d0e-7c0d-5b59-8898-a3746d6e5c97
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with VanHelsing ransomware.
+  Incident: dragnet-ransomware-2025-7713
+  Ransomware victim claim by VanHelsing: alertenterprise.com; country: US; sector: Technology
+  First observed: 2025-03-31.
+references:
+  - http://vanhelxjo52qr2ixcmtjayqqrcodkuh36n7uq7q7xj23ggotyr3y72yd.onion/blog/blog.php?id=45
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

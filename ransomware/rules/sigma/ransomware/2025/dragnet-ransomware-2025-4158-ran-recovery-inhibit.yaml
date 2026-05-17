@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4158 — Recovery Inhibition (lynx)'
+id: ed32aa44-fb8f-50a3-bcd2-8e097f70b75f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4158
+  Ransomware victim claim by lynx: Lexington Electric; country: US; sector: Energy
+  First observed: 2025-01-29.
+references:
+  - http://lynxblog.net/leaks/679a244e05a779c3d33a35d2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

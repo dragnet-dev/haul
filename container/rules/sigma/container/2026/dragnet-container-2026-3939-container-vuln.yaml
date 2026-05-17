@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3939 — Vulnerable Base Image Pull'
+id: 716291e3-e840-51ed-af13-167455f7190d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3939 (Tier 2, CVSS 9.8)
+  libvncclient/cursor.c in LibVNCServer through 0.9.12 has a HandleCursorShape integer overflow and heap-based buffer overflow via a large height or width value. NOTE: this may overlap CVE-2019-15690.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00027.html
+  - https://access.redhat.com/security/cve/CVE-2019-20788
+  - https://cert-portal.siemens.com/productcert/pdf/ssa-390195.pdf
+  - https://github.com/LibVNC/libvncserver/commit/54220248886b5001fbbb9fa73c4e1a2cb9413fed
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-20788
+  - https://securitylab.github.com/advisories/GHSL-2020-064-libvnc-libvncclient
+  - https://ubuntu.com/security/notices/USN-4407-1
+  - https://usn.ubuntu.com/4407-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-20788
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

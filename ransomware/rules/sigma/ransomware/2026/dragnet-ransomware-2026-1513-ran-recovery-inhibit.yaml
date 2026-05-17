@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1513 — Recovery Inhibition (LeakBazaar)'
+id: 333e1658-cf82-52da-ae6d-c9a87a1144f2
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with LeakBazaar ransomware.
+  Incident: dragnet-ransomware-2026-1513
+  Ransomware victim claim by LeakBazaar: Intuitive Machines; country: US; sector: Technology
+  First observed: 2026-05-05.
+references:
+  - https://mes4qo4rd6t3biyrm6q4twkquspzd7r4kg7va765nbdfxqgnc2w3pead.onion/company?dataBlobId=8175986c-749e-4b00-a385-284be141b619
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

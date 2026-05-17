@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0754 — Recovery Inhibition (beast)'
+id: 60230ab0-ade4-5640-97ce-57c801b6d718
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with beast ransomware.
+  Incident: dragnet-ransomware-2024-0754
+  Ransomware victim claim by beast: AJU Pharm Co., Ltd; country: KR; sector: Healthcare
+  First observed: 2024-03-27.
+references:
+  - http://beast6azu4f7fxjakiayhnssybibsgjnmy77a6duufqw5afjzfjhzuqd.onion/card/aju_pharm_co___ltd
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

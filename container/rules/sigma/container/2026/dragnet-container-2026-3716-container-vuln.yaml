@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3716 — Vulnerable Base Image Pull'
+id: 83cbde67-084b-578e-b822-e132853ef2a8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3716 (Tier 2, CVSS 9.8)
+  dhcpcd before 7.2.1 contains a buffer overflow in dhcp6_findna in dhcp6.c when reading NA/TA addresses.
+references:
+  - http://www.securityfocus.com/bid/108090
+  - https://roy.marples.name/archives/dhcpcd-discuss/0002415.html
+  - https://roy.marples.name/git/dhcpcd.git/commit/?id=8d11b33f6c60e2db257130fa383ba76b6018bcf6
+  - https://www.cve.org/CVERecord?id=CVE-2019-11577
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'ubuntu:19.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

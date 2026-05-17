@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4214 — Vulnerable Base Image Pull'
+id: a507b2ca-0bfa-59af-bc5b-d601e5073407
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4214 (Tier 2, CVSS 9.8)
+  clickhouse-driver before 0.1.5 allows a malicious clickhouse server to trigger a crash or execute arbitrary code (on a database client) via a crafted server response, due to a buffer overflow.
+references:
+  - https://github.com/advisories/GHSA-vgv5-cxvh-vfxh
+  - https://github.com/mymarilyn/clickhouse-driver
+  - https://github.com/mymarilyn/clickhouse-driver/commit/3e990547e064b8fca916b23a0f7d6fe8c63c7f6b
+  - https://github.com/mymarilyn/clickhouse-driver/commit/d708ed548e1d6f254ba81a21de8ba543a53b5598
+  - https://github.com/pypa/advisory-database/tree/main/vulns/clickhouse-driver/PYSEC-2021-61.yaml
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-26759
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

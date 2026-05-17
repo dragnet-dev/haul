@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3403 — Vulnerable Base Image Pull'
+id: 132911a6-a8c8-5450-8f86-8cc8efc1ce9d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3403 (Tier 2, CVSS 9.8)
+  An issue has been found in HTSlib 1.8. It is a buffer over-read in sam_parse1 in sam.c.
+references:
+  - https://github.com/samtools/htslib/issues/731#issuecomment-403681105
+  - https://ubuntu.com/security/notices/USN-4802-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-13845
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

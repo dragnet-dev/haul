@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1072 — Event Log Clearing (donutleaks)'
+id: f67800ff-6a2d-54fa-920c-34cf6fd520ba
+status: deprecated
+description: |
+  Detects event log clearing associated with donutleaks ransomware.
+  Incident: dragnet-ransomware-2022-1072
+  Ransomware victim claim by donutleaks: Sando; sector: Not Found
+  First observed: 2022-08-24.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

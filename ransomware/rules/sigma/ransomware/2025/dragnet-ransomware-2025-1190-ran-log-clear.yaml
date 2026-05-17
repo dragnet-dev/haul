@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1190 — Event Log Clearing (blacklock)'
+id: 280e7cce-7a7a-528c-8aea-80ae468f120b
+status: deprecated
+description: |
+  Detects event log clearing associated with blacklock ransomware.
+  Incident: dragnet-ransomware-2025-1190
+  Ransomware victim claim by blacklock: Lac La Biche Transport; country: CA; sector: Transportation/Logistics
+  First observed: 2025-05-27.
+references:
+  - http://zdkexsh2e7yihw5uhg5hpsgq3dois2m5je7lzfagij2y6iw5ptl35gyd.onion/Data_Download/www.laclabichetransport.ca
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

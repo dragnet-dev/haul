@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0553 — Vulnerable Base Image Pull'
+id: 6a1d4880-28bd-5eb8-9958-204d4404331a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0553 (Tier 2, CVSS 10)
+  apt 0.7.20 does not check when the date command returns an "invalid date" error, which can prevent apt from loading security updates in time zones for which DST occurs at midnight.
+references:
+  - http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=523213
+  - http://secunia.com/advisories/34829
+  - http://secunia.com/advisories/34832
+  - http://secunia.com/advisories/34874
+  - http://www.debian.org/security/2009/dsa-1779
+  - http://www.openwall.com/lists/oss-security/2009/04/08/11
+  - https://bugs.launchpad.net/ubuntu/+source/coreutils/+bug/354793
+  - https://usn.ubuntu.com/762-1/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

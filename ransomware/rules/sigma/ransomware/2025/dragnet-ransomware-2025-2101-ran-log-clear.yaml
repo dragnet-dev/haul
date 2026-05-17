@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2101 — Event Log Clearing (crazyhunter)'
+id: ff5fda6e-da76-571a-ba1f-9f052439614c
+status: deprecated
+description: |
+  Detects event log clearing associated with crazyhunter ransomware.
+  Incident: dragnet-ransomware-2025-2101
+  Ransomware victim claim by crazyhunter: Zuni Data; country: TW; sector: Technology
+  First observed: 2025-03-30.
+references:
+  - http://7i6sfmfvmqfaabjksckwrttu3nsbopl3xev2vbxbkghsivs5lqp4yeqd.onion/product/10
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

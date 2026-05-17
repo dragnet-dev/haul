@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2325 — Vulnerable Base Image Pull'
+id: eacd56b0-e626-5a46-be41-b60862515e09
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2325 (Tier 2, CVSS 9.8)
+  Off-by-one error in coders/wpg.c in ImageMagick allows remote attackers to have unspecified impact via vectors related to a string copy.
+references:
+  - http://www.debian.org/security/2017/dsa-3799
+  - http://www.openwall.com/lists/oss-security/2017/01/16/6
+  - http://www.openwall.com/lists/oss-security/2017/01/17/5
+  - http://www.securityfocus.com/bid/95749
+  - https://access.redhat.com/security/cve/CVE-2016-10145
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=851483
+  - https://github.com/ImageMagick/ImageMagick/commit/d23beebe7b1179fb75db1e85fbca3100e49593d9
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-10145
+  - https://security.gentoo.org/glsa/201702-09
+  - https://ubuntu.com/security/notices/USN-3222-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-10145
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

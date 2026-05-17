@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3312 — Vulnerable Base Image Pull'
+id: 8682b98a-ada9-537b-8f81-9c69e1b7a219
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3312 (Tier 2, CVSS 10)
+  FreeCol version <= nightly-2018-08-22 contains a XML External Entity (XXE) vulnerability in FreeColXMLReader parser that can result in Disclosure of confidential data, denial of service, SSRF, port scanning. This attack appear to be exploitable via Freecol file.
+references:
+  - https://0dd.zone/2018/10/28/freecol-XXE/
+  - https://github.com/FreeCol/freecol/issues/26
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

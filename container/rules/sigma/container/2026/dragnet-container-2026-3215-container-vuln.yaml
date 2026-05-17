@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3215 — Vulnerable Base Image Pull'
+id: 02817644-e07b-5f61-8682-e69a07f7374b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3215 (Tier 2, CVSS 9.8)
+  libav before 12.1 is vulnerable to an invalid read of size 1 due to NULL pointer dereferencing in the nsv_read_chunk function in libavformat/nsvdec.c.
+references:
+  - http://www.securityfocus.com/bid/98548
+  - https://bugzilla.libav.org/show_bug.cgi?id=1039
+  - https://github.com/libav/libav/commit/fe6eea99efac66839052af547426518efd970b24
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

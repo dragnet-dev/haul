@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3212 — Vulnerable Base Image Pull'
+id: 7160c46f-f274-59f8-b9e8-3d90de369f75
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3212 (Tier 2, CVSS 9.8)
+  An integer underflow has been identified in the unicode_to_utf8() function in tnef 1.4.14. This might lead to invalid write operations, controlled by an attacker.
+references:
+  - http://www.debian.org/security/2017/dsa-3869
+  - https://github.com/verdammelt/tnef/issues/23
+  - https://security.gentoo.org/glsa/201708-02
+  - https://www.cve.org/CVERecord?id=CVE-2017-8911
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

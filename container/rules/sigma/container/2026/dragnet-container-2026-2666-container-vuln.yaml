@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2666 — Vulnerable Base Image Pull'
+id: a708bfc4-d4e1-5753-868c-1ee00180a3e5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2666 (Tier 2, CVSS 9.8)
+  tools/tiffcrop.c in libtiff 4.0.6 has an out-of-bounds read in readContigTilesIntoBuffer(). Reported as MSVR 35092.
+references:
+  - http://www.securityfocus.com/bid/94484
+  - http://www.securityfocus.com/bid/94754
+  - https://access.redhat.com/security/cve/CVE-2016-9539
+  - https://github.com/vadz/libtiff/commit/ae9365db1b271b62b35ce018eac8799b1d5e8a53
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-9539
+  - https://ubuntu.com/security/notices/USN-3212-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-9539
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

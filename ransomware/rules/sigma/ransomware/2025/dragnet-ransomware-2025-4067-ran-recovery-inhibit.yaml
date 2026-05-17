@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4067 — Recovery Inhibition (lynx)'
+id: 11405c2d-59f1-5922-9435-5bd306da7fe8
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4067
+  Ransomware victim claim by lynx: Biogena GmbH & Co KG; country: AT; sector: Healthcare
+  First observed: 2025-01-29.
+references:
+  - http://lynxblog.net/leaks/67c01a4b44fac8dca169e79e
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5432 — Vulnerable Base Image Pull'
+id: 8c21a748-abf5-5c7e-b5d0-74f07899ec0f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5432 (Tier 2, CVSS 9.1)
+  GraphicsMagick before 8e56520 has a heap-based buffer over-read in ReadJXLImage in coders/jxl.c, related to an ImportViewPixelArea call.
+references:
+  - https://foss.heptapod.net/graphicsmagick/graphicsmagick/-/commit/8e56520435df50f618a03f2721a39a70a515f1cb
+  - https://github.com/advisories/GHSA-hf7q-qx98-4hm7
+  - https://issues.oss-fuzz.com/issues/406320404
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-32460
+  - https://tracker.debian.org/news/1636753/accepted-graphicsmagick-14really1345hg17696-1-source-into-unstable
+  - https://tracker.debian.org/news/1636753/accepted-graphicsmagick-14really1345hg17696-1-source-into-unstable/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2023'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

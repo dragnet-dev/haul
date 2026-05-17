@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2971 — Event Log Clearing (sparta)'
+id: 40ec6c4b-8591-5a95-b0b0-9f281a432c5f
+status: deprecated
+description: |
+  Detects event log clearing associated with sparta ransomware.
+  Incident: dragnet-ransomware-2022-2971
+  Ransomware victim claim by sparta: Grupo Galilea; sector: Consumer Services
+  First observed: 2022-09-13.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5692 — Vulnerable Base Image Pull'
+id: bd39766c-281c-50c5-9e7f-05402737d229
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5692 (Tier 2, CVSS 10)
+  MariaDB server is a community developed fork of MySQL server. An authenticated user can crash MariaDB versions 11.4 before 11.4.10 and 11.8 before 11.8.6 via a bug in JSON_SCHEMA_VALID() function. Under certain conditions it might be possible to turn the crash into a remote code execution. These conditions require tight control over memory layout which is generally only attainable in a lab environment. This issue is fixed in MariaDB 11.4.10, MariaDB 11.8.6, and MariaDB 12.2.2.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-32710
+  - https://github.com/MariaDB/server/security/advisories/GHSA-4rj5-2227-9wgc
+  - https://jira.mariadb.org/browse/MDEV-38356
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-32710
+  - https://www.cve.org/CVERecord?id=CVE-2026-32710
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0250 — Event Log Clearing (ryuk)'
+id: f6aad77a-a20c-5f7b-bb75-641b562b3eb1
+status: deprecated
+description: |
+  Detects event log clearing associated with ryuk ransomware.
+  Incident: dragnet-ransomware-2020-0250
+  Ransomware victim claim by ryuk: K12 (AKA Stride Inc); country: US; sector: Education
+  First observed: 2020-11-15.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

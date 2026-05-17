@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0423 — Event Log Clearing (blackwater)'
+id: 74de5908-3204-5888-98ec-093c5831ec9b
+status: deprecated
+description: |
+  Detects event log clearing associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0423
+  Ransomware victim claim by blackwater: Compass Housing Alliance; country: US; sector: Public Sector
+  First observed: 2026-04-30.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=71a8d24a-628d-3c02-a41b-79a873227cee
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

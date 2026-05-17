@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2560 — Vulnerable Base Image Pull'
+id: 5736bbfa-5249-53cf-b7d0-f81befbe6f19
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2560 (Tier 2, CVSS 9.8)
+  ext/standard/var_unserializer.c in PHP before 5.6.25 and 7.x before 7.0.10 mishandles certain invalid objects, which allows remote attackers to cause a denial of service or possibly have unspecified other impact via crafted serialized data that leads to a (1) __destruct call or (2) magic method call.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-7124
+  - https://github.com/php/php-src/commit/20ce2fe8e3c211a42fee05a461a5881be9a8790e?w=1
+  - http://openwall.com/lists/oss-security/2016/09/02/9
+  - http://php.net/ChangeLog-5.php#5.6.25
+  - http://php.net/ChangeLog-7.php#7.0.10
+  - http://rhn.redhat.com/errata/RHSA-2016-2750.html
+  - http://www.openwall.com/lists/oss-security/2016/09/02/5
+  - http://www.php.net/ChangeLog-5.php
+  - http://www.php.net/ChangeLog-7.php
+  - http://www.securityfocus.com/bid/92756
+  - http://www.securitytracker.com/id/1036680
+  - https://access.redhat.com/security/cve/CVE-2016-7124
+  - https://bugs.php.net/bug.php?id=72663
+  - https://security.gentoo.org/glsa/201611-22
+  - https://ubuntu.com/security/notices/USN-3095-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3684 — Recovery Inhibition (lynx)'
+id: adb74440-b198-5aba-8165-b9ed2891fc59
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3684
+  Ransomware victim claim by lynx: Tankstar; country: US; sector: Transportation/Logistics
+  First observed: 2024-10-09.
+references:
+  - http://lynxblog.net/leaks/67067a8ccbfc63d2fb05dcdb
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

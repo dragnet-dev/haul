@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3072 — Recovery Inhibition (tengu)'
+id: 1070e10f-3426-55dc-ac56-5a4b9a8fb6db
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with tengu ransomware.
+  Incident: dragnet-ransomware-2026-3072
+  Ransomware victim claim by tengu: We will be back soon; sector: Not Found
+  First observed: 2026-01-30.
+references:
+  - http://longcc4fqrfcqt5lzceutylaxir6h66fp6df3oin6mvwvz6pfdbxc6qd.onion/blog/21d76746113e42307fe8fe34abb2cf5d6582549feab72e9293c63bedfd78b0ad/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

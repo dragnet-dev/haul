@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2663 — Vulnerable Base Image Pull'
+id: a255a7b6-6dae-589b-abc9-de89d0913584
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2663 (Tier 2, CVSS 9.8)
+  tools/tiff2pdf.c in libtiff 4.0.6 has out-of-bounds write vulnerabilities in heap allocated buffers in t2p_process_jpeg_strip(). Reported as MSVR 35098, aka "t2p_process_jpeg_strip heap-buffer-overflow."
+references:
+  - http://rhn.redhat.com/errata/RHSA-2017-0225.html
+  - http://www.debian.org/security/2017/dsa-3762
+  - http://www.securityfocus.com/bid/94484
+  - http://www.securityfocus.com/bid/94745
+  - https://access.redhat.com/security/cve/CVE-2016-9536
+  - https://github.com/vadz/libtiff/commit/83a4b92815ea04969d494416eaae3d4c6b338e4a#diff-5173a9b3b48146e4fd86d7b9b346115e
+  - https://linux.oracle.com/cve/CVE-2016-9536.html
+  - https://linux.oracle.com/errata/ELSA-2017-0225.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-9536
+  - https://ubuntu.com/security/notices/USN-3212-1
+  - https://ubuntu.com/security/notices/USN-3212-3
+  - https://www.cve.org/CVERecord?id=CVE-2016-9536
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

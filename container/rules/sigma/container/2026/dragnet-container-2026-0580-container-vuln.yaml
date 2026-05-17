@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0580 — Vulnerable Base Image Pull'
+id: e7423483-ff23-5810-ba87-a096b51fbc3f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0580 (Tier 2, CVSS 9.3)
+  inc/init.php in DokuWiki 2009-02-14, rc2009-02-06, and rc2009-01-30, when register_globals is enabled, allows remote attackers to include and execute arbitrary local files via the config_cascade[main][default][] parameter to doku.php.  NOTE: PHP remote file inclusion is also possible in PHP 5 using ftp:// URLs.
+references:
+  - http://bugs.splitbrain.org/index.php?do=details&task_id=1700
+  - http://dev.splitbrain.org/darcsweb/darcsweb.cgi?r=dokuwiki%3Ba=commitdiff%3Bh=20090526145030-7ad00-c0483e021f47898c8597f3bfbdd26c637f891d86.gz
+  - http://secunia.com/advisories/35218
+  - http://www.securityfocus.com/bid/35095
+  - https://www.exploit-db.com/exploits/8781
+  - https://www.exploit-db.com/exploits/8812
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3614 — Vulnerable Base Image Pull'
+id: 9dbb1efd-971c-50d7-9076-0df17df9d472
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3614 (Tier 2, CVSS 9.8)
+  In subst.c in zsh through 5.4.2, there is a NULL pointer dereference when using ${(PA)...} on an empty array result.
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-7548
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-7548
+  - https://security.gentoo.org/glsa/201805-10
+  - https://sourceforge.net/p/zsh/code/ci/110b13e1090bc31ac1352b28adc2d02b6d25a102
+  - https://ubuntu.com/security/notices/USN-3593-1
+  - https://usn.ubuntu.com/3593-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-7548
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:2.0'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

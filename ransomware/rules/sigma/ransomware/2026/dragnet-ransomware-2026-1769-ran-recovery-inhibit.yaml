@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1769 — Recovery Inhibition (netrunner)'
+id: 936c0d58-e599-5fa8-b47d-5ba54df8fc39
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with netrunner ransomware.
+  Incident: dragnet-ransomware-2026-1769
+  Ransomware victim claim by netrunner: Nippon Medical School Musashi Kosugi Hospital; country: JP; sector: Healthcare
+  First observed: 2026-04-03.
+references:
+  - http://netrunrsb3bivj5gnwajzxlig5qkteb6edgthxj7fmsvhkzxtwfxwaad.onion/view/MusashiKosugi
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

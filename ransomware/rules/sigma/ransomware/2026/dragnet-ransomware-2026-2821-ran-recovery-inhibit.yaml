@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2821 — Recovery Inhibition (secpo)'
+id: 0937a92d-6e37-5461-8c83-0c0936fee306
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with secpo ransomware.
+  Incident: dragnet-ransomware-2026-2821
+  Ransomware victim claim by secpo: Color Communications LLC; country: US; sector: Telecommunication
+  First observed: 2026-04-27.
+references:
+  - http://secponewsxgrlnirowclps2kllzaotaf5w2bsvktdnz4qhjr2jnwvvyd.onion/post/94f588080358146b/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

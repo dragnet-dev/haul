@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1754 — Recovery Inhibition (darkvault)'
+id: e4f72f43-3562-5596-a799-13aea3ca50e0
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with darkvault ransomware.
+  Incident: dragnet-ransomware-2024-1754
+  Ransomware victim claim by darkvault: life.vet.br; country: BR; sector: Healthcare
+  First observed: 2024-06-29.
+references:
+  - http://mdhby62yvvg6sd5jmx5gsyucs7ynb5j45lvvdh4dsymg43puitu7tfid.onion//post/NzM5MDE4ZTlkODEyNDM0MTJlZDg5OD
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

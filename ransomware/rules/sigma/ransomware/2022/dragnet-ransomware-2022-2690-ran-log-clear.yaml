@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2690 — Event Log Clearing (quantum)'
+id: 0d632e29-33c8-5732-8d4d-c898b60fed85
+status: deprecated
+description: |
+  Detects event log clearing associated with quantum ransomware.
+  Incident: dragnet-ransomware-2022-2690
+  Ransomware victim claim by quantum: Hirsch Watch Straps & Accessories; country: AT; sector: Consumer Services
+  First observed: 2022-05-17.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

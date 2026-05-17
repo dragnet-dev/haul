@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1670 — Event Log Clearing (revil)'
+id: d516a885-72cc-5ca3-b8e0-013d3b7190db
+status: deprecated
+description: |
+  Detects event log clearing associated with revil ransomware.
+  Incident: dragnet-ransomware-2021-1670
+  Ransomware victim claim by revil: Gyrodata Incorporated; sector: Energy
+  First observed: 2021-02-21.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

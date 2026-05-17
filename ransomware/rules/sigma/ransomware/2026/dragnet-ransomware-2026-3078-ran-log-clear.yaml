@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3078 — Event Log Clearing (termite)'
+id: efa1e386-132f-5370-bc40-f6b8f78757c4
+status: deprecated
+description: |
+  Detects event log clearing associated with termite ransomware.
+  Incident: dragnet-ransomware-2026-3078
+  Ransomware victim claim by termite: City of Huntington; country: US; sector: Public Sector
+  First observed: 2026-03-06.
+references:
+  - http://termiteuslbumdge2zmfmfcsrvmvsfe4gvyudc5j6cdnisnhtftvokid.onion/post/69ab564cc3aeb8d444652359
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

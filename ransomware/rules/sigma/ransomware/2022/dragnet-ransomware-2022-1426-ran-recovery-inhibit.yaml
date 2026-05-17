@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1426 — Recovery Inhibition (la_piovra)'
+id: b0c7b2d5-0509-5794-95bf-c2c91646691a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with la_piovra ransomware.
+  Incident: dragnet-ransomware-2022-1426
+  Ransomware victim claim by la_piovra: MegaCorp One; sector: Technology
+  First observed: 2022-06-25.
+references:
+  - http://h3txev6jev7rcm6p2qkxn2vctybi4dvochr3inymzgif53n2j2oqviqd.onion/2022/06/25/megacorp-one/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

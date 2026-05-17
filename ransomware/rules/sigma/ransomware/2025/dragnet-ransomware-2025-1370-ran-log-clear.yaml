@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1370 — Event Log Clearing (cephalus)'
+id: 23180a4e-81e3-5461-a14c-b28ed54bc1fc
+status: deprecated
+description: |
+  Detects event log clearing associated with cephalus ransomware.
+  Incident: dragnet-ransomware-2025-1370
+  Ransomware victim claim by cephalus: BAR Architects & Interiors; sector: Construction
+  First observed: 2025-08-26.
+references:
+  - https://darkforums.st/Thread-Document-BAR-Architects-Interiors-DATA-LEAK-1-5T--18961
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

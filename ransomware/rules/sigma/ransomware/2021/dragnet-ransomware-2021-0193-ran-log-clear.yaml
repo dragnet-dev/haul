@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0193 — Event Log Clearing (avoslocker)'
+id: e86fa868-8fc3-529a-9ad3-594b13cee96c
+status: deprecated
+description: |
+  Detects event log clearing associated with avoslocker ransomware.
+  Incident: dragnet-ransomware-2021-0193
+  Ransomware victim claim by avoslocker: Pacific City Bank; sector: Financial Services
+  First observed: 2021-09-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

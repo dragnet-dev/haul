@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2911 — Vulnerable Base Image Pull'
+id: 627371be-7562-5313-bb32-629676904ba0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2911 (Tier 2, CVSS 9.8)
+  In Asterisk 11.x before 11.25.2, 13.x before 13.17.1, and 14.x before 14.6.1 and Certified Asterisk 11.x before 11.6-cert17 and 13.x before 13.13-cert5, unauthorized command execution is possible. The app_minivm module has an "externnotify" program configuration option that is executed by the MinivmNotify dialplan application. The application uses the caller-id name and number as part of a built string passed to the OS shell for interpretation and execution. Since the caller-id name and number can come from an untrusted source, a crafted caller-id name or number allows an arbitrary shell command injection.
+references:
+  - http://downloads.asterisk.org/pub/security/AST-2017-006.html
+  - http://www.debian.org/security/2017/dsa-3964
+  - http://www.securitytracker.com/id/1039252
+  - https://bugs.debian.org/873908
+  - https://issues.asterisk.org/jira/browse/ASTERISK-27103
+  - https://security.gentoo.org/glsa/201710-29
+  - https://www.cve.org/CVERecord?id=CVE-2017-14100
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

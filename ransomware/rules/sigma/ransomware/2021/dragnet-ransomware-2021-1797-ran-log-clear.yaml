@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1797 — Event Log Clearing (xinglocker)'
+id: 33d993e0-aa6b-513f-9448-0b2b5b6c2a92
+status: deprecated
+description: |
+  Detects event log clearing associated with xinglocker ransomware.
+  Incident: dragnet-ransomware-2021-1797
+  Ransomware victim claim by xinglocker: Desert Plastering LLC; country: US; sector: Financial Services
+  First observed: 2021-05-13.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

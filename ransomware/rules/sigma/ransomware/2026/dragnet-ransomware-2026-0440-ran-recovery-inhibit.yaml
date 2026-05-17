@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0440 — Recovery Inhibition (bravox)'
+id: a9fb0410-f6ea-5911-bc09-3fe5e2cc6430
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with bravox ransomware.
+  Incident: dragnet-ransomware-2026-0440
+  Ransomware victim claim by bravox: 1st Solution CTC; country: DE; sector: Business Services
+  First observed: 2026-04-23.
+references:
+  - http://bravoxxwcfz5qk43ychgveprpd5mw5hvxfs4a2uz2okx7mumiht4fzyd.onion/blog/d05578b1-eec3-4c41-a1f0-82f657ecbacb
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

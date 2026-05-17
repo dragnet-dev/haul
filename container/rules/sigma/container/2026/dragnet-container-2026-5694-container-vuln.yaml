@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5694 — Vulnerable Base Image Pull'
+id: b98e9f58-3d74-5099-8082-bc1d3d765623
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5694 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C. Versions 2.16 and below have a Heap-based Buffer Overflowvulnerability in the DNS parser's name length handler. Thisimpacts applications using PJSIP's built-in DNS resolver, such as those configured with pjsua_config.nameserver or UaConfig.nameserver in PJSUA/PJSUA2. It does not affect users who rely on the OS resolver (e.g., getaddrinfo()) by not configuring a nameserver, or those using an external resolver via pjsip_resolver_set_ext_resolver(). This issue is fixed in version 2.17. For users unable to upgrade, a workaround is to disable DNS resolution in the PJSIP config (by setting nameserver_count to zero) or to use an external resolver implementation instead.
+references:
+  - https://github.com/pjsip/pjproject/commit/5311aee398ae9d623829a6bad7b679a193c9e199
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-jr2p-p2w4-rr9q
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine edge:'
+      - 'debian:11'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

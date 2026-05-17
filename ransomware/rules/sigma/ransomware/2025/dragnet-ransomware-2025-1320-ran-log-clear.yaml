@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1320 — Event Log Clearing (brotherhood)'
+id: 35c32a7f-1db4-5f74-b48e-9b0fe4ddd164
+status: deprecated
+description: |
+  Detects event log clearing associated with brotherhood ransomware.
+  Incident: dragnet-ransomware-2025-1320
+  Ransomware victim claim by brotherhood: UVJ Technologies; country: US; sector: Technology
+  First observed: 2025-10-10.
+references:
+  - http://brohoodyaifh2ptccph5zfljyajjabwjjo4lg6gfp4xb6ynw5w7ml6id.onion/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

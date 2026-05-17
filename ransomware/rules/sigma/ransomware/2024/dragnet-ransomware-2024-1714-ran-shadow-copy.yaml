@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1714 — Shadow Copy Deletion (dAn0n)'
+id: 1ea0ed95-8f6b-558c-8665-412570b88e06
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with dAn0n ransomware.
+  Incident: dragnet-ransomware-2024-1714
+  Ransomware victim claim by dAn0n: S&F Concrete Contractors; country: US; sector: Business Services
+  First observed: 2024-05-23.
+references:
+  - http://2c7nd54guzi6xhjyqrj5kdkrq2ngm2u3e6oy4nfhn3wm3r54ul2utiqd.onion/chAlC1EsKulDdQC4zreB0_7hFdB5wjj3aWRhPamETsw/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

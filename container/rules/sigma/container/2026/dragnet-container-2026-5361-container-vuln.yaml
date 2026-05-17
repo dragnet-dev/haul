@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5361 — Vulnerable Base Image Pull'
+id: f4b38535-5c10-5633-ab87-22fae594a004
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5361 (Tier 2, CVSS 9.8)
+  vllm-project vllm version 0.6.0 contains a vulnerability in the AsyncEngineRPCServer() RPC server entrypoints. The core functionality run_server_loop() calls the function _make_handler_coro(), which directly uses cloudpickle.loads() on received messages without any sanitization. This can result in remote code execution by deserializing malicious pickle data.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-9053
+  - https://advisories.gitlab.com/pkg/pypi/vllm/CVE-2024-9053/
+  - https://github.com/vllm-project/vllm
+  - https://huntr.com/bounties/75a544f3-34a3-4da0-b5a3-1495cb031e09
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-9053
+  - https://www.cve.org/CVERecord?id=CVE-2024-9053
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

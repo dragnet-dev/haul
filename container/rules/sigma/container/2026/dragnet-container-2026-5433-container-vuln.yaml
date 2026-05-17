@@ -1,0 +1,51 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5433 — Vulnerable Base Image Pull'
+id: c6dde4bf-4ea6-5f91-8341-af72c5a98766
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5433 (Tier 2, CVSS 9.8)
+  An integer overflow can be triggered in SQLite’s `concat_ws()` function. The resulting, truncated integer is then used to allocate a buffer. When SQLite then writes the resulting string to the buffer, it uses the original, untruncated size and thus a wild Heap Buffer overflow of size ~4GB can be triggered. This can result in arbitrary code execution.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-3277
+  - https://access.redhat.com/errata/RHSA-2025:7433
+  - https://access.redhat.com/security/cve/CVE-2025-3277
+  - https://bugzilla.redhat.com/2358271
+  - https://bugzilla.redhat.com/2359553
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2358271
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2359553
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-31498
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-3277
+  - https://errata.almalinux.org/9/ALSA-2025-7433.html
+  - https://errata.rockylinux.org/RLSA-2025:7433
+  - https://linux.oracle.com/cve/CVE-2025-3277.html
+  - https://linux.oracle.com/errata/ELSA-2025-7517.html
+  - https://sqlite.org/src/info/498e3f1cf57f164f
+  - https://ubuntu.com/security/notices/USN-7528-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

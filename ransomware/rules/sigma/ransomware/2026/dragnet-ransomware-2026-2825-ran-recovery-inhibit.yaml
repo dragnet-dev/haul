@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2825 — Recovery Inhibition (secpo)'
+id: f36e6ac7-c814-5ac4-9dff-5a7d87c8d73c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with secpo ransomware.
+  Incident: dragnet-ransomware-2026-2825
+  Ransomware victim claim by secpo: Richmond Plywood Corporation Limited; country: CA; sector: Manufacturing
+  First observed: 2026-04-14.
+references:
+  - http://secponewsxgrlnirowclps2kllzaotaf5w2bsvktdnz4qhjr2jnwvvyd.onion/post/e6e8b9eaf2f1660e/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

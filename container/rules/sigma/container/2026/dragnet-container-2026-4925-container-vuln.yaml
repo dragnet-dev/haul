@@ -1,0 +1,54 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4925 — Vulnerable Base Image Pull'
+id: c890f1f0-e7d1-5249-b4cb-cb8d6d24b2a8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4925 (Tier 2, CVSS 9.8)
+  A cleverly devised username might bypass LDAP authentication checks. In 
+LDAP-authenticated Derby installations, this could let an attacker fill 
+up the disk by creating junk Derby databases. In LDAP-authenticated 
+Derby installations, this could also allow the attacker to execute 
+malware which was visible to and executable by the account which booted 
+the Derby server. In LDAP-protected databases which weren't also 
+protected by SQL GRANT/REVOKE authorization, this vulnerability could 
+also let an attacker view and corrupt sensitive data and run sensitive 
+database functions and procedures.
+
+Mitigation:
+
+Users should upgrade to Java 21 and Derby 10.17.1.0.
+
+Alternatively, users who wish to remain on older Java versions should 
+build their own Derby distribution from one of the release families to 
+which the fix was backported: 10.16, 10.15, and 10.14. Those are the 
+releases which correspond, respectively, with Java LTS versions 17, 11, 
+and 8.
+
+
+references:
+  - https://github.com/apache/derby
+  - https://issues.apache.org/jira/browse/DERBY-7147
+  - https://lists.apache.org/thread/q23kvvtoohgzwybxpwozmvvk17rp0td3
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-46337
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

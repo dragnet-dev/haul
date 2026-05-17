@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4093 — Shadow Copy Deletion (metaencryptor)'
+id: bb916cc6-5702-545f-b7dc-4dbaec60dd41
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2024-4093
+  Ransomware victim claim by metaencryptor: Vega Reederei GmbH & Co. KG; country: DE; sector: Transportation/Logistics
+  First observed: 2024-05-07.
+references:
+  - https://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:df11dc83a73c63db78f815aa921b924c/0AFC:3b95898327b5fadbd8f2902d1ae0a3b730ab7072fb7f49060d23a3630051766e/0AFC:dd79f4da74f7dcc9feacf7ab4ae60eaa95c755f22ab7deb77046f57f27329434b33ac95193225d49d5b1baae55685d90
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

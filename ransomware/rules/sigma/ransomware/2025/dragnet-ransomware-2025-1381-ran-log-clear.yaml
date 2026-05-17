@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1381 — Event Log Clearing (cephalus)'
+id: 02a97f28-7b6c-5d17-a306-f06d1b2faddd
+status: deprecated
+description: |
+  Detects event log clearing associated with cephalus ransomware.
+  Incident: dragnet-ransomware-2025-1381
+  Ransomware victim claim by cephalus: Shelbourne Accountants; country: IE; sector: Financial Services
+  First observed: 2025-08-29.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

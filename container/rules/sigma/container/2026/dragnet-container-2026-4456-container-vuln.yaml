@@ -1,0 +1,49 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4456 — Vulnerable Base Image Pull'
+id: 1f5b2b72-afef-5358-a225-acf11f09dd49
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4456 (Tier 2, CVSS 9.8)
+  An issue was discovered in klibc before 2.0.9. Multiple possible integer overflows in the cpio command on 32-bit systems may result in a buffer overflow or other security impact.
+references:
+  - http://www.openwall.com/lists/oss-security/2021/04/30/1
+  - https://git.kernel.org/pub/scm/libs/klibc/klibc.git/commit/?id=9b1c91577aef7f2e72c3aa11a27749160bd278ff
+  - https://kernel.org/pub/linux/libs/klibc/2.0/
+  - https://lists.debian.org/debian-lts-announce/2021/06/msg00025.html
+  - https://lists.zytor.com/archives/klibc/2021-April/004593.html
+  - https://ubuntu.com/security/notices/USN-5379-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-31872
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

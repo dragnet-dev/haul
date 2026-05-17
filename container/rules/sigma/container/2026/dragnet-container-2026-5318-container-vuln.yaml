@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5318 — Vulnerable Base Image Pull'
+id: e80f8074-a7f9-5878-bb71-b4c963ddea1c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5318 (Tier 2, CVSS 9.8)
+  Integer overflow in libaom internal function img_alloc_helper can lead to heap buffer overflow. This function can be reached via 3 callers:
+
+
+  *  Calling aom_img_alloc() with a large value of the d_w, d_h, or align parameter may result in integer overflows in the calculations of buffer sizes and offsets and some fields of the returned aom_image_t struct may be invalid.
+  *  Calling aom_img_wrap() with a large value of the d_w, d_h, or align parameter may result in integer overflows in the calculations of buffer sizes and offsets and some fields of the returned aom_image_t struct may be invalid.
+  *  Calling aom_img_alloc_with_border() with a large value of the d_w, d_h, align, size_align, or border parameter may result in integer overflows in the calculations of buffer sizes and offsets and some fields of the returned aom_image_t struct may be invalid.
+references:
+  - https://access.redhat.com/security/cve/CVE-2024-5171
+  - https://issues.chromium.org/issues/332382766
+  - https://lists.debian.org/debian-lts-announce/2024/09/msg00024.html
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/6HYUEHZ35ZPY2EONVZCGO6LPT3AMLZCP/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/U5NRNCEYS246CYGOR32MF7OGKWOWER22/
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-5171
+  - https://ubuntu.com/security/notices/USN-6815-1
+  - https://ubuntu.com/security/notices/USN-7397-1
+  - https://www.cve.org/CVERecord?id=CVE-2024-5171
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

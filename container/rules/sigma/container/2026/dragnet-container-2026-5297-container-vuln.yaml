@@ -1,0 +1,62 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5297 — Vulnerable Base Image Pull'
+id: c0a9f892-93d3-570e-bd4e-2ca96066bdb7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5297 (Tier 2, CVSS 9.8)
+  GStreamer is a library for constructing graphs of media-handling components. An integer underflow has been detected in the function qtdemux_parse_theora_extension within qtdemux.c. The vulnerability occurs due to an underflow of the gint size variable, which causes size to hold a large unintended value when cast to an unsigned integer. This 32-bit negative value is then cast to a 64-bit unsigned integer (0xfffffffffffffffa) in a subsequent call to gst_buffer_new_and_alloc. The function gst_buffer_new_allocate then attempts to allocate memory, eventually calling _sysmem_new_block. The function _sysmem_new_block adds alignment and header size to the (unsigned) size, causing the overflow of the 'slice_size' variable. As a result, only 0x89 bytes are allocated, despite the large input size. When the following memcpy call occurs in gst_buffer_fill, the data from the input file will overwrite the content of the GstMapInfo info structure. Finally, during the call to gst_memory_unmap, the overwritten memory may cause a function pointer hijack, as the mem->allocator->mem_unmap_full function is called with a corrupted pointer. This function pointer overwrite could allow an attacker to alter the execution flow of the program, leading to arbitrary code execution. This vulnerability is fixed in 1.24.10.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-47606
+  - https://securitylab.github.com/advisories/GHSL-2024-166_Gstreamer/
+  - https://access.redhat.com/errata/RHSA-2024:11122
+  - https://access.redhat.com/security/cve/CVE-2024-47606
+  - https://bugzilla.redhat.com/2331719
+  - https://bugzilla.redhat.com/2331722
+  - https://bugzilla.redhat.com/2331726
+  - https://bugzilla.redhat.com/2331753
+  - https://bugzilla.redhat.com/2331760
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331719
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331722
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331726
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331753
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331760
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-47537
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

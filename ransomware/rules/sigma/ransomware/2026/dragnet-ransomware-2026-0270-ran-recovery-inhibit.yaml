@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0270 — Recovery Inhibition (ALP-001)'
+id: e1a0c91b-5389-5641-a321-600b66d04532
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with ALP-001 ransomware.
+  Incident: dragnet-ransomware-2026-0270
+  Ransomware victim claim by ALP-001: jaxa.jp; country: JP; sector: Technology
+  First observed: 2026-03-26.
+references:
+  - http://b4riuxx7ypobdptctf6lyfcvgi6vn74iurzdh4kn2agbk7472dvywgyd.onion#jaxa.jp
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

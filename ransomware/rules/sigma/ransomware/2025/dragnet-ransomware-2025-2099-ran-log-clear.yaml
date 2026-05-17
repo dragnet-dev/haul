@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2099 — Event Log Clearing (crazyhunter)'
+id: 3fabd6a6-b86e-504d-ac0a-184e61ca477c
+status: deprecated
+description: |
+  Detects event log clearing associated with crazyhunter ransomware.
+  Incident: dragnet-ransomware-2025-2099
+  Ransomware victim claim by crazyhunter: Mackay Hospital; country: TW; sector: Healthcare
+  First observed: 2025-03-05.
+references:
+  - http://7i6sfmfvmqfaabjksckwrttu3nsbopl3xev2vbxbkghsivs5lqp4yeqd.onion/product/3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

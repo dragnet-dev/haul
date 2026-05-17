@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4485 — Shadow Copy Deletion (nightspire)'
+id: fcaf90c5-5ff1-5c52-b186-3aa8a410347b
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with nightspire ransomware.
+  Incident: dragnet-ransomware-2025-4485
+  Ransomware victim claim by nightspire: Accueil - Site Offciel de la commune d'Ardon; country: FR; sector: Public Sector
+  First observed: 2025-04-15.
+references:
+  - http://nspireyzmvapgiwgtuoznlafqvlyz7ey6himtgn5bdvdcowfyto3yryd.onion/data/27Ardon.fr/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

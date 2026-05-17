@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3274 — Vulnerable Base Image Pull'
+id: 123f96c1-94f7-53a7-b07c-46296b2507fd
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3274 (Tier 2, CVSS 9.8)
+  Document Liberation Project libstaroffice before 2017-04-07 has an out-of-bounds write caused by a stack-based buffer overflow related to the DatabaseName::read function in lib/StarWriterStruct.cxx.
+references:
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=1029
+  - https://github.com/fosnola/libstaroffice/commit/2d6253c7a692a3d92785dd990fce7256ea05e794
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

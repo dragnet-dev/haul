@@ -1,0 +1,29 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5768 — Vulnerable Base Image Pull'
+id: ed206bbe-fe75-5c6a-87dc-9ee5e319b411
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5768 (Tier 2, CVSS 9.1)
+  Dgraph is an open source distributed GraphQL database. Prior to 25.3.3, a vulnerability has been found in Dgraph that gives an unauthenticated attacker full read access to every piece of data in the database. This affects Dgraph's default configuration where ACL is not enabled. The attack requires two HTTP POSTs to port 8080. The first sets up a schema predicate with @unique @index(exact) @lang via /alter (also unauthenticated in default config). The second sends a crafted JSON mutation to /mutate?commitNow=true where a JSON key contains the predicate name followed by @ and a DQL injection payload in the language tag position. The injection exploits the addQueryIfUnique function in edgraph/server.go, which constructs DQL queries using fmt.Sprintf with unsanitized predicateName that includes the raw pred.Lang value. The Lang field is extracted from JSON mutation keys by x.PredicateLang(), which splits on @, and is never validated by any function in the codebase. The attacker injects a closing parenthesis to escape the eq() function, adds an arbitrary named query block, and uses a # comment to neutralize trailing template syntax. The injected query executes server-side and its results are returned in the HTTP response. This vulnerability is fixed in 25.3.3.
+references:
+  - https://github.com/dgraph-io/dgraph
+  - https://github.com/dgraph-io/dgraph/security/advisories/GHSA-x92x-px7w-4gx4
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-41328
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

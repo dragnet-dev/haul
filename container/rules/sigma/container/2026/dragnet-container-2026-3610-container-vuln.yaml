@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3610 — Vulnerable Base Image Pull'
+id: 4f01d4c0-f094-55e9-a8ce-5206f029c729
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3610 (Tier 2, CVSS 9.8)
+  An issue was discovered in Leptonica through 1.75.3. The gplotMakeOutput function allows command injection via a $(command) approach in the gplot rootname argument. This issue exists because of an incomplete fix for CVE-2018-3836.
+references:
+  - https://github.com/DanBloomberg/leptonica/issues/303#issuecomment-366472212
+  - https://github.com/DanBloomberg/leptonica/pull/313/commits/49ecb6c2dfd6ed5078c62f4a8eeff03e3beced3b
+  - https://lists.debian.org/debian-lts-announce/2018/03/msg00005.html
+  - https://security.gentoo.org/glsa/202312-01
+  - https://www.cve.org/CVERecord?id=CVE-2018-7440
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

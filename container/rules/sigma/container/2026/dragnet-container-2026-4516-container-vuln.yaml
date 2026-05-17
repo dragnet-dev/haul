@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4516 — Vulnerable Base Image Pull'
+id: 2797d1f3-cae5-5548-9cda-e0d07b924b55
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4516 (Tier 2, CVSS 9.8)
+  adts_decode_extradata in libavformat/adtsenc.c in FFmpeg 4.4 does not check the init_get_bits return value, which is a necessary step because the second argument to init_get_bits can be crafted.
+references:
+  - https://github.com/FFmpeg/FFmpeg/commit/9ffa49496d1aae4cbbb387aac28a9e061a6ab0a6
+  - https://lists.debian.org/debian-lts-announce/2021/11/msg00012.html
+  - https://patchwork.ffmpeg.org/project/ffmpeg/patch/AS8P193MB12542A86E22F8207EC971930B6F19%40AS8P193MB1254.EURP193.PROD.OUTLOOK.COM/
+  - https://patchwork.ffmpeg.org/project/ffmpeg/patch/AS8P193MB12542A86E22F8207EC971930B6F19@AS8P193MB1254.EURP193.PROD.OUTLOOK.COM/
+  - https://security.gentoo.org/glsa/202312-14
+  - https://ubuntu.com/security/notices/USN-5167-1
+  - https://ubuntu.com/security/notices/USN-5472-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-38171
+  - https://www.debian.org/security/2021/dsa-4990
+  - https://www.debian.org/security/2021/dsa-4998
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

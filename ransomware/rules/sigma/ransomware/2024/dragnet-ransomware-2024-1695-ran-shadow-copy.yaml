@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1695 — Shadow Copy Deletion (dAn0n)'
+id: c991ca68-0032-5557-94d8-fdb283aca9cc
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with dAn0n ransomware.
+  Incident: dragnet-ransomware-2024-1695
+  Ransomware victim claim by dAn0n: ekiconsult.com; country: US; sector: Technology
+  First observed: 2024-04-26.
+references:
+  - http://2c7nd54guzi6xhjyqrj5kdkrq2ngm2u3e6oy4nfhn3wm3r54ul2utiqd.onion/nXaTp27b5l2rshDjw_Px4RgHuZfP7S_-LM5zFAo5Q-8/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

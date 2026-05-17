@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3103 — Event Log Clearing (hellcat)'
+id: 97f2b0bf-07ff-5f48-86c1-00e0d36abaf1
+status: deprecated
+description: |
+  Detects event log clearing associated with hellcat ransomware.
+  Incident: dragnet-ransomware-2025-3103
+  Ransomware victim claim by hellcat: Potomac Financial Services; country: US; sector: Financial Services
+  First observed: 2025-04-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

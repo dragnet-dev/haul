@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0915 — Event Log Clearing (arkana)'
+id: 6c9a929b-561b-51a6-9d8e-f80be0edde00
+status: deprecated
+description: |
+  Detects event log clearing associated with arkana ransomware.
+  Incident: dragnet-ransomware-2025-0915
+  Ransomware victim claim by arkana: Ticketmaster; country: US; sector: Consumer Services
+  First observed: 2025-06-06.
+references:
+  - http://ransomwvbabemdnwl7lzgeenyfmmhskaed6jcruwhkvapsia76vttzyd.onion/ticketmaster/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

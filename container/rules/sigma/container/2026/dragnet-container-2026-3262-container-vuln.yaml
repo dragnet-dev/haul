@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3262 — Vulnerable Base Image Pull'
+id: 50e21a78-4ec3-5f98-8769-d5061d19849e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3262 (Tier 2, CVSS 9.8)
+  An issue was discovered in Oniguruma 6.2.0, as used in Oniguruma-mod in Ruby through 2.4.1 and mbstring in PHP through 7.1.5. A stack out-of-bounds read occurs in match_at() during regular expression searching. A logical error involving order of validation and access in match_at() could result in an out-of-bounds read from a stack buffer.
+references:
+  - http://www.securityfocus.com/bid/101244
+  - https://access.redhat.com/errata/RHSA-2018:1296
+  - https://access.redhat.com/security/cve/CVE-2017-9224
+  - https://github.com/kkos/oniguruma/commit/690313a061f7a4fa614ec5cc8368b4f2284e059b
+  - https://github.com/kkos/oniguruma/issues/57
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-9224
+  - https://ubuntu.com/security/notices/USN-3382-1
+  - https://ubuntu.com/security/notices/USN-3382-2
+  - https://www.cve.org/CVERecord?id=CVE-2017-9224
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.4'
+      - 'alpine:3.5'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

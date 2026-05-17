@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4482 — Recovery Inhibition (ms13089)'
+id: 933bebd7-4f3d-5ed5-82a1-c521cfd8cf55
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with ms13089 ransomware.
+  Incident: dragnet-ransomware-2025-4482
+  Ransomware victim claim by ms13089: uro.com; country: DE; sector: Healthcare
+  First observed: 2025-12-18.
+references:
+  - http://msleakjir7pxbe6onlqe5uwgvdmy6nq4mnwfy7ojswbhnleenm77vgad.onion/URO/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

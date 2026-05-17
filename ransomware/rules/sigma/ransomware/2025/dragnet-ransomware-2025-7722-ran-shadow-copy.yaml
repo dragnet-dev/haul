@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7722 — Shadow Copy Deletion (walocker)'
+id: e0761d38-5a92-57f7-b9cb-6c3cf67643c5
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with walocker ransomware.
+  Incident: dragnet-ransomware-2025-7722
+  Ransomware victim claim by walocker: SHUKAKU-INC; country: KH; sector: Financial Services
+  First observed: 2025-06-10.
+references:
+  - http://weepangrbqjfsxd2noz4bmolztnqsma3vw4c6qfnbfusadzd2m26emqd.onion/detail.php?id=vvwsuqerwakdbvem
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

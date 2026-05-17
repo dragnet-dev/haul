@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5021 — Vulnerable Base Image Pull'
+id: bef73879-e37e-5fd6-8f68-b7540bd814fc
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5021 (Tier 2, CVSS 9.8)
+  cpdb-libs provides frontend and backend libraries for the Common Printing Dialog Backends (CPDB) project. In versions 1.0 through 2.0b4, cpdb-libs is vulnerable to buffer overflows via improper use of `scanf(3)`. cpdb-libs uses the `fscanf()` and `scanf()` functions to parse command lines and configuration files, dropping the read string components into fixed-length buffers, but does not limit the length of the strings to be read by `fscanf()` and `scanf()` causing buffer overflows when a string is longer than 1023 characters. A patch for this issue is available at commit f181bd1f14757c2ae0f17cc76dc20421a40f30b7. As all buffers have a length of 1024 characters, the patch limits the maximum string length to be read to 1023 by replacing all occurrences of `%s` with `%1023s` in all calls of the `fscanf()` and `scanf()` functions.
+references:
+  - http://www.openwall.com/lists/oss-security/2023/06/14/7
+  - https://github.com/OpenPrinting/cpdb-libs/blob/85555fba64d34f53a2fce099b0488904cc48ed35/cpdb/cpdb-frontend.c#L372
+  - https://github.com/OpenPrinting/cpdb-libs/blob/85555fba64d34f53a2fce099b0488904cc48ed35/tools/cpdb-text-frontend.c#L362
+  - https://github.com/OpenPrinting/cpdb-libs/blob/85555fba64d34f53a2fce099b0488904cc48ed35/tools/cpdb-text-frontend.c#L453
+  - https://github.com/OpenPrinting/cpdb-libs/commit/f181bd1f14757c2ae0f17cc76dc20421a40f30b7
+  - https://github.com/OpenPrinting/cpdb-libs/security/advisories/GHSA-25j7-9gfc-f46x
+  - https://ubuntu.com/security/notices/USN-6204-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-34095
+  - https://www.openwall.com/lists/oss-security/2023/06/14/7
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

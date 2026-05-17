@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1139 — Event Log Clearing (bert)'
+id: 43f171a1-f947-5e74-a3bb-abfff45793fc
+status: deprecated
+description: |
+  Detects event log clearing associated with bert ransomware.
+  Incident: dragnet-ransomware-2025-1139
+  Ransomware victim claim by bert: Columbia TI; country: CO; sector: Technology
+  First observed: 2025-06-05.
+references:
+  - http://bertblogsoqmm4ow7nqyh5ik7etsmefdbf25stauecytvwy7tkgizhad.onion/post/9277F1ABA3E9491292FE6392FE89159C
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

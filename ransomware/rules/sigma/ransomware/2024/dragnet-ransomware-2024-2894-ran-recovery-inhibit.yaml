@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2894 — Recovery Inhibition (incransom)'
+id: c801819a-cae3-59a6-a939-5e862e3bd5bc
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with incransom ransomware.
+  Incident: dragnet-ransomware-2024-2894
+  Ransomware victim claim by incransom: Waterford Country School Inc; country: US; sector: Education
+  First observed: 2024-01-29.
+references:
+  - http://incapt.blog/blog/leak/837D7A1BA838A2AF
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

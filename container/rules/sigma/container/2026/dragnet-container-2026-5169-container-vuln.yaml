@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5169 — Vulnerable Base Image Pull'
+id: d9eb4554-748c-5cde-a5f6-1a3107ee239c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5169 (Tier 2, CVSS 9.8)
+  Under certain configurations of --tlsCAFile and tls.CAFile, MongoDB Server may skip peer certificate validation which may result in untrusted connections to succeed. This may effectively reduce the security guarantees provided by TLS and open connections  that should have been closed due to failing certificate validation. This issue affects MongoDB Server v7.0 versions prior to and including 7.0.5, MongoDB Server v6.0 versions prior to and including 6.0.13, MongoDB Server v5.0 versions prior to and including 5.0.24 and MongoDB Server v4.4 versions prior to and including 4.4.28.
+
+Required Configuration : A server process will allow incoming connections to skip peer certificate validation if the server process was started with TLS enabled (net.tls.mode set to allowTLS, preferTLS, or requireTLS) and without a net.tls.CAFile configured.
+references:
+  - https://jira.mongodb.org/browse/SERVER-72839
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-1351
+  - https://security.netapp.com/advisory/ntap-20240524-0010/
+  - https://www.cve.org/CVERecord?id=CVE-2024-1351
+  - https://www.mongodb.com/docs/manual/release-notes/4.4/#4.4.29---february-28--2024
+  - https://www.mongodb.com/docs/manual/release-notes/7.0/#7.0.6---feb-28--2024
+  - https://www.mongodb.com/docs/v5.0/release-notes/5.0/#5.0.25---february-28--2024
+  - https://www.mongodb.com/docs/v6.0/release-notes/6.0/#6.0.14---feb-28--2024
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

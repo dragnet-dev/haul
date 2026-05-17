@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0255 — Event Log Clearing (ryuk)'
+id: 50325b2a-9d89-54f1-8d0c-bc53981a26a0
+status: deprecated
+description: |
+  Detects event log clearing associated with ryuk ransomware.
+  Incident: dragnet-ransomware-2020-0255
+  Ransomware victim claim by ryuk: St. Lawrence Health System Hospitals (Canton-Potsdam, Gouverneur, and Massena); country: US; sector: Healthcare
+  First observed: 2020-10-27.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

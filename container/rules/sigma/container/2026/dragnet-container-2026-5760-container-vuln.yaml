@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5760 — Vulnerable Base Image Pull'
+id: 3ee75f74-9017-56b0-8a2b-0c417e9b8406
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5760 (Tier 2, CVSS 9.1)
+  In certain circumstances, Spring Boot's default web security is ineffective allowing unauthorized access to all endpoints. For an application to be vulnerable, it must: be a servlet-based web application; have no Spring Security configuration of its own and rely on the default web security filter chain; depend on spring-boot-actuator-autoconfigure; not depend on spring-boot-health. If any of the above does not apply, the application is not vulnerable.
+
+Affected: Spring Boot 4.0.0–4.0.5; upgrade to 4.0.6 or later per vendor advisory.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-40976
+  - https://github.com/spring-projects/spring-boot
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-40976
+  - https://spring.io/security/cve-2026-40976
+  - https://www.cve.org/CVERecord?id=CVE-2026-40976
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4226 — Recovery Inhibition (lynx)'
+id: ccede8d7-4e47-577c-ba2a-bc3bdd387182
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4226
+  Ransomware victim claim by lynx: Springfield Water and Sewer Commission; country: US; sector: Public Sector
+  First observed: 2025-03-11.
+references:
+  - http://lynxblog.net/leaks/67d07b3944fac8dca1d8a329
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

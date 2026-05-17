@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6652 — Event Log Clearing (RunSomeWares)'
+id: beb47986-2482-5134-858d-b0784db107b2
+status: deprecated
+description: |
+  Detects event log clearing associated with RunSomeWares ransomware.
+  Incident: dragnet-ransomware-2025-6652
+  Ransomware victim claim by RunSomeWares: Harvest; country: FR; sector: Financial Services
+  First observed: 2025-04-10.
+references:
+  - http://z6d3726b7xunis4tvbzzve6rbuxzt4urqiv6trfakjnwbigknw3hfaid.onion/harvest/harv.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

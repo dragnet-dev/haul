@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1447 — Event Log Clearing (chort)'
+id: 8cca81bb-3428-5d06-b405-ba1b01ba7cb9
+status: deprecated
+description: |
+  Detects event log clearing associated with chort ransomware.
+  Incident: dragnet-ransomware-2024-1447
+  Ransomware victim claim by chort: bartow.k12.ga.us; country: US; sector: Education
+  First observed: 2024-11-17.
+references:
+  - http://hgxyonufefcglpekxma55fttev3lcfucrf7jvep2c3j6447cjroadead.onion/comp/bartow.k12.ga.us/index
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

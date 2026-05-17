@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4783 — Recovery Inhibition (raznatovic)'
+id: 0d216cc8-7744-5adc-9cce-976c0726babc
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with raznatovic ransomware.
+  Incident: dragnet-ransomware-2023-4783
+  Ransomware victim claim by raznatovic: Colonial Pipeline; sector: Energy
+  First observed: 2023-12-17.
+references:
+  - https://t.me/ransomed_channel/232
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

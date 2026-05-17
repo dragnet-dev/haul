@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2997 — Vulnerable Base Image Pull'
+id: 214267fb-4340-5a06-af66-fad97cbf0a53
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2997 (Tier 2, CVSS 9)
+  Versions of MCollective prior to 2.10.4 deserialized YAML from agents without calling safe_load, allowing the potential for arbitrary code execution on the server. The fix for this is to call YAML.safe_load on input. This has been tested in all Puppet-supplied MCollective plugins, but there is a chance that third-party plugins could rely on this insecure behavior.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-2292
+  - https://github.com/puppetlabs/marionette-collective/commit/e0e741889f5adeb8f75387037106b0d28a9099b0
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-2292
+  - https://puppet.com/security/cve/cve-2017-2292
+  - https://security.gentoo.org/glsa/201709-01
+  - https://www.cve.org/CVERecord?id=CVE-2017-2292
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

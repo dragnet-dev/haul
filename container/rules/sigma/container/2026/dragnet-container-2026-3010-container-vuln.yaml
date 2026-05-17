@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3010 — Vulnerable Base Image Pull'
+id: 63634133-3ed5-5343-80de-df7423286ff9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3010 (Tier 2, CVSS 9.8)
+  A programming error exists in a way Randombit Botan cryptographic library version 2.0.1 implements x500 string comparisons which could lead to certificate verification issues and abuse. A specially crafted X509 certificate would need to be delivered to the client or server application in order to trigger this vulnerability.
+references:
+  - http://talosintelligence.com/vulnerability_reports/TALOS-2017-0294
+  - http://www.debian.org/security/2017/dsa-3939
+  - http://www.securityfocus.com/bid/98106
+  - https://github.com/randombit/botan/commit/c927101675e5f63fc0bdd93c5a4825adc54323b4 (1.10.16)
+  - https://www.cve.org/CVERecord?id=CVE-2017-2801
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

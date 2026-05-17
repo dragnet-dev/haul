@@ -1,0 +1,64 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4130 — Vulnerable Base Image Pull'
+id: cc8f8a66-70ab-52f7-9fc7-37b5ba60065f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4130 (Tier 2, CVSS 9.8)
+  Crossbeam is a set of tools for concurrent programming. In crossbeam-channel before version 0.4.4, the bounded channel incorrectly assumes that `Vec::from_iter` has allocated capacity that same as the number of iterator elements. `Vec::from_iter` does not actually guarantee that and may allocate extra memory. The destructor of the `bounded` channel reconstructs `Vec` from the raw pointer based on the incorrect assumes described above. This is unsound and causing deallocation with the incorrect capacity when `Vec::from_iter` has allocated different sizes with the number of iterator elements. This has been fixed in crossbeam-channel 0.4.4.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-15254
+  - https://github.com/RustSec/advisory-db/pull/425
+  - https://github.com/crossbeam-rs/crossbeam
+  - https://github.com/crossbeam-rs/crossbeam/issues/539
+  - https://github.com/crossbeam-rs/crossbeam/pull/533
+  - https://github.com/crossbeam-rs/crossbeam/security/advisories/GHSA-v5m7-53cv-f3hx
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-15254
+  - https://rustsec.org/advisories/RUSTSEC-2020-0052.html
+  - https://ubuntu.com/security/notices/USN-4599-1
+  - https://ubuntu.com/security/notices/USN-4599-2
+  - https://www.cve.org/CVERecord?id=CVE-2020-15254
+  - https://www.mozilla.org/en-US/security/advisories/mfsa2020-45/#CVE-2020-15254
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'ubuntu:16.04'
+      - 'ubuntu:18.04'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

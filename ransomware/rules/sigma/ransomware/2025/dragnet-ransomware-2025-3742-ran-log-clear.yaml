@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3742 — Event Log Clearing (kazu)'
+id: f9ab245a-3033-5444-b48c-cfb55f6025bc
+status: deprecated
+description: |
+  Detects event log clearing associated with kazu ransomware.
+  Incident: dragnet-ransomware-2025-3742
+  Ransomware victim claim by kazu: National Civil Service Commission of Colombia; country: CO; sector: Public Sector
+  First observed: 2025-11-10.
+references:
+  - http://6czlbd2jfiy6765fbnbnzuwuqocg57ebvp3tbm35kib425k4qnmiiiqd.onion/ransom.html#National
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

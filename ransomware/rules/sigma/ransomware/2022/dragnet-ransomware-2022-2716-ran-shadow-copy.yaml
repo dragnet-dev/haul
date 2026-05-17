@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2716 — Shadow Copy Deletion (quantum)'
+id: 7b0b6ebd-8872-5f83-8f55-bab7c55d5d81
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with quantum ransomware.
+  Incident: dragnet-ransomware-2022-2716
+  Ransomware victim claim by quantum: Tehama County Social Services; country: US; sector: Public Sector
+  First observed: 2022-04-28.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

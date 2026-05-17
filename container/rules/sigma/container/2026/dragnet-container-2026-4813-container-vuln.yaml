@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4813 — Vulnerable Base Image Pull'
+id: 632abff9-4988-557a-995d-f595370f6694
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4813 (Tier 2, CVSS 9.8)
+  jmespath.rb (aka JMESPath for Ruby) before 1.6.1 uses JSON.load in a situation where JSON.parse is preferable.
+references:
+  - https://github.com/jmespath/jmespath.rb
+  - https://github.com/jmespath/jmespath.rb/commit/e8841280053a9d9a0c90f36223f926c8b9e4ec49
+  - https://github.com/jmespath/jmespath.rb/commit/e8841280053a9d9a0c90f36223f926c8b9e4ec49 (v1.6.1)
+  - https://github.com/jmespath/jmespath.rb/compare/v1.6.0...v1.6.1
+  - https://github.com/jmespath/jmespath.rb/pull/55
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/jmespath/CVE-2022-32511.yml
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/376NUPIPTYBWWGS33GO4UOLQRI4D3BTP/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AGZ2YWONVFFOPACHAT4MM7ZBT4DNHOF5/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/376NUPIPTYBWWGS33GO4UOLQRI4D3BTP
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/AGZ2YWONVFFOPACHAT4MM7ZBT4DNHOF5
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-32511
+  - https://stackoverflow.com/a/30050571/580231
+  - https://www.cve.org/CVERecord?id=CVE-2022-32511
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2149 — Event Log Clearing (d4rk4rmy)'
+id: 7762ef71-3a4f-569d-8896-92853f5e0f12
+status: deprecated
+description: |
+  Detects event log clearing associated with d4rk4rmy ransomware.
+  Incident: dragnet-ransomware-2025-2149
+  Ransomware victim claim by d4rk4rmy: Taiwan Digital Streaming Co Ltd; country: TW; sector: Technology
+  First observed: 2025-07-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

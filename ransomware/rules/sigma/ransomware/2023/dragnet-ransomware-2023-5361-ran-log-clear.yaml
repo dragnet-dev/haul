@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5361 — Event Log Clearing (werewolves)'
+id: 15a8ad33-2032-5a15-8692-693be998a735
+status: deprecated
+description: |
+  Detects event log clearing associated with werewolves ransomware.
+  Incident: dragnet-ransomware-2023-5361
+  Ransomware victim claim by werewolves: croc.ru; country: RU; sector: Technology
+  First observed: 2023-09-27.
+references:
+  - https://werewolves.pro/en/maritimebank-com.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

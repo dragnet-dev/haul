@@ -1,0 +1,63 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3744 — Vulnerable Base Image Pull'
+id: aa22b235-c0bc-54ce-b305-58afa11c5b7d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3744 (Tier 2, CVSS 9.8)
+  An issue was discovered in Squid through 4.7. When handling the tag esi:when when ESI is enabled, Squid calls ESIExpression::Evaluate. This function uses a fixed stack buffer to hold the expression while it's being evaluated. When processing the expression, it could either evaluate the top of the stack, or add a new member to the stack. When adding a new member, there is no check to ensure that the stack won't overflow.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-12519
+  - http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00018.html
+  - http://www.openwall.com/lists/oss-security/2020/04/23/1
+  - http://www.squid-cache.org/Advisories/SQUID-2019_12.txt
+  - https://access.redhat.com/security/cve/CVE-2019-12519
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1730535
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1827552
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1827563
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-12519
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-12525
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-11945
+  - https://errata.almalinux.org/8/ALSA-2020-2041.html
+  - https://errata.rockylinux.org/RLSA-2020:2041
+  - https://gitlab.com/jeriko.one/security/-/blob/master/squid/CVEs/CVE-2019-12519.txt
+  - https://linux.oracle.com/cve/CVE-2019-12519.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.9'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:19.10'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+      - 'ubuntu:21.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1304 — Recovery Inhibition (bravox)'
+id: 8a92bdc1-8ca4-52f0-9755-002fe1a6b99a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with bravox ransomware.
+  Incident: dragnet-ransomware-2025-1304
+  Ransomware victim claim by bravox: WVPCA; country: US; sector: Healthcare
+  First observed: 2025-05-15.
+references:
+  - http://bravoxxtrmqeeevhl7gdh2yzvlrjxajr66d33c7ozosrccx4cz7cepad.onion/blog/0a6a4f3f-fb28-4807-9bbe-49872020c472
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

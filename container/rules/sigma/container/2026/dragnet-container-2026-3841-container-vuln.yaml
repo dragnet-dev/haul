@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3841 — Vulnerable Base Image Pull'
+id: 4effb7c2-e3a6-5be8-ba2f-fe77fddc85c5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3841 (Tier 2, CVSS 9.8)
+  Symonics libmysofa 0.7 has a NULL pointer dereference in getHrtf in hrtf/reader.c.
+references:
+  - https://github.com/hoene/libmysofa/commit/90e7bfd86ab7aba5c3abd2df1f05e101e1843cdd
+  - https://github.com/hoene/libmysofa/compare/f571522...e07edb3
+  - https://ubuntu.com/security/notices/USN-4473-1
+  - https://usn.ubuntu.com/4473-1/
+  - https://www.cve.org/CVERecord?id=CVE-2019-16092
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

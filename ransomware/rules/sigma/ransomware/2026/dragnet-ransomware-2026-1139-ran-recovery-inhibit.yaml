@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1139 — Recovery Inhibition (handala)'
+id: 6e47a7e6-7a11-5e5d-88a6-1d2cd9ecce3f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1139
+  Ransomware victim claim by handala: Mossad’s Secret Treasury Exposed: 50,000 Confidential Emails Leaked; country: IL; sector: Not Found
+  First observed: 2026-03-17.
+references:
+  - https://handala-hack.to/mossads-secret-treasury-exposed-50000-confidential-emails-leaked/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4504 — Vulnerable Base Image Pull'
+id: 80b5d387-0f83-54a9-98c1-d19c098b090c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4504 (Tier 2, CVSS 9.8)
+  A stack overflow vulnerability occurs in Atomicparsley 20210124.204813.840499f through APar_read64() in src/util.cpp due to the lack of buffer size of uint32_buffer while reading more bytes in APar_read64.
+references:
+  - https://github.com/wez/atomicparsley/commit/d72ccf06c98259d7261e0f3ac4fd8717778782c1
+  - https://github.com/wez/atomicparsley/issues/32
+  - https://security.gentoo.org/glsa/202305-01
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

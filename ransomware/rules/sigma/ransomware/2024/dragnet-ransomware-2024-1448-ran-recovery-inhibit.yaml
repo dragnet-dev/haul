@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1448 — Recovery Inhibition (chort)'
+id: 41f0ad37-af50-55c9-9d69-d197cdb57166
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with chort ransomware.
+  Incident: dragnet-ransomware-2024-1448
+  Ransomware victim claim by chort: edwardsburgschoolsfoundation.org; country: US; sector: Education
+  First observed: 2024-11-17.
+references:
+  - http://hgxyonufefcglpekxma55fttev3lcfucrf7jvep2c3j6447cjroadead.onion/comp/edwardsburgschoolsfoundation.org/index
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

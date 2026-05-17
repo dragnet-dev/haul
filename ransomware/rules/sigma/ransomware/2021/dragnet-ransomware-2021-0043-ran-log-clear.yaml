@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0043 — Event Log Clearing (avaddon)'
+id: efe4edbc-7284-557d-8b77-202e23fd9cb4
+status: deprecated
+description: |
+  Detects event log clearing associated with avaddon ransomware.
+  Incident: dragnet-ransomware-2021-0043
+  Ransomware victim claim by avaddon: American Bank Systems INC; sector: Financial Services
+  First observed: 2021-09-09.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5399 — Vulnerable Base Image Pull'
+id: 27e4ec64-17bd-5338-bc6e-0f662336ff8b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5399 (Tier 2, CVSS 9.8)
+  Password can be used past expiry in PgBouncer due to auth_query not taking into account Postgres its VALID UNTIL value, which allows an attacker to log in with an already expired password
+references:
+  - https://lists.debian.org/debian-lts-announce/2025/05/msg00032.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-2291
+  - https://www.pgbouncer.org/changelog.html#pgbouncer-124x
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

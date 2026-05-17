@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2481 — Recovery Inhibition (hellogookie)'
+id: 7bf14283-b584-5e12-904f-fb8ee54e90bc
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with hellogookie ransomware.
+  Incident: dragnet-ransomware-2024-2481
+  Ransomware victim claim by hellogookie: CD Projekt!; country: PL; sector: Technology
+  First observed: 2024-04-19.
+references:
+  - http://hellogookie256cvccntvenyxrvn7ht73bs6ss3oj2ocfkjt5y6vq6gfi2tad.onion/news/02cae4a1a636af286036df3ec24bf727
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

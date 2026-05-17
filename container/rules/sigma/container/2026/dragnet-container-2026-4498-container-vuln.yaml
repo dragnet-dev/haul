@@ -1,0 +1,50 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4498 — Vulnerable Base Image Pull'
+id: 177f6abb-491b-5a9e-be4a-c3b3c88c9830
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4498 (Tier 2, CVSS 9.1)
+  A flaw was found in sox 14.4.1. The lsx_adpcm_init function within libsox leads to a global-buffer-overflow. This flaw allows an attacker to input a malicious file, leading to the disclosure of sensitive information.
+references:
+  - https://access.redhat.com/security/cve/CVE-2021-3643
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1980626
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-3643
+  - https://ubuntu.com/security/notices/USN-5904-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-3643
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

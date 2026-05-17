@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4739 — Vulnerable Base Image Pull'
+id: 05a3a549-8c04-5980-8156-bf5f5b57e4a9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4739 (Tier 2, CVSS 9.8)
+  njs through 0.7.0, used in NGINX, was discovered to contain a heap use-after-free in njs_await_fulfilled.
+references:
+  - https://github.com/nginx/njs/commit/6a07c2156a07ef307b6dcf3c2ca8571a5f1af7a6
+  - https://github.com/nginx/njs/issues/451
+  - https://security.netapp.com/advisory/ntap-20220303-0007/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

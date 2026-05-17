@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2982 — Vulnerable Base Image Pull'
+id: a1c5ac5e-3141-5d34-a9d2-780a050b71c3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2982 (Tier 2, CVSS 9.8)
+  In the Linux kernel before 4.7, the amd_gpio_remove function in drivers/pinctrl/pinctrl-amd.c calls the pinctrl_unregister function, leading to a double free.
+references:
+  - http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=251e22abde21833b3d29577e4d8c7aaccd650eee
+  - http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=8dca4a41f1ad65043a78c2338d9725f859c8d2c3
+  - https://access.redhat.com/security/cve/CVE-2017-18174
+  - https://github.com/torvalds/linux/commit/251e22abde21833b3d29577e4d8c7aaccd650eee
+  - https://github.com/torvalds/linux/commit/8dca4a41f1ad65043a78c2338d9725f859c8d2c3
+  - https://linux.oracle.com/cve/CVE-2017-18174.html
+  - https://linux.oracle.com/errata/ELSA-2019-4315.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-18174
+  - https://ubuntu.com/security/notices/USN-3848-1
+  - https://ubuntu.com/security/notices/USN-3848-2
+  - https://usn.ubuntu.com/3848-1/
+  - https://usn.ubuntu.com/3848-2/
+  - https://www.cve.org/CVERecord?id=CVE-2017-18174
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

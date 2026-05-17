@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0407 — Event Log Clearing (beast)'
+id: df9af5ba-21ea-5a28-bc8f-9ee9027eb17e
+status: deprecated
+description: |
+  Detects event log clearing associated with beast ransomware.
+  Incident: dragnet-ransomware-2026-0407
+  Ransomware victim claim by beast: Xiamen Tungsten Co. (XTC); country: CN; sector: Manufacturing
+  First observed: 2026-03-31.
+references:
+  - http://beast6azu4f7fxjakiayhnssybibsgjnmy77a6duufqw5afjzfjhzuqd.onion/card/xiamen_tungsten_co___xtc_
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

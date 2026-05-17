@@ -1,0 +1,71 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3859 — Vulnerable Base Image Pull'
+id: 516cb0fa-125a-5d72-bef1-883c9a060a0d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3859 (Tier 2, CVSS 9.8)
+  An issue was discovered in Rsyslog v8.1908.0. contrib/pmaixforwardedfrom/pmaixforwardedfrom.c has a heap overflow in the parser for AIX log messages. The parser tries to locate a log message delimiter (in this case, a space or a colon) but fails to account for strings that do not satisfy this constraint. If the string does not match, then the variable lenMsg will reach the value zero and will skip the sanity check that detects invalid log messages. The message will then be considered valid, and the parser will eat up the nonexistent colon delimiter. In doing so, it will decrement lenMsg, a signed integer, whose value was zero and now becomes minus one. The following step in the parser is to shift left the contents of the message. To do this, it will call memmove with the right pointers to the target and destination strings, but the lenMsg will now be interpreted as a huge value, causing a heap overflow.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-11/msg00031.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-11/msg00032.html
+  - https://access.redhat.com/security/cve/CVE-2019-17041
+  - https://github.com/rsyslog/rsyslog/blob/v8-stable/ChangeLog
+  - https://github.com/rsyslog/rsyslog/pull/3884
+  - https://linux.oracle.com/cve/CVE-2019-17041.html
+  - https://linux.oracle.com/errata/ELSA-2020-1702.html
+  - https://lists.debian.org/debian-lts-announce/2021/11/msg00030.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KPNCHI7X2IEXRH6RYD6IDPR4PLB5RPC7/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W6SUQE25RD37CD24BHKUWMG27U5RQ2FU/
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-17041
+  - https://ubuntu.com/security/notices/USN-5419-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-17041
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

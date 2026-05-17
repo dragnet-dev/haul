@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0385 — Shadow Copy Deletion (aurora)'
+id: aba7e6cb-8da4-557d-9a38-ef700893985b
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with aurora ransomware.
+  Incident: dragnet-ransomware-2026-0385
+  Ransomware victim claim by aurora: Cheval Blanc Randheli; country: MV; sector: Hospitality and Tourism
+  First observed: 2026-04-22.
+references:
+  - http://u6lieui2dakbctcjea2bz4r4q32r7t36nwljovqbv7mxs6o2smgxixid.onion/blog/cheval-blanc-randheli-5506a6ac
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

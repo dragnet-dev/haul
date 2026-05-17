@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2747 — Recovery Inhibition (incransom)'
+id: 968c67e9-1c1b-55c0-883d-debec69a4b4c
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with incransom ransomware.
+  Incident: dragnet-ransomware-2024-2747
+  Ransomware victim claim by incransom: CellNetix Pathology & Laboratories, LLC; country: US; sector: Healthcare
+  First observed: 2024-01-08.
+references:
+  - http://incapt.blog/blog/leak/0C23D0EE595F03AD
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

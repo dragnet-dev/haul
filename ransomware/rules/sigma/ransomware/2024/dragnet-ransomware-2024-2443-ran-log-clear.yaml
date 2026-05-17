@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2443 — Event Log Clearing (hellcat)'
+id: 3b9da0c2-6903-54c1-ac77-e3956a8d2d05
+status: deprecated
+description: |
+  Detects event log clearing associated with hellcat ransomware.
+  Incident: dragnet-ransomware-2024-2443
+  Ransomware victim claim by hellcat: Sistem Informasi Pengelolaan Keuangan Daerah (SIPKD); country: ID; sector: Public Sector
+  First observed: 2024-12-25.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

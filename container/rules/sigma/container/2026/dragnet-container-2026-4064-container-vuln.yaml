@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4064 — Vulnerable Base Image Pull'
+id: cce670d4-67ae-5d3e-8b77-04c30bf828e2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4064 (Tier 2, CVSS 9.8)
+  utility.c in telnetd in netkit telnet through 0.17 allows remote attackers to execute arbitrary code via short writes or urgent data, because of a buffer overflow involving the netclear and nextitem functions.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-10188
+  - https://github.com/krb5/krb5-appl/blob/d00cd671dfe945791b33d4f1f6a5c57ae1667ef8/telnet/telnetd/utility.c#L205-L216
+  - http://www.openwall.com/lists/oss-security/2026/01/20/8
+  - https://access.redhat.com/security/cve/CVE-2020-10188
+  - https://appgateresearch.blogspot.com/2020/02/bravestarr-fedora-31-netkit-telnetd_28.html
+  - https://linux.oracle.com/cve/CVE-2020-10188.html
+  - https://linux.oracle.com/errata/ELSA-2020-1349.html
+  - https://lists.debian.org/debian-lts-announce/2020/05/msg00012.html
+  - https://lists.debian.org/debian-lts-announce/2020/08/msg00038.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/7FMTRRQTYKWZD2GMXX3GLZV46OLPCLVK/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HLU6FL24BSQQEB2SJC26NLJ2MANQDA7M/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/K3VJ6V2Z3JRNJOBVHSOPMAC76PSSKG6A/
+  - https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-telnetd-EFJrEzPx
+  - https://ubuntu.com/security/notices/USN-5048-1
+  - https://ubuntu.com/security/notices/USN-5048-2
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

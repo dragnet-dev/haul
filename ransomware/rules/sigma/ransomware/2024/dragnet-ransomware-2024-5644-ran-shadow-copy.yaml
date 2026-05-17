@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5644 — Shadow Copy Deletion (rhysida)'
+id: 7e2a0b81-0d66-5070-9eff-13d0c7a1f716
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with rhysida ransomware.
+  Incident: dragnet-ransomware-2024-5644
+  Ransomware victim claim by rhysida: Moser Wealth Advisors; country: US; sector: Financial Services
+  First observed: 2024-08-11.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

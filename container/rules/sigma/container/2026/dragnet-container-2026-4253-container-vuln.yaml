@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4253 — Vulnerable Base Image Pull'
+id: 3154bde9-42d1-5faf-99e9-1e9f568f5b23
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4253 (Tier 2, CVSS 9.8)
+  In AWStats through 7.7, cgi-bin/awstats.pl?config= accepts an absolute pathname, even though it was intended to only read a file in the /etc/awstats/awstats.conf format. NOTE: this issue exists because of an incomplete fix for CVE-2017-1000501.
+references:
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=891469
+  - https://github.com/eldy/awstats/issues/90
+  - https://lists.debian.org/debian-lts-announce/2020/12/msg00035.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/47QZWKSRZYZFESYTLSW7A6KVKOOPL7IV/
+  - https://ubuntu.com/security/notices/USN-4953-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-29600
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:20.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

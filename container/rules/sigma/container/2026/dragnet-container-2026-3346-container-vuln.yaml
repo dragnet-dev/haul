@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3346 — Vulnerable Base Image Pull'
+id: 03249bc3-5e43-56e3-a57e-bf79ec8aa9d4
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3346 (Tier 2, CVSS 9.8)
+  A use-after-free vulnerability exists in handle_error() in sass_context.cpp in LibSass 3.4.x and 3.5.x through 3.5.4 that could be leveraged to cause a denial of service (application crash) or possibly unspecified other impact.
+references:
+  - http://lists.opensuse.org/opensuse-security-announce/2019-07/msg00047.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-07/msg00051.html
+  - http://lists.opensuse.org/opensuse-security-announce/2019-08/msg00027.html
+  - https://github.com/sass/libsass/issues/2643
+  - https://ubuntu.com/security/notices/USN-4837-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-11499
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

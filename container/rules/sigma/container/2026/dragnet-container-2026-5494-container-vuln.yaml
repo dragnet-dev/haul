@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5494 — Vulnerable Base Image Pull'
+id: b6199166-d5e7-55d5-aa91-2e13cd19da5f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5494 (Tier 2, CVSS 9.1)
+  The PCRE2 library is a set of C functions that implement regular expression pattern matching. In version 10.45, a heap-buffer-overflow read vulnerability exists in the PCRE2 regular expression matching engine, specifically within the handling of the (*scs:...) (Scan SubString) verb when combined with (*ACCEPT) in src/pcre2_match.c. This vulnerability may potentially lead to information disclosure if the out-of-bounds data read during the memcmp affects the final match result in a way observable by the attacker. This issue has been resolved in version 10.46.
+references:
+  - https://access.redhat.com/security/cve/CVE-2025-58050
+  - https://github.com/PCRE2Project/pcre2/commit/a141712e5967d448c7ce13090ab530c8e3d82254
+  - https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.46
+  - https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-c2gv-xgf5-5cc2
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-58050
+  - https://ubuntu.com/security/notices/USN-7777-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-58050
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:25.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

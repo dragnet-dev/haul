@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4088 — Shadow Copy Deletion (metaencryptor)'
+id: ca414c57-0289-53a0-839e-241b415a01e6
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2024-4088
+  Ransomware victim claim by metaencryptor: Life University; country: US; sector: Education
+  First observed: 2024-08-22.
+references:
+  - https://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:b5eb8e07ab1bff2d11d97bb3ce75947d/0AFC:731346b414a49e94e7a60fbdc27098558c556ab3d17243d7259da3ffe194cbfe/0AFC:a302abbf7487c833b65f2d5ee15d28cd3b528276cdd92f748989b4d9a0a61b843ba391988885e49281638aee7d90b6cf
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

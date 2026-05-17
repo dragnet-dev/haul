@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4169 — Shadow Copy Deletion (orca)'
+id: 80adf8d1-520d-5743-ac01-9beab06e8b9a
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with orca ransomware.
+  Incident: dragnet-ransomware-2024-4169
+  Ransomware victim claim by orca: Chernan Technology; country: CN; sector: Technology
+  First observed: 2024-09-18.
+references:
+  - http://orca66hwnpciepupe5626k2ib6dds6zizjwuuashz67usjps2wehz4id.onion/r/AOSAJmxbeylOjkrruiRMveWykVfaMJhQ8wYEv+C3zcLkbMl5qcsaVusyRjrSKPqJ1QIrY3LNBLyTXtmUPpCvENTN0RhN1RJ/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

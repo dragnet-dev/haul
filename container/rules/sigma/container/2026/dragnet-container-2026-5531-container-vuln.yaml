@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5531 — Vulnerable Base Image Pull'
+id: da20c825-0408-556f-8e7f-6ab8dff790c3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5531 (Tier 2, CVSS 9.8)
+  Out-of-bounds write in cdfs_open_cue_track in libretro libretro-common latest on all platforms allows remote attackers to execute arbitrary code via a crafted .cue file with a file path exceeding PATH_MAX_LENGTH that is copied using memcpy into a fixed-size buffer.
+references:
+  - https://github.com/libretro/libretro-common/blob/master/formats/cdfs/cdfs.c#L471
+  - https://github.com/libretro/libretro-common/issues/222
+  - https://ubuntu.com/security/notices/USN-8166-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-9809
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4314 — Vulnerable Base Image Pull'
+id: d27e1288-1259-5ec7-9a6a-b52b1f6c6195
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4314 (Tier 2, CVSS 9.8)
+  This affects the package thenify before 3.3.1. The name argument provided to the package can be controlled by users without any sanitization, and this is provided to the eval function without any sanitization.
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-7677
+  - https://github.com/thenables/thenify
+  - https://github.com/thenables/thenify/blob/master/index.js%23L17
+  - https://github.com/thenables/thenify/commit/0d94a24eb933bc835d568f3009f4d269c4c4c17a
+  - https://github.com/thenables/thenify/issues/29
+  - https://lists.debian.org/debian-lts-announce/2022/09/msg00039.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MTEUUTNIEBHGKUKKLNUZSV7IEP6IP3Q3/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UM6XJ73Q3NAM5KSGCOKJ2ZIA6GUWUJLK/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MTEUUTNIEBHGKUKKLNUZSV7IEP6IP3Q3
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UM6XJ73Q3NAM5KSGCOKJ2ZIA6GUWUJLK
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-7677
+  - https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-572317
+  - https://security.snyk.io/vuln/SNYK-JS-THENIFY-571690
+  - https://ubuntu.com/security/notices/USN-6016-1
+  - https://www.cve.org/CVERecord?id=CVE-2020-7677
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

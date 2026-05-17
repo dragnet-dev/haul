@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6651 — Shadow Copy Deletion (RunSomeWares)'
+id: 8b476514-3594-59d9-a0a2-dc2b46d4c671
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with RunSomeWares ransomware.
+  Incident: dragnet-ransomware-2025-6651
+  Ransomware victim claim by RunSomeWares: F&V Capital Management, LLC (FVCM); country: US; sector: Financial Services
+  First observed: 2025-01-01.
+references:
+  - http://oow7rehrxlzpy6vh3hezl2khstkpa6s7wx3iit74tr6xbjibupld5iad.onion/fvcm/fvcm.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

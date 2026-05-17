@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1113 — Recovery Inhibition (handala)'
+id: c3437934-cc31-5ab6-9542-c2ca1e6b802a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1113
+  Ransomware victim claim by handala: Atlas Insurances Ltd; country: IL; sector: Financial Services
+  First observed: 2026-03-05.
+references:
+  - https://handala-hack.to/atlas-insurances-ltd-hacked/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

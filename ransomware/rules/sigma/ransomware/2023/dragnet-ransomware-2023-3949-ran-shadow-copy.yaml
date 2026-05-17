@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3949 — Shadow Copy Deletion (metaencryptor)'
+id: e0946952-0093-5d18-87a9-f0c3f416947e
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with metaencryptor ransomware.
+  Incident: dragnet-ransomware-2023-3949
+  Ransomware victim claim by metaencryptor: Belzona UK Ltd; country: GB; sector: Manufacturing
+  First observed: 2023-09-29.
+references:
+  - http://metacrptmytukkj7ajwjovdpjqzd7esg5v3sg344uzhigagpezcqlpyd.onion/0AFC:a40e344676624757953c7a57684ae9a8/0AFC:ca52c735a3fe7adfd61a696b0e428291b7bba88d662d56cb363dde13a7fab408/0AFC:aee6bd80a01cd6b1410697b21a1ddfcfa05115936cbca5907badaf81f405466a
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

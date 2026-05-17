@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-1968 — Event Log Clearing (cryptnet)'
+id: a1e4d2e2-bd6c-5bbd-99c1-47fe50a47b9e
+status: deprecated
+description: |
+  Detects event log clearing associated with cryptnet ransomware.
+  Incident: dragnet-ransomware-2023-1968
+  Ransomware victim claim by cryptnet: Urban Import; sector: Consumer Services
+  First observed: 2023-04-19.
+references:
+  - http://blog6zw62uijolee7e6aqqnqaszs3ckr5iphzdzsazgrpvtqtjwqryid.onion/news/1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5754 — Vulnerable Base Image Pull'
+id: c5f02a4b-fbc4-5860-943b-83c080d9da93
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5754 (Tier 2, CVSS 9.1)
+  In Exim before 4.99.2, when the SPA authentication driver is used with an adversarial SPA resource, there can be an out-of-bounds write that crashes the connection instance, or erroneous data processing that divulges data from uninitialized heap memory.
+references:
+  - https://code.exim.org/exim/exim/commit/68b963b9f75ca27b38e1c0f8c87037990199f505
+  - https://exim.org/static/doc/security/CVE-2026-40687.txt
+  - https://exim.org/static/doc/security/cve-2026-04.1/CVE2026-40687.assessment
+  - https://lists.exim.org/lurker/message/20260429.121733.f58d9686.en.html
+  - https://ubuntu.com/security/notices/USN-8228-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-40687
+  - https://www.openwall.com/lists/oss-security/2026/04/30/21
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

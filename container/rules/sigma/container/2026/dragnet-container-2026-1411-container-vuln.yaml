@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1411 — Vulnerable Base Image Pull'
+id: 19ff264d-cb8a-52f3-9a8c-d8c24cb71f3c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1411 (Tier 2, CVSS 9.8)
+  An issue was discovered in xrdp before 0.9.1. When successfully logging in using RDP into an xrdp session, the file ~/.vnc/sesman_${username}_passwd is created. Its content is the equivalent of the user's cleartext password, DES encrypted with a known key.
+references:
+  - http://www.securityfocus.com/bid/94958
+  - https://github.com/neutrinolabs/xrdp/pull/497
+  - https://security-tracker.debian.org/tracker/CVE-2013-1430
+  - https://www.cve.org/CVERecord?id=CVE-2013-1430
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

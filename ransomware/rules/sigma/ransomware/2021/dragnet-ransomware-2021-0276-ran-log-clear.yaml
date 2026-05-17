@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-0276 — Event Log Clearing (blackmatter)'
+id: 516e77a1-6ae8-5f27-8bb0-0f53f6903f90
+status: deprecated
+description: |
+  Detects event log clearing associated with blackmatter ransomware.
+  Incident: dragnet-ransomware-2021-0276
+  Ransomware victim claim by blackmatter: Keycentrix; sector: Business Services
+  First observed: 2021-11-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4013 — Vulnerable Base Image Pull'
+id: c716bf50-921b-5289-9b9c-30697ae92284
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4013 (Tier 2, CVSS 9.8)
+  ZoneMinder before 1.32.3 has SQL Injection via the ajax/status.php filter[Query][terms][0][cnj] parameter.
+references:
+  - https://github.com/LoRexxar/CVE_Request/tree/master/zoneminder%20vul%20before%20v1.32.3#ajaxstatusphp-line-393-sql-injection
+  - https://github.com/ZoneMinder/zoneminder/issues/2399
+  - https://www.cve.org/CVERecord?id=CVE-2019-8429
+  - https://www.seebug.org/vuldb/ssvid-97762
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

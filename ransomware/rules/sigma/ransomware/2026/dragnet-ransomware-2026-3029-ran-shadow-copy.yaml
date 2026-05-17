@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3029 — Shadow Copy Deletion (stormous)'
+id: ba09ddc8-c659-5a76-95a0-8081f6f1924c
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with stormous ransomware.
+  Incident: dragnet-ransomware-2026-3029
+  Ransomware victim claim by stormous: arc-reins.com + fidelityunited.ae UPDATE-FULL DATA DUMP; country: AE; sector: Financial Services
+  First observed: 2026-05-11.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1775 — Vulnerable Base Image Pull'
+id: 9c340a82-63fe-5477-b0cf-8ed66f5b5a23
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1775 (Tier 2, CVSS 9.8)
+  generate_doygen.pl in ace before 6.2.7+dfsg-2 creates predictable file names in the /tmp directory which allows attackers to gain elevated privileges.
+references:
+  - http://www.openwall.com/lists/oss-security/2014/09/11/5
+  - http://www.openwall.com/lists/oss-security/2014/09/12/6
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=760709
+  - https://security-tracker.debian.org/tracker/CVE-2014-6311
+  - https://www.cve.org/CVERecord?id=CVE-2014-6311
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

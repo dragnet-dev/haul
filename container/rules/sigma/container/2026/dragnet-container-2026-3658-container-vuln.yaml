@@ -1,0 +1,60 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3658 — Vulnerable Base Image Pull'
+id: 402dac49-1aa1-57cd-9bc6-0cc417dd40cc
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3658 (Tier 2, CVSS 9)
+  Flatpak before 1.0.8, 1.1.x and 1.2.x before 1.2.4, and 1.3.x before 1.3.1 allows a sandbox bypass. Flatpak versions since 0.8.1 address CVE-2017-5226 by using a seccomp filter to prevent sandboxed apps from using the TIOCSTI ioctl, which could otherwise be used to inject commands into the controlling terminal so that they would be executed outside the sandbox after the sandboxed app exits. This fix was incomplete: on 64-bit platforms, the seccomp filter could be bypassed by an ioctl request number that has TIOCSTI in its 32 least significant bits and an arbitrary nonzero value in its 32 most significant bits, which the Linux kernel would treat as equivalent to TIOCSTI.
+references:
+  - https://access.redhat.com/errata/RHSA-2019:1024
+  - https://access.redhat.com/errata/RHSA-2019:1143
+  - https://access.redhat.com/security/cve/CVE-2019-10063
+  - https://github.com/flatpak/flatpak/commit/a9107feeb4b8275b78965b36bf21b92d5724699e
+  - https://github.com/flatpak/flatpak/issues/2782
+  - https://linux.oracle.com/cve/CVE-2019-10063.html
+  - https://linux.oracle.com/errata/ELSA-2019-1143.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-10063
+  - https://www.cve.org/CVERecord?id=CVE-2019-10063
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

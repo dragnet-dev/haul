@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4774 — Vulnerable Base Image Pull'
+id: f8b82b8e-6359-5143-90d1-486075df1a64
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4774 (Tier 2, CVSS 9.8)
+  A buffer overflow vulnerability exists in the razermouse driver of OpenRazer up to version v3.3.0 allows attackers to cause a Denial of Service (DoS) and possibly escalate their privileges via a crafted buffer sent to the matrix_custom_frame device.
+references:
+  - https://github.com/openrazer/openrazer/pull/1790
+  - https://lists.debian.org/debian-lts-announce/2025/04/msg00032.html
+  - https://www.cyberark.com/resources/threat-research-blog/colorful-vulnerabilities
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

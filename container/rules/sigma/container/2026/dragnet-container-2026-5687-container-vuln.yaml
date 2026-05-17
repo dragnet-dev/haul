@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5687 — Vulnerable Base Image Pull'
+id: b4d8e541-3839-5c6a-9413-671e0ad2424d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5687 (Tier 2, CVSS 9.8)
+  ### Summary
+Improper input validation in Microsoft QUIC allows an unauthorized attacker to elevate privileges over a network.
+
+### Details
+ Improper Input Validation Integer Underflow (Wrap or Wraparound) when decoding ACK frame.
+
+#### Patches
+- Fix underflow in ACK frame parsing - 1e6e999b
+
+### Impact
+An attacker who successfully exploited this vulnerability could gain elevated privileges.
+references:
+  - https://github.com/microsoft/msquic
+  - https://github.com/microsoft/msquic/commit/1e6e999b199430effeefee3d85baa0c9dd35ad5e
+  - https://github.com/microsoft/msquic/security/advisories/GHSA-gvvw-8j96-8g5r
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

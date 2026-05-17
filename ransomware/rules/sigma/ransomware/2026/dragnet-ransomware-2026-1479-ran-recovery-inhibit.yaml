@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1479 — Recovery Inhibition (lamashtu)'
+id: b610aa06-099f-5d38-a5e0-e2c4ef3a568e
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lamashtu ransomware.
+  Incident: dragnet-ransomware-2026-1479
+  Ransomware victim claim by lamashtu: International Assistance Sdn; country: MY; sector: Business Services
+  First observed: 2026-04-13.
+references:
+  - http://lamashtux5j74mcm7lwwgn5yrvuwtrpxjoyendif3v3hrztjesfoyayd.onion/post/5c546a8b362fcb23136f9dccc0746491
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

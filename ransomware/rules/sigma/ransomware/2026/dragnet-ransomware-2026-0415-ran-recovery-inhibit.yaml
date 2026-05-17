@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0415 — Recovery Inhibition (blacknevas)'
+id: 826fd29f-66de-5b82-ac0a-393ffd540254
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blacknevas ransomware.
+  Incident: dragnet-ransomware-2026-0415
+  Ransomware victim claim by blacknevas: Bohmler Einrichtungshaus GmbH; country: DE; sector: Consumer Services
+  First observed: 2026-04-13.
+references:
+  - http://ctyfftrjgtwdjzlgqh4avbd35sqrs6tde4oyam2ufbjch6oqpqtkdtid.onion/27dfe632-063e-4dbc-8f22-da0f23aebf19
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1521 — Shadow Copy Deletion (linkc)'
+id: 81306adc-17b2-52d5-9be9-3152533f4a57
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with linkc ransomware.
+  Incident: dragnet-ransomware-2026-1521
+  Ransomware victim claim by linkc: StrongLink; country: US; sector: Not Found
+  First observed: 2026-02-03.
+references:
+  - http://iywqjjaf2zioehzzauys3sktbcdmuzm2fsjkqsblnm7dt6axjfpoxwid.onion/article/f6bda96a-5c72-4e90-a32c-5f414e58e9dc
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

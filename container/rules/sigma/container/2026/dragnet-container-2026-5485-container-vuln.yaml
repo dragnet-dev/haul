@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5485 — Vulnerable Base Image Pull'
+id: fe4d0811-a07a-5c2a-977f-8a36d8ef3ac7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5485 (Tier 2, CVSS 9.8)
+  OpenJPEG is an open-source JPEG 2000 codec. In OpenJPEG from 2.5.1 through 2.5.3, a call to opj_jp2_read_header may lead to OOB heap memory write when the data stream p_stream is too short and p_image is not initialized.
+references:
+  - https://access.redhat.com/security/cve/CVE-2025-54874
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2386543
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-54874
+  - https://errata.rockylinux.org/RLSA-2025:13944
+  - https://github.com/uclouvain/openjpeg/commit/f809b80c67717c152a5ad30bf06774f00da4fd2d
+  - https://github.com/uclouvain/openjpeg/pull/1573
+  - https://linux.oracle.com/cve/CVE-2025-54874.html
+  - https://linux.oracle.com/errata/ELSA-2025-13944.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-54874
+  - https://securitylab.github.com/advisories/GHSL-2025-057_OpenCV
+  - https://securitylab.github.com/advisories/GHSL-2025-057_OpenCV/
+  - https://ubuntu.com/security/notices/USN-7757-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-54874
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

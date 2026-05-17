@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1395 — Vulnerable Base Image Pull'
+id: 90a886e0-b841-5782-bc5a-6718fe2857c6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1395 (Tier 2, CVSS 9.1)
+  Apache::Session versions through 1.94 for Perl re-creates deleted sessions.
+
+The session stores Apache::Session::Store::File and Apache::Session::Store::DB_File will create a session that does not exist.  This can lead to sessions being revived, potentially with data that was to be deleted.
+references:
+  - http://www.openwall.com/lists/oss-security/2026/05/08/12
+  - https://rt.cpan.org/Public/Bug/Display.html?id=83525
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

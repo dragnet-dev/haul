@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0277 — Event Log Clearing (ALP-001)'
+id: 3ca6a666-1ba3-59ef-b0a8-0d1664851dba
+status: deprecated
+description: |
+  Detects event log clearing associated with ALP-001 ransomware.
+  Incident: dragnet-ransomware-2026-0277
+  Ransomware victim claim by ALP-001: terix.com; country: US; sector: Technology
+  First observed: 2026-03-28.
+references:
+  - http://b4riuxx7ypobdptctf6lyfcvgi6vn74iurzdh4kn2agbk7472dvywgyd.onion#terix.com
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

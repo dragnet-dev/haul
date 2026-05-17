@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1901 — Vulnerable Base Image Pull'
+id: c393a6de-4664-517c-b207-f139bf3d9b8f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1901 (Tier 2, CVSS 9.8)
+  Integer underflow in Sandstorm Cap'n Proto before 0.4.1.1 and 0.5.x before 0.5.1.1 might allow remote peers to cause a denial of service or possibly obtain sensitive information from memory or execute arbitrary code via a crafted message.
+references:
+  - http://www.openwall.com/lists/oss-security/2015/03/17/3
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=780566
+  - https://github.com/capnproto/capnproto/blob/master/security-advisories/2015-03-02-1-c%2B%2B-integer-underflow.md
+  - https://github.com/capnproto/capnproto/commit/26bcceda72372211063d62aab7e45665faa83633
+  - https://github.com/sandstorm-io/capnproto/blob/master/security-advisories/2015-03-02-1-c%2B%2B-integer-underflow.md
+  - https://www.cve.org/CVERecord?id=CVE-2015-2311
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

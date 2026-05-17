@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2983 — Vulnerable Base Image Pull'
+id: b6b88b84-e940-543a-b4b4-66de0f726ced
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2983 (Tier 2, CVSS 9.8)
+  In ARM mbed TLS before 2.7.0, there is a bounds-check bypass through an integer overflow in PSK identity parsing in the ssl_parse_client_psk_identity() function in library/ssl_srv.c.
+references:
+  - http://www.securityfocus.com/bid/103055
+  - https://github.com/ARMmbed/mbedtls/blob/master/ChangeLog
+  - https://github.com/ARMmbed/mbedtls/commit/83c9f495ffe70c7dd280b41fdfd4881485a3bc28
+  - https://security.gentoo.org/glsa/201804-19
+  - https://ubuntu.com/security/notices/USN-4267-1
+  - https://usn.ubuntu.com/4267-1/
+  - https://www.cve.org/CVERecord?id=CVE-2017-18187
+  - https://www.debian.org/security/2018/dsa-4138
+  - https://www.debian.org/security/2018/dsa-4147
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

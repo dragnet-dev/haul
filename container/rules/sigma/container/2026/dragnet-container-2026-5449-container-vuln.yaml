@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5449 — Vulnerable Base Image Pull'
+id: b7bf47d8-56d6-5171-a4eb-e06bb66d5b69
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5449 (Tier 2, CVSS 10)
+  ADOdb is a PHP database class library that provides abstractions for performing queries and managing databases. Prior to version 5.22.9, improper escaping of a query parameter may allow an attacker to execute arbitrary SQL statements when the code using ADOdb connects to a PostgreSQL database and calls pg_insert_id() with user-supplied data. This issue has been patched in version 5.22.9.
+references:
+  - https://github.com/ADOdb/ADOdb
+  - https://github.com/ADOdb/ADOdb/commit/11107d6d6e5160b62e05dff8a3a2678cf0e3a426
+  - https://github.com/ADOdb/ADOdb/commit/11107d6d6e5160b62e05dff8a3a2678cf0e3a426 (v5.22.9)
+  - https://github.com/ADOdb/ADOdb/issues/1070
+  - https://github.com/ADOdb/ADOdb/security/advisories/GHSA-8x27-jwjr-8545
+  - https://lists.debian.org/debian-lts-announce/2025/05/msg00029.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-46337
+  - https://ubuntu.com/security/notices/USN-7530-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-46337
+  - https://xaliom.blogspot.com/2025/05/from-sast-to-cve-2025-46337.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: medium

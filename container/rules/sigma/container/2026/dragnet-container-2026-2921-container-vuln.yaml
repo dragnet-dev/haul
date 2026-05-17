@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2921 — Vulnerable Base Image Pull'
+id: 264d00c1-0a80-5eb6-aa7e-0780a5e74f40
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2921 (Tier 2, CVSS 9.1)
+  In LibRaw through 0.18.4, an out of bounds read flaw related to kodak_65000_load_raw has been reported in dcraw/dcraw.c and internal/dcraw_common.cpp. An attacker could possibly exploit this flaw to disclose potentially sensitive memory or cause an application crash.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-14608
+  - https://github.com/LibRaw/LibRaw/commit/d13e8f6d1e987b7491182040a188c16a395f1d21
+  - https://github.com/LibRaw/LibRaw/issues/101
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-14608
+  - https://ubuntu.com/security/notices/USN-3492-1
+  - https://www.cve.org/CVERecord?id=CVE-2017-14608
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+      - 'ubuntu:17.10'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

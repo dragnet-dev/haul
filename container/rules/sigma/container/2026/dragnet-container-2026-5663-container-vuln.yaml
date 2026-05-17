@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5663 — Vulnerable Base Image Pull'
+id: 05c79df2-8c43-5f6a-9893-ea113df428b0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5663 (Tier 2, CVSS 9.1)
+  Open Neural Network Exchange (ONNX) is an open standard for machine learning interoperability. In versions up to and including 1.20.1, a security control bypass exists in onnx.hub.load() due to improper logic in the repository trust verification mechanism. While the function is designed to warn users when loading models from non-official sources, the use of the silent=True parameter completely suppresses all security warnings and confirmation prompts. This vulnerability transforms a standard model-loading function into a vector for Zero-Interaction Supply-Chain Attacks. When chained with file-system vulnerabilities, an attacker can silently exfiltrate sensitive files (SSH keys, cloud credentials) from the victim's machine the moment the model is loaded. As of time of publication, no known patched versions are available.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-28500
+  - https://github.com/ZeroXJacks/CVEs/blob/main/2026/CVE-2026-28500.md
+  - https://github.com/onnx/onnx
+  - https://github.com/onnx/onnx/security/advisories/GHSA-hqmj-h5c6-369m
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-28500
+  - https://www.cve.org/CVERecord?id=CVE-2026-28500
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4433 — Event Log Clearing (medusalocker)'
+id: 4d3d6e20-3328-5c62-95b2-fab782725e31
+status: deprecated
+description: |
+  Detects event log clearing associated with medusalocker ransomware.
+  Incident: dragnet-ransomware-2025-4433
+  Ransomware victim claim by medusalocker: dulay.ca; country: CA; sector: Technology
+  First observed: 2025-11-17.
+references:
+  - http://z6wkgghtoawog5noty5nxulmmt2zs7c3yvwr22v4czbffdoly2kl4uad.onion/?p=463
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

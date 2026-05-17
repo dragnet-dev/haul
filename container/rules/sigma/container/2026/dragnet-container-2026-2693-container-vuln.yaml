@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2693 — Vulnerable Base Image Pull'
+id: fc00db40-03a9-5d5e-9ea6-1a73a3c0b96d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2693 (Tier 2, CVSS 9.8)
+  The verify_certificate function in lib/vtls/schannel.c in libcurl 7.30.0 through 7.51.0, when built for Windows CE using the schannel TLS backend, allows remote attackers to obtain sensitive information, cause a denial of service (crash), or possibly have unspecified other impact via a wildcard certificate name, which triggers an out-of-bounds read.
+references:
+  - https://curl.haxx.se/CVE-2016-9952.patch
+  - https://curl.haxx.se/docs/adv_20161221C.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.2'
+      - 'alpine:3.3'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

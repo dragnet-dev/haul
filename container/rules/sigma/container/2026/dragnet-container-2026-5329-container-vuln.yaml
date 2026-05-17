@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5329 — Vulnerable Base Image Pull'
+id: 4e8d691c-c067-560b-b1a8-617ee90d82f2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5329 (Tier 2, CVSS 9.1)
+  Synapse is an open-source Matrix homeserver. In Synapse versions before 1.120.1, enabling the dynamic_thumbnails option or processing a specially crafted request could trigger the decoding and thumbnail generation of uncommon image formats, potentially invoking external tools like Ghostscript for processing. This significantly expands the attack surface in a historically vulnerable area, presenting a risk that far outweighs the benefit, particularly since these formats are rarely used on the open web or within the Matrix ecosystem. Synapse 1.120.1 addresses the issue by restricting thumbnail generation to images in the following widely used formats: PNG, JPEG, GIF, and WebP. This vulnerability is fixed in 1.120.1.
+references:
+  - https://github.com/element-hq/synapse
+  - https://github.com/element-hq/synapse/commit/b64a4e5fbbbf119b6c65aedf0d999b4237d55503
+  - https://github.com/element-hq/synapse/security/advisories/GHSA-vp6v-whfm-rv3g
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-53863
+  - https://ubuntu.com/security/notices/USN-7444-1
+  - https://www.cve.org/CVERecord?id=CVE-2024-53863
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

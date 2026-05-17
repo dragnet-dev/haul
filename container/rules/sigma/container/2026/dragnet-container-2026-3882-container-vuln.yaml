@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3882 — Vulnerable Base Image Pull'
+id: 48be88d6-ced2-5fe8-bd67-2ff26dbb86dc
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3882 (Tier 2, CVSS 9.8)
+  WordPress before 5.2.4 has a Server Side Request Forgery (SSRF) vulnerability because URL validation does not consider the interpretation of a name as a series of hex characters.
+references:
+  - https://blog.wpscan.org/wordpress/security/release/2019/10/15/wordpress-524-security-release-breakdown.html
+  - https://core.trac.wordpress.org/changeset/46475
+  - https://github.com/WordPress/WordPress/commit/608d39faed63ea212b6c6cdf9fe2bef92e2120ea
+  - https://lists.debian.org/debian-lts-announce/2019/11/msg00000.html
+  - https://seclists.org/bugtraq/2020/Jan/8
+  - https://wordpress.org/news/2019/10/wordpress-5-2-4-security-release/
+  - https://wpvulndb.com/vulnerabilities/9912
+  - https://www.debian.org/security/2020/dsa-4599
+  - https://www.debian.org/security/2020/dsa-4677
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

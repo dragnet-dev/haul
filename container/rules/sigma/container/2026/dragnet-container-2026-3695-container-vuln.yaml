@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3695 — Vulnerable Base Image Pull'
+id: 33dc8a11-b355-59ab-9748-e7dd3375cf1d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3695 (Tier 2, CVSS 9.8)
+  Ruby OpenID (aka ruby-openid) through 2.8.0 has a remotely exploitable flaw. This library is used by Rails web applications to integrate with OpenID Providers. Severity can range from medium to critical, depending on how a web application developer chose to employ the ruby-openid library. Developers who based their OpenID integration heavily on the "example app" provided by the project are at highest risk.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-11027
+  - https://github.com/openid/ruby-openid
+  - https://github.com/openid/ruby-openid/commit/d181a8a2099c64365a1d24b29f6b6b646673a131
+  - https://github.com/openid/ruby-openid/issues/122
+  - https://github.com/openid/ruby-openid/releases/tag/v2.9.0
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/ruby-openid/CVE-2019-11027.yml
+  - https://lists.debian.org/debian-lts-announce/2019/10/msg00014.html
+  - https://marc.info/?l=openid-security&m=155154717027534&w=2
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-11027
+  - https://security.gentoo.org/glsa/202003-09
+  - https://www.cve.org/CVERecord?id=CVE-2019-11027
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

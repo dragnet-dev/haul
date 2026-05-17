@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5035 — Vulnerable Base Image Pull'
+id: e6837da4-1e87-50b2-ad3f-ec3d4fdf34fd
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5035 (Tier 2, CVSS 9.8)
+  "protobuf.js (aka protobufjs) 6.10.0 through 7.x before 7.2.5 allows Prototype Pollution, a different vulnerability than CVE-2022-25878. A user-controlled protobuf message can be used by an attacker to pollute the prototype of Object.prototype by adding and overwriting its data and functions. Exploitation can involve: (1) using the function parse to parse protobuf messages on the fly, (2) loading .proto files by using load/loadSync functions, or (3) providing untrusted input to the functions ReflectionObject.setParsedOption and util.setProperty.
+references:
+  - https://access.redhat.com/security/cve/CVE-2023-36665
+  - https://github.com/protobufjs/protobuf.js
+  - https://github.com/protobufjs/protobuf.js/commit/e66379f451b0393c27d87b37fa7d271619e16b0d
+  - https://github.com/protobufjs/protobuf.js/commits/release-6.11.4
+  - https://github.com/protobufjs/protobuf.js/compare/protobufjs-v7.2.3...protobufjs-v7.2.4
+  - https://github.com/protobufjs/protobuf.js/issues/1918#issuecomment-1723500294
+  - https://github.com/protobufjs/protobuf.js/pull/1899
+  - https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-v7.2.4
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-36665
+  - https://security.netapp.com/advisory/ntap-20240628-0006
+  - https://security.netapp.com/advisory/ntap-20240628-0006/
+  - https://www.code-intelligence.com/blog/cve-protobufjs-prototype-pollution-cve-2023-36665
+  - https://www.cve.org/CVERecord?id=CVE-2023-36665
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

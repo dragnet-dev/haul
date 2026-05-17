@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4035 — Vulnerable Base Image Pull'
+id: cf519dc8-33e2-5e6c-b127-4ea75cda75c9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4035 (Tier 2, CVSS 9.8)
+  An issue was discovered in proxy.php in pydio-core in Pydio through 8.2.2. Through an unauthenticated request, it possible to evaluate malicious PHP code by placing it on the fourth line of a .php file, as demonstrated by a PoC.php created by the guest account, with execution via a proxy.php?hash=../../../../../var/lib/pydio/data/personal/guest/PoC.php request. This is related to plugins/action.share/src/Store/ShareStore.php.
+references:
+  - https://github.com/pydio/pydio-core/commits/develop/core/src/proxy.php
+  - https://pydio.com/en/community/releases/pydio-core/pydio-core-pydio-enterprise-823-security-release
+  - https://www.cve.org/CVERecord?id=CVE-2019-9642
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3734 — Event Log Clearing (malekteam)'
+id: 3962d6b9-bf88-5a1c-85a3-456ff38b6953
+status: deprecated
+description: |
+  Detects event log clearing associated with malekteam ransomware.
+  Incident: dragnet-ransomware-2023-3734
+  Ransomware victim claim by malekteam: gav.co.il; country: IL; sector: Technology
+  First observed: 2023-12-24.
+references:
+  - http://195.14.123.2/gav.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

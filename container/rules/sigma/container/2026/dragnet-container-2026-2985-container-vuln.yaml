@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2985 — Vulnerable Base Image Pull'
+id: b5c0eebf-c366-549e-9ddb-510748a70d92
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2985 (Tier 2, CVSS 9.8)
+  An issue was discovered in GNU libcdio before 2.0.0. There is a double free in get_cdtext_generic() in lib/driver/_cdio_generic.c.
+references:
+  - http://www.securityfocus.com/bid/103190
+  - https://access.redhat.com/errata/RHSA-2018:3246
+  - https://access.redhat.com/security/cve/CVE-2017-18201
+  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=887640
+  - https://git.savannah.gnu.org/cgit/libcdio.git/commit/?id=f6f9c48fb40b8a1e8218799724b0b61a7161eb1d
+  - https://linux.oracle.com/cve/CVE-2017-18201.html
+  - https://linux.oracle.com/errata/ELSA-2018-3246.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-18201
+  - https://www.cve.org/CVERecord?id=CVE-2017-18201
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

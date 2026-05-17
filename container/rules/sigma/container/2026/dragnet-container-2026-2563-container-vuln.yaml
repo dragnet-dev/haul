@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2563 — Vulnerable Base Image Pull'
+id: 79347677-2081-5cec-b6ec-e686614d9975
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2563 (Tier 2, CVSS 9.8)
+  The php_wddx_process_data function in ext/wddx/wddx.c in PHP before 5.6.25 and 7.x before 7.0.10 allows remote attackers to cause a denial of service (segmentation fault) or possibly have unspecified other impact via an invalid ISO 8601 time value, as demonstrated by a wddx_deserialize call that mishandles a dateTime element in a wddxPacket XML document.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-7129
+  - https://github.com/php/php-src/commit/426aeb2808955ee3d3f52e0cfb102834cdb836a5?w=1
+  - http://openwall.com/lists/oss-security/2016/09/02/9
+  - http://php.net/ChangeLog-5.php#5.6.25
+  - http://php.net/ChangeLog-7.php#7.0.10
+  - http://rhn.redhat.com/errata/RHSA-2016-2750.html
+  - http://www.openwall.com/lists/oss-security/2016/09/02/5
+  - http://www.php.net/ChangeLog-5.php
+  - http://www.php.net/ChangeLog-7.php
+  - http://www.securityfocus.com/bid/92758
+  - http://www.securitytracker.com/id/1036680
+  - https://access.redhat.com/security/cve/CVE-2016-7129
+  - https://bugs.php.net/bug.php?id=72749
+  - https://security.gentoo.org/glsa/201611-22
+  - https://ubuntu.com/security/notices/USN-3095-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

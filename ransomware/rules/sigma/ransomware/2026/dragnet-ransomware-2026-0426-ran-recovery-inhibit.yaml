@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0426 — Recovery Inhibition (blackwater)'
+id: 63a99c90-3cb6-5eed-9836-579408a03903
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0426
+  Ransomware victim claim by blackwater: Minidoka Memorial Hospital; country: US; sector: Healthcare
+  First observed: 2026-04-17.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=9f470660-332d-37de-8914-393cc1603b4f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

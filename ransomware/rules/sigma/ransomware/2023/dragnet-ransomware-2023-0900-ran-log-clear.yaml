@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-0900 — Event Log Clearing (arvinclub)'
+id: 82d9f843-4be5-503f-8e3f-cee85f5a601c
+status: deprecated
+description: |
+  Detects event log clearing associated with arvinclub ransomware.
+  Incident: dragnet-ransomware-2023-0900
+  Ransomware victim claim by arvinclub: seaside-kish co; sector: Not Found
+  First observed: 2023-08-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

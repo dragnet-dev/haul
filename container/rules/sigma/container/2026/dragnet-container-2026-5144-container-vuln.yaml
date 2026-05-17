@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5144 — Vulnerable Base Image Pull'
+id: 08eda3b9-5bb7-5aff-a22f-1b5c6b93840a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5144 (Tier 2, CVSS 9.8)
+  UTF32Encoding.cpp in POCO has a Poco::UTF32Encoding integer overflow and resultant stack buffer overflow because Poco::UTF32Encoding::convert() and Poco::UTF32::queryConvert() may return a negative integer if a UTF-32 byte sequence evaluates to a value of 0x80000000 or higher. This is fixed in 1.11.8p2, 1.12.5p2, and 1.13.0.
+references:
+  - https://github.com/pocoproject/poco/compare/poco-1.12.5p2-release...poco-1.13.0-release
+  - https://github.com/pocoproject/poco/issues/4320
+  - https://lists.debian.org/debian-lts-announce/2025/01/msg00017.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-52389
+  - https://pocoproject.org/blog/?p=1226
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

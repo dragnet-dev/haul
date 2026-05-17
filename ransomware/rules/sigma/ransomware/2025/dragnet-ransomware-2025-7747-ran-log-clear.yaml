@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7747 — Event Log Clearing (warlock)'
+id: 56185012-9561-54a0-9ed3-8292d2faaba4
+status: deprecated
+description: |
+  Detects event log clearing associated with warlock ransomware.
+  Incident: dragnet-ransomware-2025-7747
+  Ransomware victim claim by warlock: Ersar; country: PT; sector: Not Found
+  First observed: 2025-04-04.
+references:
+  - https://drive.proton.me/urls/NEEYP11F1C#t50LjgYnPmJ1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3552 — Recovery Inhibition (insomnia)'
+id: 79123091-eb17-5586-8ca4-5fe6b19e6ca5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with insomnia ransomware.
+  Incident: dragnet-ransomware-2025-3552
+  Ransomware victim claim by insomnia: SchureMed; country: US; sector: Healthcare
+  First observed: 2025-12-19.
+references:
+  - http://i62huw7ve22rpyw6lnq3kmfump2dmsg4xpveec3ere73njwatrz74gad.onion/Company/SchureMed/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,34 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1204 — Event Log Clearing (mosesstaff)'
+id: 27e7aca7-7707-5783-bf8a-218cfb5fff74
+status: deprecated
+description: |
+  Detects event log clearing associated with mosesstaff ransomware.
+  Incident: dragnet-ransomware-2021-1204
+  Associated with Leviathan.
+  Ransomware victim claim by mosesstaff: Ehud Leviathan Engineering; sector: Manufacturing
+  First observed: 2021-12-18.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+  - dragnet.actor.leviathan
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

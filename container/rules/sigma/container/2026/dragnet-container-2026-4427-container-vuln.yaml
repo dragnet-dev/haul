@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4427 — Vulnerable Base Image Pull'
+id: d82e66ff-bcbd-5738-99f4-1774698e2a64
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4427 (Tier 2, CVSS 9.8)
+  uClibc-ng versions prior to 1.0.37 are vulnerable to integer wrap-around in functions malloc-simple. This improper memory assignment can lead to arbitrary memory allocation, resulting in unexpected behavior such as a crash or a remote code injection/execution.
+references:
+  - https://downloads.uclibc-ng.org/releases/
+  - https://www.cisa.gov/uscert/ics/advisories/icsa-21-119-04
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

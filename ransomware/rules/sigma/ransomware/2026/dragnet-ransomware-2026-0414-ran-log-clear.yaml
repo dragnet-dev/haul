@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0414 — Event Log Clearing (benzona)'
+id: 4f99548d-99bf-5834-a4d5-e1aaaaa169da
+status: deprecated
+description: |
+  Detects event log clearing associated with benzona ransomware.
+  Incident: dragnet-ransomware-2026-0414
+  Ransomware victim claim by benzona: empreinte-hotel.com; country: FR; sector: Hospitality and Tourism
+  First observed: 2026-01-22.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

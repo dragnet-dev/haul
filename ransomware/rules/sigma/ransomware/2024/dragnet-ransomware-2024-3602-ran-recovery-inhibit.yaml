@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3602 — Recovery Inhibition (lynx)'
+id: 6bf264fe-7d68-53db-9062-2298e9f409e5
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3602
+  Ransomware victim claim by lynx: Cambria Automobiles (summitgroup.local); country: GB; sector: Business Services
+  First observed: 2024-07-24.
+references:
+  - http://lynxblog.net/leaks/66aa4ba7e7861ae72f223ed4
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

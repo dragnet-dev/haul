@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4867 — Vulnerable Base Image Pull'
+id: dfb1571a-ce77-5679-ba0b-1e9698539d2d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4867 (Tier 2, CVSS 9.8)
+  Fluentd collects events from various data sources and writes them to files, RDBMS, NoSQL, IaaS, SaaS, Hadoop and so on. A remote code execution (RCE) vulnerability in non-default configurations of Fluentd allows unauthenticated attackers to execute arbitrary code via specially crafted JSON payloads. Fluentd setups are only affected if the environment variable `FLUENT_OJ_OPTION_MODE` is explicitly set to `object`. Please note: The option FLUENT_OJ_OPTION_MODE was introduced in Fluentd version 1.13.2. Earlier versions of Fluentd are not affected by this vulnerability. This issue was patched in version 1.15.3. As a workaround do not use `FLUENT_OJ_OPTION_MODE=object`.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-39379
+  - https://github.com/fluent/fluentd
+  - https://github.com/fluent/fluentd/commit/48e5b85dab1b6d4c273090d538fc11b3f2fd8135
+  - https://github.com/fluent/fluentd/security/advisories/GHSA-fppq-mj76-fpj2
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/fluentd/CVE-2022-39379.yml
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MYD5QV66OLDHES6IKVYYM3Y3YID3VVCO/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MYD5QV66OLDHES6IKVYYM3Y3YID3VVCO
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-39379
+  - https://securitylab.github.com/advisories/GHSL-2022-067_fluentd/
+  - https://www.cve.org/CVERecord?id=CVE-2022-39379
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'cbl-mariner:2.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

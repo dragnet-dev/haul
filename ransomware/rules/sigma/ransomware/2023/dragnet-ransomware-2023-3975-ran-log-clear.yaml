@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3975 — Event Log Clearing (moneymessage)'
+id: 3b082fc0-ad2c-5377-847d-31251aa984a0
+status: deprecated
+description: |
+  Detects event log clearing associated with moneymessage ransomware.
+  Incident: dragnet-ransomware-2023-3975
+  Ransomware victim claim by moneymessage: Micro Star International; country: US; sector: Technology
+  First observed: 2023-04-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

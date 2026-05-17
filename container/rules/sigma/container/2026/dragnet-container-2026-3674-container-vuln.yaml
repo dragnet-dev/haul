@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3674 — Vulnerable Base Image Pull'
+id: 819adb55-960a-5ee3-923b-6c75ac145fc8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3674 (Tier 2, CVSS 9.8)
+  A flaw was found in http-proxy-agent, prior to version 2.1.0. It was discovered http-proxy-agent passes an auth option to the Buffer constructor without proper sanitization. This could result in a Denial of Service through the usage of all available CPU resources and data exposure through an uninitialized memory leak in setups where an attacker could submit typed input to the auth parameter.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-10196
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1567245
+  - https://github.com/TooTallNate/node-http-proxy-agent/commit/b7b7cc793c3226aa83f820ce5c277e81862d32eb
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-10196
+  - https://www.cve.org/CVERecord?id=CVE-2019-10196
+  - https://www.npmjs.com/advisories/607
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

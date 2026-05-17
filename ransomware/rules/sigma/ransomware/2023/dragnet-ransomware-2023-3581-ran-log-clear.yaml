@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-3581 — Event Log Clearing (losttrust)'
+id: b46c4185-3c59-5eca-9923-766a08f75f46
+status: deprecated
+description: |
+  Detects event log clearing associated with losttrust ransomware.
+  Incident: dragnet-ransomware-2023-3581
+  Ransomware victim claim by losttrust: Specialty Process Equipment; sector: Energy
+  First observed: 2023-09-26.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

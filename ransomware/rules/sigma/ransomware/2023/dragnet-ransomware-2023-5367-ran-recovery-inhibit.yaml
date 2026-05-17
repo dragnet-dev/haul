@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5367 — Recovery Inhibition (werewolves)'
+id: fe1121ea-5488-59de-ac6e-f7d705cfa707
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with werewolves ransomware.
+  Incident: dragnet-ransomware-2023-5367
+  Ransomware victim claim by werewolves: kailos.ru; country: RU; sector: Business Services
+  First observed: 2023-10-14.
+references:
+  - https://werewolves.pro/en/gaztranscom-ru.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

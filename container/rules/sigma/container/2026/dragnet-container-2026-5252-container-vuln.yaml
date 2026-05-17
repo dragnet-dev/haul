@@ -1,0 +1,73 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5252 — Vulnerable Base Image Pull'
+id: a77d1b0a-bf0e-52e9-98ff-e9e08a49d712
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5252 (Tier 2, CVSS 9.1)
+  Improper escaping of output in mod_rewrite in Apache HTTP Server 2.4.59 and earlier allows an attacker to map URLs to filesystem locations that are permitted to be served by the server but are not intentionally/directly reachable by any URL, resulting in code execution or source code disclosure. 
+
+Substitutions in server context that use a backreferences or variables as the first segment of the substitution are affected.  Some unsafe RewiteRules will be broken by this change and the rewrite flag "UnsafePrefixStat" can be used to opt back in once ensuring the substitution is appropriately constrained.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-38475
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+  - https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2024-38475
+  - https://github.com/apache/httpd/commit/9a6157d1e2f7ab15963020381054b48782bc18cf
+  - http://www.openwall.com/lists/oss-security/2024/07/01/8
+  - https://access.redhat.com/errata/RHSA-2024:4726
+  - https://access.redhat.com/security/cve/CVE-2024-38475
+  - https://bugzilla.redhat.com/2295012
+  - https://bugzilla.redhat.com/2295013
+  - https://bugzilla.redhat.com/2295014
+  - https://bugzilla.redhat.com/2295016
+  - https://bugzilla.redhat.com/2295022
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2295012
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2295013
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2295014
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:23.10'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

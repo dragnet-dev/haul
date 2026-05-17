@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3858 — Vulnerable Base Image Pull'
+id: d9f4a06e-ef5c-5c66-84a4-ae5215c5d7ca
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3858 (Tier 2, CVSS 9.8)
+  contrib/pmdb2diag/pmdb2diag.c in Rsyslog v8.1908.0 allows out-of-bounds access because the level length is mishandled.
+references:
+  - https://access.redhat.com/security/cve/CVE-2019-17040
+  - https://github.com/rsyslog/rsyslog/blob/v8-stable/ChangeLog
+  - https://github.com/rsyslog/rsyslog/pull/3875
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KPNCHI7X2IEXRH6RYD6IDPR4PLB5RPC7/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W6SUQE25RD37CD24BHKUWMG27U5RQ2FU/
+  - https://nvd.nist.gov/vuln/detail/CVE-2019-17040
+  - https://www.cve.org/CVERecord?id=CVE-2019-17040
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

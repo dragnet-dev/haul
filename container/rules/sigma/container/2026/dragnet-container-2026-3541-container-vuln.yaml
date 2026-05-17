@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3541 — Vulnerable Base Image Pull'
+id: 0885c598-d8e3-5c45-b35e-e0097a8c0886
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3541 (Tier 2, CVSS 9.1)
+  https-proxy-agent before 2.1.1 passes auth option to the Buffer constructor without proper sanitization, resulting in DoS and uninitialized memory leak in setups where an attacker could submit typed input to the 'auth' parameter (e.g. JSON).
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-3739
+  - https://github.com/TooTallNate/node-https-proxy-agent
+  - https://github.com/TooTallNate/node-https-proxy-agent/commit/1c24219df87524e6ed973127e81f30801d658f07
+  - https://github.com/advisories/GHSA-8g7p-74h8-hg48
+  - https://hackerone.com/reports/319532
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-3736
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-3739
+  - https://www.cve.org/CVERecord?id=CVE-2018-3739
+  - https://www.npmjs.com/advisories/593
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

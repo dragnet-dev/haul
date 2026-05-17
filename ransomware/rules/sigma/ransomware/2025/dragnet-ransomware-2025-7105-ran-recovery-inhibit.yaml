@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7105 — Recovery Inhibition (secp0)'
+id: 6418e786-d83a-5b88-a9f2-b2b263051edd
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with secp0 ransomware.
+  Incident: dragnet-ransomware-2025-7105
+  Ransomware victim claim by secp0: Terralogic; country: US; sector: Technology
+  First observed: 2025-03-14.
+references:
+  - http://secponewsxgrlnirowclps2kllzaotaf5w2bsvktdnz4qhjr2jnwvvyd.onion/post/ceb12a9f49ae0c43.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

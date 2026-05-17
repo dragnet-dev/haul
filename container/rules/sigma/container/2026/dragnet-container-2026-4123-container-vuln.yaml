@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4123 — Vulnerable Base Image Pull'
+id: 75dc9bf8-94f2-5e7b-bbdc-204e7babe909
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4123 (Tier 2, CVSS 9.8)
+  A buffer overflow in the M_LoadDefaults function in m_misc.c in id Tech 1 (aka Doom engine) allows arbitrary code execution via an unsafe usage of fscanf, because it does not limit the number of characters to be read in a format argument.
+references:
+  - https://github.com/AXDOOMER/doom-vanille/commit/8a6d9a02fa991a91ff90ccdc73b5ceabaa6cb9ec
+  - https://twitter.com/notrevenant/status/1268654123903340544
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

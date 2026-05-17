@@ -1,0 +1,61 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5292 — Vulnerable Base Image Pull'
+id: 1881c672-c7a1-5049-a6d7-b405f1b170c7
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5292 (Tier 2, CVSS 9.8)
+  GStreamer is a library for constructing graphs of media-handling components. An uninitialized stack variable vulnerability has been identified in the gst_matroska_demux_add_wvpk_header function within matroska-demux.c. When size < 4, the program calls gst_buffer_unmap with an uninitialized map variable. Then, in the gst_memory_unmap function, the program will attempt to unmap the buffer using the uninitialized map variable, causing a function pointer hijack, as it will jump to mem->allocator->mem_unmap_full or mem->allocator->mem_unmap. This vulnerability could allow an attacker to hijack the execution flow, potentially leading to code execution. This vulnerability is fixed in 1.24.10.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-47540
+  - https://securitylab.github.com/advisories/GHSL-2024-197_GStreamer/
+  - https://access.redhat.com/errata/RHSA-2024:11122
+  - https://access.redhat.com/security/cve/CVE-2024-47540
+  - https://bugzilla.redhat.com/2331719
+  - https://bugzilla.redhat.com/2331722
+  - https://bugzilla.redhat.com/2331726
+  - https://bugzilla.redhat.com/2331753
+  - https://bugzilla.redhat.com/2331760
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331719
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331722
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331726
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331753
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2331760
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-47537
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

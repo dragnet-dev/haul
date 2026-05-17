@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2981 — Vulnerable Base Image Pull'
+id: d5f355b5-8799-5fb6-93e4-a98c4c9a09e6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2981 (Tier 2, CVSS 9.8)
+  It was discovered that QtPass before 1.2.1, when using the built-in password generator, generates possibly predictable and enumerable passwords. This only applies to the QtPass GUI.
+references:
+  - https://github.com/IJHack/QtPass/issues/338
+  - https://github.com/IJHack/QtPass/releases/tag/v1.2.1
+  - https://lists.zx2c4.com/pipermail/password-store/2018-January/003165.html
+  - https://qtpass.org/
+  - https://www.cve.org/CVERecord?id=CVE-2017-18021
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

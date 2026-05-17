@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3995 — Vulnerable Base Image Pull'
+id: f94331b7-ef65-5f94-9534-3ea273db66ad
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3995 (Tier 2, CVSS 9.8)
+  A classic Stack-based buffer overflow exists in the zmLoadUser() function in zm_user.cpp of the zmu binary in ZoneMinder through 1.32.3, allowing an unauthenticated attacker to execute code via a long username.
+references:
+  - https://github.com/ZoneMinder/zoneminder/issues/2478
+  - https://github.com/ZoneMinder/zoneminder/pull/2482
+  - https://ubuntu.com/security/notices/USN-5889-1
+  - https://www.cve.org/CVERecord?id=CVE-2019-6991
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:19.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

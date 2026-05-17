@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5114 — Vulnerable Base Image Pull'
+id: ee2a1be5-98ca-555a-841f-ecbaca4201e8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5114 (Tier 2, CVSS 9.1)
+  crypto-js is a JavaScript library of crypto standards. Prior to version 4.2.0, crypto-js PBKDF2 is 1,000 times weaker than originally specified in 1993, and at least 1,300,000 times weaker than current industry standard. This is because it both defaults to SHA1, a cryptographic hash algorithm considered insecure since at least 2005, and defaults to one single iteration, a 'strength' or 'difficulty' value specified at 1,000 when specified in 1993. PBKDF2 relies on iteration count as a countermeasure to preimage and collision attacks. If used to protect passwords, the impact is high. If used to generate signatures, the impact is high. Version 4.2.0 contains a patch for this issue. As a workaround, configure crypto-js to use SHA256 with at least 250,000 iterations.
+references:
+  - https://access.redhat.com/security/cve/CVE-2023-46233
+  - https://github.com/brix/crypto-js
+  - https://github.com/brix/crypto-js/commit/421dd538b2d34e7c24a5b72cc64dc2b9167db40a
+  - https://github.com/brix/crypto-js/security/advisories/GHSA-xwcq-pm8m-c4vf
+  - https://lists.debian.org/debian-lts-announce/2023/11/msg00025.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-46233
+  - https://ubuntu.com/security/notices/USN-6753-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-46233
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

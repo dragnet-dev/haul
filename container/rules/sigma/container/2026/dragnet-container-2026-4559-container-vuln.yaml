@@ -1,0 +1,61 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4559 — Vulnerable Base Image Pull'
+id: f8a2f2a9-03d7-55d7-b0f2-ac1aeafedf5f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4559 (Tier 2, CVSS 9.8)
+  CGI.escape_html in Ruby before 2.7.5 and 3.x before 3.0.3 has an integer overflow and resultant buffer overflow via a long string on platforms (such as Windows) where size_t and long have different numbers of bytes. This also affects the CGI gem before 0.3.1 for Ruby.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-41816
+  - https://github.com/ruby/cgi
+  - https://github.com/ruby/cgi/commit/959ccf0b6a672bcc64aeaa60c6e1f9e728f1e87f
+  - https://github.com/ruby/cgi/commit/ad079c1cb5f58eba1ffac46da79995fcf94a3a6e
+  - https://github.com/ruby/cgi/commit/c6a37a671b556eb06140ea89cc465136b24207a6
+  - https://github.com/ruby/cgi/commit/c728632c1c09d46cfd4ecbff9caaa3651dd1002a
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/cgi/CVE-2021-41816.yml
+  - https://access.redhat.com/security/cve/CVE-2021-41816
+  - https://groups.google.com/g/ruby-security-ann/c/4MQ568ZG47c
+  - https://hackerone.com/reports/1328463
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/IUXQCH6FRKANCVZO2Q7D2SQX33FP3KWN
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/IUXQCH6FRKANCVZO2Q7D2SQX33FP3KWN/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UTOJGS5IEFDK3UOO7IY4OTTFGHGLSWZF
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UTOJGS5IEFDK3UOO7IY4OTTFGHGLSWZF/
+  - https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/IUXQCH6FRKANCVZO2Q7D2SQX33FP3KWN
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'photon os:4.0'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:21.04'
+      - 'ubuntu:21.10'
+      - 'ubuntu:22.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

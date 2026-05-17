@@ -1,0 +1,47 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2356 — Vulnerable Base Image Pull'
+id: 90be43f9-9e6a-5cd3-b0ec-ff2afe21cd41
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2356 (Tier 2, CVSS 9.8)
+  It was discovered that the zebra daemon in Quagga before 1.0.20161017 suffered from a stack-based buffer overflow when processing IPv6 Neighbor Discovery messages. The root cause was relying on BUFSIZ to be compatible with a message size; however, BUFSIZ is system-dependent.
+references:
+  - http://rhn.redhat.com/errata/RHSA-2017-0794.html
+  - http://www.gossamer-threads.com/lists/quagga/users/31952
+  - http://www.securityfocus.com/bid/93775
+  - https://access.redhat.com/security/cve/CVE-2016-1245
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1386109
+  - https://github.com/Quagga/quagga/commit/cfb1fae25f8c092e0d17073eaf7bd428ce1cd546
+  - https://linux.oracle.com/cve/CVE-2016-1245.html
+  - https://linux.oracle.com/errata/ELSA-2017-0794.html
+  - https://lists.quagga.net/pipermail/quagga-users/2016-October/014478.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-1245
+  - https://security.gentoo.org/glsa/201701-48
+  - https://ubuntu.com/security/notices/USN-3110-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-1245
+  - https://www.debian.org/security/2016/dsa-3695
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:7'
+      - 'debian:8'
+      - 'oraclelinux:6'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

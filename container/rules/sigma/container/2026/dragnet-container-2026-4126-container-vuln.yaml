@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4126 — Vulnerable Base Image Pull'
+id: efd105fa-4d1f-5049-a7eb-fdc42a67278a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4126 (Tier 2, CVSS 9.1)
+  In GLPI before version 9.5.2, the `​pluginimage.send.php​` endpoint allows a user to specify an image from a plugin. The parameters can be maliciously crafted to instead delete the .htaccess file for the files directory. Any user becomes able to read all the files and folders contained in “/files/”. Some of the sensitive information that is compromised are the user sessions, logs, and more. An attacker would be able to get the Administrators session token and use that to authenticate. The issue is patched in version 9.5.2.
+references:
+  - https://github.com/glpi-project/glpi/commit/6ca9a0e77299a755c356d758344a23278df67f65
+  - https://github.com/glpi-project/glpi/security/advisories/GHSA-rm52-jx9h-rwcp
+  - https://www.cve.org/CVERecord?id=CVE-2020-15175
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

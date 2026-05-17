@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5217 — Vulnerable Base Image Pull'
+id: 67bd609d-884f-523e-bdce-b27b001c5c42
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5217 (Tier 2, CVSS 10)
+  Malicious code was discovered in the upstream tarballs of xz, starting with version 5.6.0. 
+Through a series of complex obfuscations, the liblzma build process extracts a prebuilt object file from a disguised test file existing in the source code, which is then used to modify specific functions in the liblzma code. This results in a modified liblzma library that can be used by any software linked against this library, intercepting and modifying the data interaction with this library.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-3094
+  - https://www.cisa.gov/news-events/alerts/2024/03/29/reported-supply-chain-compromise-affecting-xz-utils-data-compression-library-cve-2024-3094
+  - https://github.com/advisories/GHSA-rxwq-x6h5-x525
+  - https://gist.github.com/thesamesam/223949d5a074ebc3dce9ee78baad9e27
+  - https://github.com/amlweems/xzbot
+  - https://github.com/karcherm/xz-malware
+  - http://www.openwall.com/lists/oss-security/2024/03/29/10
+  - http://www.openwall.com/lists/oss-security/2024/03/29/12
+  - http://www.openwall.com/lists/oss-security/2024/03/29/4
+  - http://www.openwall.com/lists/oss-security/2024/03/29/5
+  - http://www.openwall.com/lists/oss-security/2024/03/29/8
+  - http://www.openwall.com/lists/oss-security/2024/03/30/12
+  - http://www.openwall.com/lists/oss-security/2024/03/30/27
+  - http://www.openwall.com/lists/oss-security/2024/03/30/36
+  - http://www.openwall.com/lists/oss-security/2024/03/30/5
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'debian:13'
+      - 'debian:14'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

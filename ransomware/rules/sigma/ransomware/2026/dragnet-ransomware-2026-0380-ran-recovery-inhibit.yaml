@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0380 — Recovery Inhibition (aurora)'
+id: 9b1a758e-4743-5a03-82ad-279ce1c84057
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with aurora ransomware.
+  Incident: dragnet-ransomware-2026-0380
+  Ransomware victim claim by aurora: Advanta Genetics LLC; country: US; sector: Healthcare
+  First observed: 2026-04-17.
+references:
+  - http://u6lieui2dakbctcjea2bz4r4q32r7t36nwljovqbv7mxs6o2smgxixid.onion/blog/rvl-bb52e3c8
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

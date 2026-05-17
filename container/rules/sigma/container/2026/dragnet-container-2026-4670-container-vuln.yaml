@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4670 — Vulnerable Base Image Pull'
+id: a19f1311-55b5-505c-b6d4-7f37a6cd32fe
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4670 (Tier 2, CVSS 9.8)
+  The package joblib from 0 and before 1.2.0 are vulnerable to Arbitrary Code Execution via the pre_dispatch flag in Parallel() class due to the eval() statement.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-21797
+  - https://github.com/joblib/joblib
+  - https://github.com/joblib/joblib/commit/6638b9e9711ad1ebbf6dd95aa7cee0dca9897b42
+  - https://github.com/joblib/joblib/commit/b90f10efeb670a2cc877fb88ebb3f2019189e059
+  - https://github.com/joblib/joblib/issues/1128
+  - https://github.com/joblib/joblib/pull/1321
+  - https://github.com/joblib/joblib/pull/1327
+  - https://github.com/joblib/joblib/pull/1352
+  - https://github.com/pypa/advisory-database/tree/main/vulns/joblib/PYSEC-2022-288.yaml
+  - https://lists.debian.org/debian-lts-announce/2022/11/msg00020.html
+  - https://lists.debian.org/debian-lts-announce/2023/03/msg00027.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BVOMMW37OXZWU2EV5ONAAS462IQEHZOF
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BVOMMW37OXZWU2EV5ONAAS462IQEHZOF/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MJ5XTJS6OKJRRVXWFN5J67K3BYPEOBDF
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MJ5XTJS6OKJRRVXWFN5J67K3BYPEOBDF/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

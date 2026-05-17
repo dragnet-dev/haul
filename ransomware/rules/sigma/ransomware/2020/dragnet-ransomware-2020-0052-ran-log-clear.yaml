@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0052 — Event Log Clearing (doppelpaymer)'
+id: 8a2cded4-c05c-56be-a784-48a155a6f90a
+status: deprecated
+description: |
+  Detects event log clearing associated with doppelpaymer ransomware.
+  Incident: dragnet-ransomware-2020-0052
+  Ransomware victim claim by doppelpaymer: City of Florence, Alabama; country: US; sector: Public Sector
+  First observed: 2020-06-05.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3323 — Vulnerable Base Image Pull'
+id: acfe3385-3bd5-5220-a0dc-b90c40f5c5b9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3323 (Tier 2, CVSS 9.8)
+  In versions of mruby up to and including 1.4.0, an integer overflow exists in src/vm.c::mrb_vm_exec() when handling OP_GETUPVAR in the presence of deep scope nesting, resulting in a use-after-free. An attacker that can cause Ruby code to be run can use this to possibly execute arbitrary code.
+references:
+  - https://github.com/mruby/mruby/commit/1905091634a6a2925c911484434448e568330626
+  - https://github.com/mruby/mruby/issues/3995
+  - https://lists.debian.org/debian-lts-announce/2022/05/msg00006.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

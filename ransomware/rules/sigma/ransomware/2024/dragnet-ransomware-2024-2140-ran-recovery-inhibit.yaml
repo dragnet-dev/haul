@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2140 — Recovery Inhibition (everest)'
+id: cfa66e54-a4b7-54a7-b9e3-7eb0eb81a907
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with everest ransomware.
+  Incident: dragnet-ransomware-2024-2140
+  Ransomware victim claim by everest: Total Patient Care LLC;A Sensitive Touch Home Health;Alphastar Home Health Care;Heart of T; country: US; sector: Healthcare
+  First observed: 2024-12-17.
+references:
+  - http://ransomocmou6mnbquqz44ewosbkjk3o5qjsl3orawojexfook2j7esad.onion/total-patient-care-llca-sensitive-touch-home-healthalphastar-home-health-careheart-of-texas-home-healthcare-services-inc-data-leak/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

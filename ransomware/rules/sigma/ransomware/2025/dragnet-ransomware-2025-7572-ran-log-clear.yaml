@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7572 — Event Log Clearing (termite)'
+id: 86d4b0c9-9909-546c-9db0-90c5577f8ed1
+status: deprecated
+description: |
+  Detects event log clearing associated with termite ransomware.
+  Incident: dragnet-ransomware-2025-7572
+  Ransomware victim claim by termite: Perrigo Company; country: IE; sector: Healthcare
+  First observed: 2025-03-14.
+references:
+  - http://termiteuslbumdge2zmfmfcsrvmvsfe4gvyudc5j6cdnisnhtftvokid.onion/post/67d1fe5c9b91b4933324e58d
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2521 — Vulnerable Base Image Pull'
+id: ea65c548-6a05-5a84-b970-cfbb3082963f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2521 (Tier 2, CVSS 9.8)
+  Buffer overflow in the HTTP URL parsing functions in pecl_http before 3.0.1 might allow remote attackers to execute arbitrary code via non-printable characters in a URL.
+references:
+  - http://www.openwall.com/lists/oss-security/2016/06/29/1
+  - http://www.openwall.com/lists/oss-security/2016/06/29/4
+  - http://www.securityfocus.com/bid/95863
+  - https://bugs.php.net/bug.php?id=71719
+  - https://github.com/m6w6/ext-http/commit/3724cd76a28be1d6049b5537232e97ac
+  - https://pecl.php.net/package/pecl_http/3.0.1
+  - https://security.gentoo.org/glsa/201612-17
+  - https://security.netapp.com/advisory/ntap-20180112-0001/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

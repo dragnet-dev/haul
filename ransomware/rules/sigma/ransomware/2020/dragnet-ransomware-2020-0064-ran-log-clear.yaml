@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0064 — Event Log Clearing (egregor)'
+id: 5e9a21f9-0faa-5bbc-9996-538a0243c27f
+status: deprecated
+description: |
+  Detects event log clearing associated with egregor ransomware.
+  Incident: dragnet-ransomware-2020-0064
+  Ransomware victim claim by egregor: Barnes & Noble; country: US; sector: Consumer Services
+  First observed: 2020-10-10.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5829 — Event Log Clearing (slug)'
+id: ecaff277-9a83-563d-8213-f34fb99ae330
+status: deprecated
+description: |
+  Detects event log clearing associated with slug ransomware.
+  Incident: dragnet-ransomware-2024-5829
+  Ransomware victim claim by slug: aercap.com; country: IE; sector: Transportation/Logistics
+  First observed: 2024-01-15.
+references:
+  - http://3ytm3d25hfzvbylkxiwyqmpvzys5of7l4pbosm7ol7czlkplgukjq6yd.onion/post/aercapcom/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

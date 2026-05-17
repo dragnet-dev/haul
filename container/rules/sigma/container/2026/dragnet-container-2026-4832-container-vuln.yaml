@@ -1,0 +1,30 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4832 — Vulnerable Base Image Pull'
+id: 1f87a3cd-00fe-5a2b-b326-442b56cc792b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4832 (Tier 2, CVSS 10)
+  Minetest is a free open-source voxel game engine with easy modding and game creation. In **single player**, a mod can set a global setting that controls the Lua script loaded to display the main menu. The script is then loaded as soon as the game session is exited. The Lua environment the menu runs in is not sandboxed and can directly interfere with the user's system. There are currently no known workarounds.
+references:
+  - https://dev.minetest.net/Changelog#5.5.0_.E2.86.92_5.6.0
+  - https://github.com/minetest/minetest/commit/da71e86633d0b27cd02d7aac9fdac625d141ca13
+  - https://github.com/minetest/minetest/security/advisories/GHSA-663q-pcjw-27cc
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

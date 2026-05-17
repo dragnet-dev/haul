@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-1531 — Event Log Clearing (ciphbit)'
+id: 982487b8-f178-5c57-a0fc-48221b83e920
+status: deprecated
+description: |
+  Detects event log clearing associated with ciphbit ransomware.
+  Incident: dragnet-ransomware-2023-1531
+  Ransomware victim claim by ciphbit: TransTerra; country: NL; sector: Transportation/Logistics
+  First observed: 2023-09-16.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

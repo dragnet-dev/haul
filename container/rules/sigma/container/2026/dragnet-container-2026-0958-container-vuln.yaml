@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-0958 — Vulnerable Base Image Pull'
+id: 9b6fca66-3cd7-5c73-be31-424b32c7dfa9
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-0958 (Tier 2, CVSS 9.8)
+  Yubico PAM Module before 2.10 performed user authentication when 'use_first_pass' PAM configuration option was not used and the module was configured as 'sufficient' in the PAM configuration. A remote attacker could use this flaw to circumvent common authentication process and obtain access to the account in question by providing a NULL value (pressing Ctrl-D keyboard sequence) as the password string.
+references:
+  - https://access.redhat.com/security/cve/cve-2011-4120
+  - https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2011-4120
+  - https://security-tracker.debian.org/tracker/CVE-2011-4120
+  - https://www.openwall.com/lists/oss-security/2011/11/07/6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

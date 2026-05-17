@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2562 — Event Log Clearing (midas)'
+id: 10f14d45-f1fa-56c2-95b9-b91ab47f7c9e
+status: deprecated
+description: |
+  Detects event log clearing associated with midas ransomware.
+  Incident: dragnet-ransomware-2022-2562
+  Ransomware victim claim by midas: SOUTHWARK METAL MANUFACTURING; sector: Manufacturing
+  First observed: 2022-02-22.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

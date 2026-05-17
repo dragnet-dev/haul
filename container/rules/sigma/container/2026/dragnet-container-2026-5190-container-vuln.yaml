@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5190 — Vulnerable Base Image Pull'
+id: 27dd868f-227d-5926-88c8-9e8517ffdc07
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5190 (Tier 2, CVSS 9.4)
+  Pymatgen (Python Materials Genomics) is an open-source Python library for materials analysis. A critical security vulnerability exists in the `JonesFaithfulTransformation.from_transformation_str()` method within the `pymatgen` library prior to version 2024.2.20. This method insecurely utilizes `eval()` for processing input, enabling execution of arbitrary code when parsing untrusted input. Version 2024.2.20 fixes this issue.
+references:
+  - https://github.com/materialsproject/pymatgen
+  - https://github.com/materialsproject/pymatgen/blob/master/pymatgen/symmetry/settings.py#L97C1-L111C108
+  - https://github.com/materialsproject/pymatgen/commit/c231cbd3d5147ee920a37b6ee9dd236b376bcf5a
+  - https://github.com/materialsproject/pymatgen/security/advisories/GHSA-vgv8-5cpj-qj2f
+  - https://github.com/pypa/advisory-database/tree/main/vulns/pymatgen/PYSEC-2024-226.yaml
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-23346
+  - https://www.cve.org/CVERecord?id=CVE-2024-23346
+  - https://www.vicarius.io/vsociety/posts/critical-security-flaw-in-pymatgen-library-cve-2024-23346
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:13'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

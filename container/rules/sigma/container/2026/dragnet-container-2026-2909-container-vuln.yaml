@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2909 — Vulnerable Base Image Pull'
+id: 7ba89ec9-ef67-5133-92eb-932870d12c7c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2909 (Tier 2, CVSS 9.8)
+  Integer overflow in the decode_digit function in puny_decode.c in Libidn2 before 2.0.4 allows remote attackers to cause a denial of service or possibly have unspecified other impact.
+references:
+  - http://www.debian.org/security/2017/dsa-3988
+  - https://access.redhat.com/security/cve/CVE-2017-14062
+  - https://gitlab.com/libidn/libidn2/blob/master/NEWS
+  - https://gitlab.com/libidn/libidn2/commit/3284eb342cd0ed1a18786e3fcdf0cdd7e76676bd
+  - https://lists.debian.org/debian-lts-announce/2018/07/msg00040.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-14062
+  - https://ubuntu.com/security/notices/USN-3421-1
+  - https://ubuntu.com/security/notices/USN-3421-2
+  - https://ubuntu.com/security/notices/USN-3434-1
+  - https://ubuntu.com/security/notices/USN-3434-2
+  - https://www.cve.org/CVERecord?id=CVE-2017-14062
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3153 — Recovery Inhibition (IMNCrew)'
+id: 8360ef79-4173-5885-9abf-945b1753b6a2
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with IMNCrew ransomware.
+  Incident: dragnet-ransomware-2025-3153
+  Ransomware victim claim by IMNCrew: Apntelecom.com; country: US; sector: Telecommunication
+  First observed: 2025-07-04.
+references:
+  - http://imncrewwfkbjkhr2oylerfm5qtbzfphhmpcfag43xc2kfgvluqtlgoid.onion/files/data/apn.com.zip
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3482 — Vulnerable Base Image Pull'
+id: 9cccebc5-4498-5ea0-b0f9-133189a2e3d6
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3482 (Tier 2, CVSS 9.8)
+  A use-after-free was discovered in the tcpbridge binary of Tcpreplay 4.3.0 beta1. The issue gets triggered in the function post_args() at tcpbridge.c, causing a denial of service or possibly unspecified other impact.
+references:
+  - https://github.com/SegfaultMasters/covering360/blob/master/tcpreplay/README.md#use-after-free-in-post_args
+  - https://github.com/appneta/tcpreplay/issues/489
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/4V3SADKXUSHWTVAPU3WLXBDEQUHRA6ZO/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MLPY6W7Z7G6PF2JN4LXXHCACYLD4RBG6/
+  - https://ubuntu.com/security/notices/USN-5205-1
+  - https://www.cve.org/CVERecord?id=CVE-2018-18408
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

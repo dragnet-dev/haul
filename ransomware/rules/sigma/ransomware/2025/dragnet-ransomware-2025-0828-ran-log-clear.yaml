@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-0828 — Event Log Clearing (anubis)'
+id: 255b96c4-dac0-5cd5-b9a2-c7d4ed8ceab6
+status: deprecated
+description: |
+  Detects event log clearing associated with anubis ransomware.
+  Incident: dragnet-ransomware-2025-0828
+  Ransomware victim claim by anubis: Goodfellow & Schuettlaw; country: CA; sector: Financial Services
+  First observed: 2025-10-23.
+references:
+  - http://om6q4a6cyipxvt7ioudxt24cw4oqu4yodmqzl25mqd2hgllymrgu4aqd.onion/r/aWp0hFQIqkWMJCRmweY8S3cP+m7DVeEdxxWO0HDPxZAC1rOAHXNTTgmprW0oQOEcN4LcXZZu5JpnN4xJY7xEEJvZWdkelQz
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

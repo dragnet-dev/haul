@@ -1,0 +1,59 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4957 — Vulnerable Base Image Pull'
+id: 5707f784-4f9e-5ae1-b47b-9645d03ad4ce
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4957 (Tier 2, CVSS 9.1)
+  A cleartext transmission of sensitive information vulnerability exists in curl <v7.88.0 that could cause HSTS functionality fail when multiple URLs are requested serially. Using its HSTS support, curl can be instructed to use HTTPS instead of usingan insecure clear-text HTTP step even when HTTP is provided in the URL. ThisHSTS mechanism would however surprisingly be ignored by subsequent transferswhen done on the same command line because the state would not be properlycarried on.
+references:
+  - https://access.redhat.com/security/cve/CVE-2023-23914
+  - https://curl.se/docs/CVE-2023-23914.html
+  - https://hackerone.com/reports/1813864
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-23914
+  - https://security.gentoo.org/glsa/202310-12
+  - https://security.netapp.com/advisory/ntap-20230309-0006/
+  - https://ubuntu.com/security/notices/USN-5891-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-23914
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

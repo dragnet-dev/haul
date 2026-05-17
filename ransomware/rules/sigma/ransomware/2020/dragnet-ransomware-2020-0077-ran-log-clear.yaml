@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0077 — Event Log Clearing (maze)'
+id: fd9b506e-cb91-5931-9b33-a859517a346d
+status: deprecated
+description: |
+  Detects event log clearing associated with maze ransomware.
+  Incident: dragnet-ransomware-2020-0077
+  Ransomware victim claim by maze: Ahmed Almazrouei Group; sector: Manufacturing
+  First observed: 2020-06-10.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

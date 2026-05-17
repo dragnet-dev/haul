@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4859 — Vulnerable Base Image Pull'
+id: 9389a22d-8398-5a53-9321-748713ca9347
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4859 (Tier 2, CVSS 9.8)
+  Apache Calcite 1.22.0 introduced the SQL operators EXISTS_NODE, EXTRACT_XML, XML_TRANSFORM and EXTRACT_VALUE do not restrict XML External Entity references in their configuration, making them vulnerable to a potential XML External Entity (XXE) attack. Therefore any client exposing these operators, typically by using Oracle dialect (the first three) or MySQL dialect (the last one), is affected by this vulnerability (the extent of it will depend on the user under which the application is running). From Apache Calcite 1.32.0 onwards, Document Type Declarations and XML External Entity resolution are disabled on the impacted operators.
+references:
+  - http://www.openwall.com/lists/oss-security/2022/11/21/3
+  - https://access.redhat.com/security/cve/CVE-2022-39135
+  - https://lists.apache.org/thread/ohdnhlgm6jvt3srw8l7spkm2d5vwm082
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-39135
+  - https://www.cve.org/CVERecord?id=CVE-2022-39135
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

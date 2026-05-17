@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2868 — Event Log Clearing (fog)'
+id: cee626f5-d3b3-5f28-918d-5af7e9656d19
+status: deprecated
+description: |
+  Detects event log clearing associated with fog ransomware.
+  Incident: dragnet-ransomware-2025-2868
+  Ransomware victim claim by fog: University Diagnostic Medical Imaging, PC (udmi.net); country: US; sector: Healthcare
+  First observed: 2025-03-13.
+references:
+  - http://xbkv2qey6u3gd3qxcojynrt4h5sgrhkar6whuo74wo63hijnn677jnyd.onion/posts/posts/67d2635503e546ad96cc6750/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

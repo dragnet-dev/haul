@@ -1,0 +1,60 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3382 — Vulnerable Base Image Pull'
+id: 773690d8-5fc6-5e14-a26f-b9aef2719974
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3382 (Tier 2, CVSS 9.9)
+  An issue was discovered in Xen 4.7 through 4.10.x. libxl fails to pass the readonly flag to qemu when setting up a SCSI disk, due to what was probably an erroneous merge conflict resolution. Malicious guest administrators or (in some situations) users may be able to write to supposedly read-only disk images. Only emulated SCSI disks (specified as "sd" in the libxl disk configuration, or an equivalent) are affected. IDE disks ("hd") are not affected (because attempts to make them readonly are rejected). Additionally, CDROM devices (that is, devices specified to be presented to the guest as CDROMs, regardless of the nature of the backing storage on the host) are not affected; they are always read only. Only systems using qemu-xen (rather than qemu-xen-traditional) as the device model version are vulnerable. Only systems using libxl or libxl-based toolstacks are vulnerable. (This includes xl, and libvirt with the libxl driver.) The vulnerability is present in Xen versions 4.7 and later. (In earlier versions, provided that the patch for XSA-142 has been applied, attempts to create read only disks are rejected.) If the host and guest together usually support PVHVM, the issue is exploitable only if the malicious guest administrator has control of the guest kernel or guest kernel command line.
+references:
+  - http://www.openwall.com/lists/oss-security/2018/06/27/12
+  - http://www.securityfocus.com/bid/104571
+  - http://www.securitytracker.com/id/1041203
+  - http://xenbits.xen.org/xsa/advisory-266.html
+  - https://access.redhat.com/security/cve/CVE-2018-12892
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-12892
+  - https://security.gentoo.org/glsa/201810-06
+  - https://www.cve.org/CVERecord?id=CVE-2018-12892
+  - https://www.debian.org/security/2018/dsa-4236
+  - https://xenbits.xen.org/xsa/advisory-266.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.5'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

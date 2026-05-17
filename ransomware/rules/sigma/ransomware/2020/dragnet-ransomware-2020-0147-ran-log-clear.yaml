@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2020-0147 — Event Log Clearing (netwalker)'
+id: 60b43e98-6aa8-546e-9393-3d2840afe810
+status: deprecated
+description: |
+  Detects event log clearing associated with netwalker ransomware.
+  Incident: dragnet-ransomware-2020-0147
+  Ransomware victim claim by netwalker: Lorien Health Services; country: US; sector: Healthcare
+  First observed: 2020-06-06.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

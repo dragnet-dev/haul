@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4803 — Recovery Inhibition (qiulong)'
+id: f7dbb3b4-1c31-5d42-8fb5-b7636632a7d1
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with qiulong ransomware.
+  Incident: dragnet-ransomware-2024-4803
+  Ransomware victim claim by qiulong: www.indigoent.ca; country: CA; sector: Business Services
+  First observed: 2024-05-30.
+references:
+  - http://62brsjf2w77ihz5paods33cdgqnon54gjns5nmag3hmqv6fcwamtkmad.onion/?p=173
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

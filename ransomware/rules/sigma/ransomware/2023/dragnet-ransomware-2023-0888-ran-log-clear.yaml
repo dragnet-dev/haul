@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-0888 — Event Log Clearing (arvinclub)'
+id: 48b93524-e193-5f7d-a0c4-6a283dabd8e5
+status: deprecated
+description: |
+  Detects event log clearing associated with arvinclub ransomware.
+  Incident: dragnet-ransomware-2023-0888
+  Ransomware victim claim by arvinclub: Bitimen; sector: Consumer Services
+  First observed: 2023-07-09.
+references:
+  - http://arvinc7prj6ln5wpd6yydfqulsyepoc7aowngpznbn3lrap2aib6teid.onion/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

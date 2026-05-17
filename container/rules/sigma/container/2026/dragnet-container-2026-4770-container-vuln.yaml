@@ -1,0 +1,67 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4770 — Vulnerable Base Image Pull'
+id: 059c58c7-c767-5f28-8f31-5654f2191b7e
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4770 (Tier 2, CVSS 9.1)
+  singlevar in lparser.c in Lua from (including) 5.4.0 up to (excluding) 5.4.4 lacks a certain luaK_exp2anyregup call, leading to a heap-based buffer over-read that might affect a system that compiles untrusted Lua code.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-28805
+  - https://github.com/lua/lua/commit/1f3c6f4534c6411313361697d98d1145a1f030fa
+  - https://access.redhat.com/errata/RHSA-2023:2582
+  - https://access.redhat.com/security/cve/CVE-2022-28805
+  - https://bugzilla.redhat.com/2073884
+  - https://errata.almalinux.org/9/ALSA-2023-2582.html
+  - https://linux.oracle.com/cve/CVE-2022-28805.html
+  - https://linux.oracle.com/errata/ELSA-2023-2582.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/RJNJ66IFDUKWJJZXHGOLRGIA3HWWC36R/
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UHYZOEFDVLVAD6EEP4CDW6DNONIVVHPA/
+  - https://lua-users.org/lists/lua-l/2022-02/msg00001.html
+  - https://lua-users.org/lists/lua-l/2022-02/msg00070.html
+  - https://lua-users.org/lists/lua-l/2022-04/msg00009.html
+  - https://security.gentoo.org/glsa/202305-23
+  - https://ubuntu.com/security/notices/USN-6916-1
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2022'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:22.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

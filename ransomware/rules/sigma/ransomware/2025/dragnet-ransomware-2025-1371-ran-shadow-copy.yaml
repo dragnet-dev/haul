@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1371 — Shadow Copy Deletion (cephalus)'
+id: b172257f-4fd2-5bf8-ab21-426ca8d1c36d
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with cephalus ransomware.
+  Incident: dragnet-ransomware-2025-1371
+  Ransomware victim claim by cephalus: CareSTL Health; country: US; sector: Healthcare
+  First observed: 2025-06-28.
+references:
+  - https://darkforums.st/Thread-CareSTL-Health-DATA-Leak-500-GB
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

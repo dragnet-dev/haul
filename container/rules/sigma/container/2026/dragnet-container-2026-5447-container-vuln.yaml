@@ -1,0 +1,71 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5447 — Vulnerable Base Image Pull'
+id: 48dc4360-a009-55a0-a252-9a03bf5039ec
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5447 (Tier 2, CVSS 9.4)
+  Allows arbitrary filesystem writes outside the extraction directory during extraction with filter="data".
+
+
+You are affected by this vulnerability if using the tarfile module to extract untrusted tar archives using TarFile.extractall() or TarFile.extract() using the filter= parameter with a value of "data" or "tar". See the tarfile  extraction filters documentation https://docs.python.org/3/library/tarfile.html#tarfile-extraction-filter  for more information.
+
+Note that for Python 3.14 or later the default value of filter= changed from "no filtering" to `"data", so if you are relying on this new default behavior then your usage is also affected.
+
+Note that none of these vulnerabilities significantly affect the installation of source distributions which are tar archives as source distributions already allow arbitrary code execution during the build process. However when evaluating source distributions it's important to avoid installing source distributions with suspicious links.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-4517
+  - https://gist.github.com/sethmlarson/52398e33eff261329a0180ac1d54f42f
+  - https://github.com/python/cpython/commit/19de092debb3d7e832e5672cc2f7b788d35951da
+  - https://github.com/python/cpython/commit/28463dba112af719df1e8b0391c46787ad756dd9
+  - https://github.com/python/cpython/commit/3612d8f51741b11f36f8fb0494d79086bac9390a
+  - https://github.com/python/cpython/commit/4633f3f497b1ff70e4a35b6fe2c907cbe2d4cb2e
+  - https://github.com/python/cpython/commit/98016f7c92aa4c1232c68bac1ed6646db31782ec
+  - https://github.com/python/cpython/commit/9c1110ef6652687d7c55f590f909720eddde965a
+  - https://github.com/python/cpython/commit/9e0ac76d96cf80b49055f6d6b9a6763fb9215c2a
+  - https://github.com/python/cpython/commit/aa9eb5f757ceff461e6e996f12c89e5d9b583b01
+  - https://github.com/python/cpython/commit/dd8f187d0746da151e0025c51680979ac5b4cfb1
+  - https://github.com/python/cpython/issues/135034
+  - https://github.com/python/cpython/pull/135037
+  - https://access.redhat.com/errata/RHSA-2025:10189
+  - https://access.redhat.com/security/cve/CVE-2025-4517
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:10'
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+      - 'ubuntu:25.04'
+      - 'ubuntu:25.10'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

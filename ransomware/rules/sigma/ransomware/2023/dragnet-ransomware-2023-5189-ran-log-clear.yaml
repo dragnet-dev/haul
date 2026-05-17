@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-5189 — Event Log Clearing (toufan)'
+id: dd538393-b720-53d0-b9d2-53f5aa274042
+status: deprecated
+description: |
+  Detects event log clearing associated with toufan ransomware.
+  Incident: dragnet-ransomware-2023-5189
+  Ransomware victim claim by toufan: ecom.gov.il; country: IL; sector: Education
+  First observed: 2023-12-27.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

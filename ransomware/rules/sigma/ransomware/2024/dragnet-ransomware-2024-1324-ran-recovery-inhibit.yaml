@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1324 — Recovery Inhibition (bluebox)'
+id: 9852f82a-17b7-5d93-879a-c6a9a91de38a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with bluebox ransomware.
+  Incident: dragnet-ransomware-2024-1324
+  Ransomware victim claim by bluebox: Westerstrand Urfabrik AB; country: SE; sector: Manufacturing
+  First observed: 2024-12-02.
+references:
+  - http://zu3wfrmrkl4ltqqnpt3owp3cwa33rqwod4gpe3ttb5o4vf2is2gzm6qd.onion/2024/12/02/Westerstrand-Urfabrik-AB-Manufacturer-of-Swedish-quality-products/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

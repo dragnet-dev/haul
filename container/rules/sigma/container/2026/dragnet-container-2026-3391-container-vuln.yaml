@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3391 — Vulnerable Base Image Pull'
+id: a8ff7ccb-7aa0-5c95-a001-763b35256938
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3391 (Tier 2, CVSS 9.8)
+  scripts/grep-excuses.pl in Debian devscripts through 2.18.3 allows code execution through unsafe YAML loading because YAML::Syck is used without a configuration that prevents unintended blessing.
+references:
+  - https://bugs.debian.org/902409
+  - https://ubuntu.com/security/notices/USN-3704-1
+  - https://usn.ubuntu.com/3704-1/
+  - https://www.cve.org/CVERecord?id=CVE-2018-13043
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:17.10'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

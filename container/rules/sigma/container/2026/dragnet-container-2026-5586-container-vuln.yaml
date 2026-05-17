@@ -1,0 +1,44 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5586 — Vulnerable Base Image Pull'
+id: 28d1297d-890d-58f0-b792-f3fd7a085dda
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5586 (Tier 2, CVSS 9.8)
+  FreeRDP is a free implementation of the Remote Desktop Protocol. Prior to version 3.23.0, `xf_AppUpdateWindowFromSurface` reuses a cached `XImage` whose `data` pointer references a freed RDPGFX surface buffer, because `gdi_DeleteSurface` frees `surface->data` without invalidating the `appWindow->image` that aliases it. Version 3.23.0 fixes the issue.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-25955
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_window.c#L1484-L1492
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_window.c#L1494-L1500
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/client/X11/xf_window.c#L1528
+  - https://github.com/FreeRDP/FreeRDP/blob/5c7aae27d0417b42b4806c2a5c583ca39dd9ef1e/libfreerdp/gdi/gfx.c#L1224-L1227
+  - https://github.com/FreeRDP/FreeRDP/commit/169d358734509e82663a0d6a0085ae726d439d8e
+  - https://github.com/FreeRDP/FreeRDP/security/advisories/GHSA-4g54-x8v7-559x
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-25955
+  - https://ubuntu.com/security/notices/USN-8105-1
+  - https://www.cve.org/CVERecord?id=CVE-2026-25955
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

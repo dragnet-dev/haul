@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3109 — Vulnerable Base Image Pull'
+id: 1fe957d7-5865-589c-ac92-fe168d81bc5b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3109 (Tier 2, CVSS 9.8)
+  Buffer overflow in the ModifiablePixelBuffer::fillRect function in TigerVNC before 1.7.1 allows remote servers to execute arbitrary code via an RRE message with subrectangle outside framebuffer boundaries.
+references:
+  - http://rhn.redhat.com/errata/RHSA-2017-0630.html
+  - http://www.openwall.com/lists/oss-security/2017/01/22/1
+  - http://www.openwall.com/lists/oss-security/2017/01/25/6
+  - http://www.securityfocus.com/bid/95789
+  - https://access.redhat.com/errata/RHSA-2017:2000
+  - https://access.redhat.com/security/cve/CVE-2017-5581
+  - https://github.com/TigerVNC/tigervnc/commit/18c020124ff1b2441f714da2017f63dba50720ba
+  - https://github.com/TigerVNC/tigervnc/pull/399
+  - https://github.com/TigerVNC/tigervnc/releases/tag/v1.7.1
+  - https://linux.oracle.com/cve/CVE-2017-5581.html
+  - https://linux.oracle.com/errata/ELSA-2017-2000.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-5581
+  - https://security.gentoo.org/glsa/201702-19
+  - https://www.cve.org/CVERecord?id=CVE-2017-5581
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

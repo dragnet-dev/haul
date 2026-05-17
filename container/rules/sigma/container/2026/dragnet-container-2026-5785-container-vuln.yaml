@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5785 — Vulnerable Base Image Pull'
+id: ade5ae10-d858-5b7c-85bd-72cce393e796
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5785 (Tier 2, CVSS 9.8)
+  OpenEXR provides the specification and reference implementation of the EXR file format, an image storage format for the motion picture industry. From versions 3.0.0 to before 3.2.9, 3.3.0 to before 3.3.11, and 3.4.0 to before 3.4.11, readVariableLengthInteger() decodes a variable-length integer from untrusted EXR input without bounding the shift count. After enough continuation bytes, the code executes a left shift by 70 on a 64-bit value, which is undefined behavior. This issue has been patched in versions 3.2.9, 3.3.11, and 3.4.11.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-42217
+  - https://github.com/AcademySoftwareFoundation/openexr/commit/21eaa33bcbbb0c83a5fc42f6b6d65b70a996e63c
+  - https://github.com/AcademySoftwareFoundation/openexr/pull/2378
+  - https://github.com/AcademySoftwareFoundation/openexr/security/advisories/GHSA-3c67-4wwp-w52m
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-42217
+  - https://www.cve.org/CVERecord?id=CVE-2026-42217
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine edge:'
+      - 'chainguard:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

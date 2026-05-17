@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0372 — Recovery Inhibition (atomsilo)'
+id: f8c0837e-8109-5d06-bda0-c62ef93017f8
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with atomsilo ransomware.
+  Incident: dragnet-ransomware-2026-0372
+  Ransomware victim claim by atomsilo: A large bank in Asia; sector: Financial Services
+  First observed: 2026-02-24.
+references:
+  - http://npmh5ahrgakbniuntyc7io4adm6ietbdbuejrfonowqtyqn24or556qd.onion/leaks.html/post.html?id=bank
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

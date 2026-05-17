@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-5935 — Event Log Clearing (termite)'
+id: 8bad3ce9-7843-5a5c-96cf-9344465c8c7a
+status: deprecated
+description: |
+  Detects event log clearing associated with termite ransomware.
+  Incident: dragnet-ransomware-2024-5935
+  Ransomware victim claim by termite: Blue Yonder; country: US; sector: Technology
+  First observed: 2024-12-06.
+references:
+  - http://termiteuslbumdge2zmfmfcsrvmvsfe4gvyudc5j6cdnisnhtftvokid.onion/post/674650cc80fb264e34eb9f03
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

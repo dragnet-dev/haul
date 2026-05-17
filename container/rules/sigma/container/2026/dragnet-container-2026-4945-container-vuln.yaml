@@ -1,0 +1,42 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4945 — Vulnerable Base Image Pull'
+id: d458e900-5473-507d-b87b-2fcbecd646ec
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4945 (Tier 2, CVSS 10)
+  Using the TIOCLINUX ioctl request, a malicious snap could inject contents into the input of the controlling terminal which could allow it to cause arbitrary commands to be executed outside of the snap sandbox after the snap exits. Graphical terminal emulators like xterm, gnome-terminal and others are not affected - this can only be exploited when snaps are run on a virtual console.
+references:
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-1523
+  - https://github.com/snapcore/snapd/pull/12849
+  - https://marc.info/?l=oss-security&m=167879021709955&w=2
+  - https://ubuntu.com/security/notices/USN-6125-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-1523
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

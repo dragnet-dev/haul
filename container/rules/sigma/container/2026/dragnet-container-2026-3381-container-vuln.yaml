@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3381 — Vulnerable Base Image Pull'
+id: 3d2f14e2-5f52-5970-a008-704e2592ca2d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3381 (Tier 2, CVSS 9.8)
+  exif_read_from_impl in ext/exif/exif.c in PHP 7.2.x through 7.2.7 allows attackers to trigger a use-after-free (in exif_read_from_file) because it closes a stream that it is not responsible for closing. The vulnerable code is reachable through the PHP exif_read_data function.
+references:
+  - http://www.securityfocus.com/bid/104551
+  - https://access.redhat.com/security/cve/CVE-2018-12882
+  - https://bugs.php.net/bug.php?id=76409
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-12882
+  - https://security.netapp.com/advisory/ntap-20181109-0001/
+  - https://ubuntu.com/security/notices/USN-3702-1
+  - https://ubuntu.com/security/notices/USN-3702-2
+  - https://usn.ubuntu.com/3702-1/
+  - https://usn.ubuntu.com/3702-2/
+  - https://www.cve.org/CVERecord?id=CVE-2018-12882
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'amazonlinux:1'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1764 — Recovery Inhibition (ms13089)'
+id: 614ec30d-1ebb-55c1-8455-4e8cabf1ca4a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with ms13089 ransomware.
+  Incident: dragnet-ransomware-2026-1764
+  Ransomware victim claim by ms13089: brittanyresidential.com; country: US; sector: Consumer Services
+  First observed: 2026-05-05.
+references:
+  - http://msleakjir7pxbe6onlqe5uwgvdmy6nq4mnwfy7ojswbhnleenm77vgad.onion/BRI/index.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

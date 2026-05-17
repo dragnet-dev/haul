@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5921 — Vulnerable Base Image Pull'
+id: 015d2d2b-0006-5d81-8f5a-c3bca014bdde
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5921 (Tier 2, CVSS 9.1)
+  A security vulnerability has been detected in libssh2 up to 1.11.1. The impacted element is the function userauth_password of the file src/userauth.c. Such manipulation of the argument username_len/password_len leads to integer overflow. The attack may be launched remotely. The name of the patch is 256d04b60d80bf1190e96b0ad1e91b2174d744b1. A patch should be applied to remediate this issue.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-7598
+  - https://github.com/libssh2/libssh2/
+  - https://github.com/libssh2/libssh2/commit/256d04b60d80bf1190e96b0ad1e91b2174d744b1
+  - https://github.com/libssh2/libssh2/pull/1858
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-7598
+  - https://vuldb.com/submit/805564
+  - https://vuldb.com/vuln/360555
+  - https://vuldb.com/vuln/360555/cti
+  - https://www.cve.org/CVERecord?id=CVE-2026-7598
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

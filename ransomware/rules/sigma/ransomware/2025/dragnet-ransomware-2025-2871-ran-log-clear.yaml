@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2871 — Event Log Clearing (fog)'
+id: 62f66260-82f7-549c-804f-d3fc68453988
+status: deprecated
+description: |
+  Detects event log clearing associated with fog ransomware.
+  Incident: dragnet-ransomware-2025-2871
+  Ransomware victim claim by fog: Wilkinson Rogers (wilkinsonrogers.com); sector: Business Services
+  First observed: 2025-03-10.
+references:
+  - http://xbkv2qey6u3gd3qxcojynrt4h5sgrhkar6whuo74wo63hijnn677jnyd.onion/posts/67cf747603e546ad96cc6544/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

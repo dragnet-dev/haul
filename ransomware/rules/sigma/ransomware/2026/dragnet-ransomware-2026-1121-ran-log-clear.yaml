@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1121 — Event Log Clearing (handala)'
+id: 34333656-43cf-5dfd-8b71-31e0d358cdc9
+status: deprecated
+description: |
+  Detects event log clearing associated with handala ransomware.
+  Incident: dragnet-ransomware-2026-1121
+  Ransomware victim claim by handala: Full Access: Jerusalem’s Security Cameras in Handala’s Hands; sector: Public Sector
+  First observed: 2026-03-09.
+references:
+  - https://handala-hack.to/full-access-jerusalems-security-cameras-in-handalas-hands/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

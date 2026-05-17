@@ -1,0 +1,74 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4849 — Vulnerable Base Image Pull'
+id: f617b8b4-bbeb-5f01-8627-da0b7adc8c21
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4849 (Tier 2, CVSS 9.8)
+  The Keccak XKCP SHA-3 reference implementation before fdc6fef has an integer overflow and resultant buffer overflow that allows attackers to execute arbitrary code or eliminate expected cryptographic properties. This occurs in the sponge function interface.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-37454
+  - https://github.com/advisories/GHSA-6w4m-2xhg-2658
+  - https://github.com/XKCP/XKCP/commit/fdc6fef075f4e81d6b1bc38364248975e08e340a
+  - https://github.com/XKCP/XKCP/issues/105
+  - https://github.com/XKCP/XKCP/security/advisories/GHSA-6w4m-2xhg-2658
+  - https://github.com/johanns/sha3/commit/5f2e8118a62831911703c8753ff2435c3b5d7312
+  - https://github.com/johanns/sha3/issues/17
+  - https://github.com/php/php-src/commit/248f647724e385bfb8d83aa5b5a5ca3c4ee2c7fd
+  - https://github.com/python/cpython/commit/0e4e058602d93b88256ff90bbef501ba20be9dd3 (3.10-branch)
+  - https://github.com/python/cpython/commit/8088c90044ba04cd5624b278340ebf934dbee4a5 (3.7-branch)
+  - https://github.com/python/cpython/commit/857efee6d2d43c5c12fc7e377ce437144c728ab8 (3.9-branch)
+  - https://github.com/python/cpython/commit/948c6794711458fd148a3fa62296cadeeb2ed631 (3.8-branch)
+  - https://github.com/python/cpython/issues/98517
+  - https://github.com/rubysec/ruby-advisory-db/blob/master/gems/sha3/CVE-2022-37454.yml
+  - https://github.com/tiran/pysha3/issues/29
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'almalinux:9'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2022'
+      - 'amazonlinux:2023'
+      - 'cbl-mariner:1.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:8'
+      - 'oraclelinux:9'
+      - 'photon os:3.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:22.10'
+      - 'ubuntu:23.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

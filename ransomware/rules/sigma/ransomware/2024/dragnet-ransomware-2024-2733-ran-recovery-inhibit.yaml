@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2733 — Recovery Inhibition (incransom)'
+id: 65e272e7-0365-5d02-99c6-4e6e29debdb4
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with incransom ransomware.
+  Incident: dragnet-ransomware-2024-2733
+  Ransomware victim claim by incransom: Benjamin Plumbing Inc; country: US; sector: Business Services
+  First observed: 2024-01-29.
+references:
+  - http://incapt.blog/blog/leak/69C5D5E630F8C11D
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

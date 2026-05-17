@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6236 — Event Log Clearing (radar)'
+id: ac243fe9-562f-54ed-a48d-48d34d3f911d
+status: deprecated
+description: |
+  Detects event log clearing associated with radar ransomware.
+  Incident: dragnet-ransomware-2025-6236
+  Ransomware victim claim by radar: Volumex Lease; country: BE; sector: Transportation/Logistics
+  First observed: 2025-09-15.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

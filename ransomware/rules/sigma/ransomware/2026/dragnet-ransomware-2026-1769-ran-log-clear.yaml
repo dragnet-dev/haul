@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-1769 — Event Log Clearing (netrunner)'
+id: 705c77a2-3d4a-5d9a-adf6-67f2e63a00f9
+status: deprecated
+description: |
+  Detects event log clearing associated with netrunner ransomware.
+  Incident: dragnet-ransomware-2026-1769
+  Ransomware victim claim by netrunner: Nippon Medical School Musashi Kosugi Hospital; country: JP; sector: Healthcare
+  First observed: 2026-04-03.
+references:
+  - http://netrunrsb3bivj5gnwajzxlig5qkteb6edgthxj7fmsvhkzxtwfxwaad.onion/view/MusashiKosugi
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

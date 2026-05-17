@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3647 — Vulnerable Base Image Pull'
+id: bc08d081-7dcc-5b94-8287-09b260a88a78
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3647 (Tier 2, CVSS 9.8)
+  The PGObject::Util::DBAdmin module before 0.120.0 for Perl, as used in LedgerSMB through 1.5.x, insufficiently sanitizes or escapes variable values used as part of shell command execution, resulting in shell code injection via the create(), run_file(), backup(), or restore() function. The vulnerability allows unauthorized users to execute code with the same privileges as the running application.
+references:
+  - https://archive.ledgersmb.org/ledger-smb-announce/msg00280.html
+  - https://www.cve.org/CVERecord?id=CVE-2018-9246
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

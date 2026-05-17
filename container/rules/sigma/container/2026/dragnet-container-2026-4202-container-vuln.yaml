@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4202 — Vulnerable Base Image Pull'
+id: 6b3f2bd7-19e7-5200-8125-04c4d747b636
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4202 (Tier 2, CVSS 9.8)
+  An issue was discovered in the rand_core crate before 0.4.2 for Rust. Casting of byte slices to integer slices mishandles alignment constraints.
+references:
+  - https://github.com/rust-random/rand
+  - https://github.com/rust-random/rand/blob/master/rand_core/CHANGELOG.md#050---2019-06-06
+  - https://github.com/rust-random/rand/security/advisories/GHSA-mmc9-pwm7-qj5w
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-25576
+  - https://rustsec.org/advisories/RUSTSEC-2019-0035.html
+  - https://www.cve.org/CVERecord?id=CVE-2020-25576
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

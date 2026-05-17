@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4338 — Vulnerable Base Image Pull'
+id: db1f88e9-cc2a-5559-8714-c619be4e7b5c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4338 (Tier 2, CVSS 9.8)
+  An issue was discovered in WeeChat before 2.7.1 (0.3.4 to 2.7 are affected). When a new IRC message 005 is received with longer nick prefixes, a buffer overflow and possibly a crash can happen when a new mode is set for a nick.
+references:
+  - https://github.com/weechat/weechat/commit/40ccacb4330a64802b1f1e28ed9a6b6d3ca9197f
+  - https://lists.debian.org/debian-lts-announce/2020/03/msg00031.html
+  - https://lists.debian.org/debian-lts-announce/2021/09/msg00018.html
+  - https://security.gentoo.org/glsa/202003-51
+  - https://ubuntu.com/security/notices/USN-5258-1
+  - https://weechat.org/doc/security/
+  - https://www.cve.org/CVERecord?id=CVE-2020-9760
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5475 — Vulnerable Base Image Pull'
+id: 41a8fb3e-fbf6-579b-95f3-44b63958711c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5475 (Tier 2, CVSS 9.1)
+  An out-of-bounds read vulnerability exists in the JPEGBITSCodec::InternalCode functionality of Grassroot DICOM 3.024. A specially crafted DICOM file can lead to an information leak. An attacker can provide a malicious file to trigger this vulnerability.The function `null_convert` is called based of the value of the malicious DICOM file specifying the intended interpretation of the image pixel data
+references:
+  - https://talosintelligence.com/vulnerability_reports/TALOS-2025-2210
+  - https://www.cve.org/CVERecord?id=CVE-2025-53619
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2522 — Vulnerable Base Image Pull'
+id: 94d3d17e-d5bc-5301-8b77-b4b76d01d279
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2522 (Tier 2, CVSS 9.8)
+  Integer overflow in the mov_build_index function in libavformat/mov.c in FFmpeg before 2.8.8, 3.0.x before 3.0.3 and 3.1.x before 3.1.1 allows remote attackers to have unspecified impact via vectors involving sample size.
+references:
+  - http://git.videolan.org/gitweb.cgi/ffmpeg.git/?a=commit%3Bh=8a3221cc67a516dfc1700bdae3566ec52c7ee823
+  - http://www.securityfocus.com/bid/95862
+  - https://www.cve.org/CVERecord?id=CVE-2016-6164
+  - https://www.ffmpeg.org/security.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.3'
+      - 'alpine:3.4'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3887 — Vulnerable Base Image Pull'
+id: 86a9027e-be16-5514-8529-f9794fc3a066
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3887 (Tier 2, CVSS 9.3)
+  A reflected XSS issue was discovered in DAViCal through 1.1.8. It echoes the action parameter without encoding. If a user visits an attacker-supplied link, the attacker can view all data the attacked user can view, as well as perform all actions in the name of the user. If the user is an administrator, the attacker can for example add a new admin user to gain full access to the application.
+references:
+  - http://packetstormsecurity.com/files/155630/DAViCal-CalDAV-Server-1.1.8-Reflective-Cross-Site-Scripting.html
+  - https://gitlab.com/davical-project/davical/blob/master/ChangeLog
+  - https://hackdefense.com/publications/cve-2019-18345-davical-caldav-server-vulnerability/
+  - https://lists.debian.org/debian-lts-announce/2019/12/msg00016.html
+  - https://seclists.org/bugtraq/2019/Dec/30
+  - https://wiki.davical.org/index.php/Main_Page
+  - https://www.cve.org/CVERecord?id=CVE-2019-18345
+  - https://www.davical.org/
+  - https://www.debian.org/security/2019/dsa-4582
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

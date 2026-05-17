@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-4073 — Recovery Inhibition (lynx)'
+id: a8189719-ee48-5157-b74b-95076ff2778b
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2025-4073
+  Ransomware victim claim by lynx: CabinC.com; country: US; sector: Transportation/Logistics
+  First observed: 2025-02-28.
+references:
+  - http://lynxblog.net/leaks/6815c8edd5daa03fd3333ae3
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-6023 — Recovery Inhibition (underground)'
+id: 00be0b3c-470d-5683-9ff2-2ce370ef448f
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with underground ransomware.
+  Incident: dragnet-ransomware-2024-6023
+  Ransomware victim claim by underground: Triathlon.group; country: DE; sector: Transportation/Logistics
+  First observed: 2024-01-26.
+references:
+  - http://47glxkuxyayqrvugfumgsblrdagvrah7gttfscgzn56eyss5wg3uvmqd.onion/packages/2c7730bd-8eaf-4762-a944-21327db0c5ad
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

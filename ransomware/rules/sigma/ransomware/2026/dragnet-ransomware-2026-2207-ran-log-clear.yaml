@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-2207 — Event Log Clearing (PrinzEugen)'
+id: d245ff7c-f605-5b1b-8604-99ab488bdb23
+status: deprecated
+description: |
+  Detects event log clearing associated with PrinzEugen ransomware.
+  Incident: dragnet-ransomware-2026-2207
+  Ransomware victim claim by PrinzEugen: Transitions Pro Centre Val de Loire; country: FR; sector: Business Services
+  First observed: 2026-05-03.
+references:
+  - http://prinzfkbjiazbrur4mjje6mntjc4vydx3iatkkzycufoylqcoo4y7pqd.onion/transitions-pro-centre-val-de-loire
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-4798 — Event Log Clearing (qiulong)'
+id: e947737d-bf91-59e7-b958-7fffb104e280
+status: deprecated
+description: |
+  Detects event log clearing associated with qiulong ransomware.
+  Incident: dragnet-ransomware-2024-4798
+  Ransomware victim claim by qiulong: hominemclinic.com.br; country: BR; sector: Healthcare
+  First observed: 2024-04-24.
+references:
+  - http://62brsjf2w77ihz5paods33cdgqnon54gjns5nmag3hmqv6fcwamtkmad.onion/?p=142
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

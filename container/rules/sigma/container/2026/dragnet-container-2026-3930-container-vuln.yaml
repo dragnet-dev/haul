@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3930 — Vulnerable Base Image Pull'
+id: 77f0d697-5df7-597e-8de6-9e858961ebd2
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3930 (Tier 2, CVSS 9.8)
+  wp_kses_bad_protocol in wp-includes/kses.php in WordPress before 5.3.1 mishandles the HTML5 colon named entity, allowing attackers to bypass input sanitization, as demonstrated by the javascript&colon; substring.
+references:
+  - https://github.com/WordPress/wordpress-develop/commit/b1975463dd995da19bb40d3fa0786498717e3c53
+  - https://lists.debian.org/debian-lts-announce/2020/01/msg00010.html
+  - https://seclists.org/bugtraq/2020/Jan/8
+  - https://wordpress.org/news/2019/12/wordpress-5-3-1-security-and-maintenance-release/
+  - https://www.debian.org/security/2020/dsa-4599
+  - https://www.debian.org/security/2020/dsa-4677
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:8'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4115 — Vulnerable Base Image Pull'
+id: 06ab2d72-6a0b-5939-9678-37241761506d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4115 (Tier 2, CVSS 9.8)
+  A memory corruption vulnerability is present in bspatch as shipped in Colin Percival’s bsdiff tools version 4.3. Insufficient checks when handling external inputs allows an attacker to bypass the sanity checks in place and write out of a dynamically allocated buffer boundaries.
+references:
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1856747
+  - https://www.openwall.com/lists/oss-security/2020/07/09/2
+  - https://www.x41-dsec.de/lab/advisories/x41-2020-006-bspatch/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

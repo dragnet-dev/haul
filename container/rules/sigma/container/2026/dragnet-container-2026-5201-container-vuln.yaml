@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5201 — Vulnerable Base Image Pull'
+id: 8143b2e4-a5bb-562d-8f2a-e44720182604
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5201 (Tier 2, CVSS 9.8)
+  libjwt 1.15.3 uses strcmp (which is not constant time) to verify authentication, which makes it easier to bypass authentication via a timing side channel.
+references:
+  - https://github.com/P3ngu1nW/CVE_Request/blob/main/benmcollins%3Alibjwt.md
+  - https://github.com/benmcollins/libjwt/commit/a5d61ef4f1b383876e0a78534383f38159471fd6
+  - https://github.com/benmcollins/libjwt/commit/f73bac57c5bece16ac24f1a70022aa34355fc1bf
+  - https://lists.debian.org/debian-lts-announce/2024/02/msg00009.html
+  - https://www.cve.org/CVERecord?id=CVE-2024-25189
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

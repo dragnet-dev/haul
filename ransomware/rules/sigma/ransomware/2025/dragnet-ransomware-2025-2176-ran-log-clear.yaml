@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2176 — Event Log Clearing (desolator)'
+id: 322c8471-d66d-5e41-9288-df80bd64958f
+status: deprecated
+description: |
+  Detects event log clearing associated with desolator ransomware.
+  Incident: dragnet-ransomware-2025-2176
+  Ransomware victim claim by desolator: Tri Thuc Software; country: VN; sector: Technology
+  First observed: 2025-08-27.
+references:
+  - http://po4tq2brx4rgwbdx4mac24fz34uuuf7oigosebp32n2462m2vxl6biqd.onion/victim/3f3f4013-f375-4279-8089-0a7d185b3fd6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5493 — Vulnerable Base Image Pull'
+id: ccefe4f3-4dbb-5ce1-9118-819cc9487fd5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5493 (Tier 2, CVSS 9.8)
+  ImageMagick is free and open-source software used for editing and manipulating digital images. ImageMagick versions lower than 14.8.2 include  insecure functions: SeekBlob(), which permits advancing the stream offset beyond the current end without increasing capacity, and WriteBlob(), which then expands by quantum + length (amortized) instead of offset + length, and copies to data + offset. When offset ≫ extent, the copy targets memory beyond the allocation, producing a deterministic heap write on 64-bit builds. No 2⁶⁴ arithmetic wrap, external delegates, or policy settings are required. This is fixed in version 14.8.2.
+references:
+  - https://access.redhat.com/security/cve/CVE-2025-57807
+  - https://github.com/ImageMagick/ImageMagick
+  - https://github.com/ImageMagick/ImageMagick/commit/077a417a19a5ea8c85559b602754a5b928eef23e
+  - https://github.com/ImageMagick/ImageMagick/commit/077a417a19a5ea8c85559b602754a5b928eef23e (7.1.2-3)
+  - https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-23hg-53q6-hqfg
+  - https://github.com/ImageMagick/ImageMagick6/commit/ab1bb3d8ed06d0ed6aa5038b6a74aebf53af9ccf (6.9.13-29)
+  - https://lists.debian.org/debian-lts-announce/2025/09/msg00012.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-57807
+  - https://ubuntu.com/security/notices/USN-7756-1
+  - https://www.cve.org/CVERecord?id=CVE-2025-57807
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:4.0'
+      - 'photon os:5.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

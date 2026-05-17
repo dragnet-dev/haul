@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5129 — Vulnerable Base Image Pull'
+id: 8b34cc2e-cb25-5172-8246-ae82809c1802
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5129 (Tier 2, CVSS 9.8)
+  A path traversal vulnerability was discovered in go-git versions prior to v5.11. This vulnerability allows an attacker to create and amend files across the filesystem. In the worse case scenario, remote code execution could be achieved.
+
+Applications are only affected if they are using the  ChrootOS https://pkg.go.dev/github.com/go-git/go-billy/v5/osfs#ChrootOS , which is the default when using "Plain" versions of Open and Clone funcs (e.g. PlainClone). Applications using  BoundOS https://pkg.go.dev/github.com/go-git/go-billy/v5/osfs#BoundOS  or in-memory filesystems are not affected by this issue.
+This is a go-git implementation issue and does not affect the upstream git cli.
+
+
+
+references:
+  - https://access.redhat.com/security/cve/CVE-2023-49569
+  - https://github.com/go-git/go-git
+  - https://github.com/go-git/go-git/security/advisories/GHSA-449p-3h89-pw88
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-49569
+  - https://ubuntu.com/security/notices/USN-8088-1
+  - https://www.cve.org/CVERecord?id=CVE-2023-49569
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'amazonlinux:2023'
+      - 'azure linux:3.0'
+      - 'cbl-mariner:2.0'
+      - 'chainguard:'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'wolfi:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

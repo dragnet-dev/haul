@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5041 — Vulnerable Base Image Pull'
+id: 9a58268f-9a2e-5573-9350-267211b0221a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5041 (Tier 2, CVSS 9.8)
+  coreruleset (aka OWASP ModSecurity Core Rule Set) through 3.3.4 does not detect multiple Content-Type request headers on some platforms. This might allow attackers to bypass a WAF with a crafted payload, aka "Content-Type confusion" between the WAF and the backend application. This occurs when the web application relies on only the last Content-Type header. Other platforms may reject the additional Content-Type header or merge conflicting headers, leading to detection as a malformed header.
+references:
+  - https://github.com/coreruleset/coreruleset/issues/3191
+  - https://github.com/coreruleset/coreruleset/pull/3237
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

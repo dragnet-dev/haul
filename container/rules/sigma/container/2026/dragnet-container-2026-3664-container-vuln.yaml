@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3664 — Vulnerable Base Image Pull'
+id: 6f569cbe-caca-5855-8895-f2d635782686
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3664 (Tier 2, CVSS 9.8)
+  CImg The CImg Library v.2.3.3 and earlier is affected by: command injection. The impact is: RCE. The component is: load_network() function. The attack vector is: Loading an image from a user-controllable url can lead to command injection, because no string sanitization is done on the url. The fixed version is: v.2.3.4.
+references:
+  - https://framagit.org/dtschump/CImg/commit/5ce7a426b77f814973e56182a0e76a2b04904146
+  - https://framagit.org/dtschump/CImg/commit/5ce7a426b77f814973e56182a0e76a2b04904146 (v.2.3.4)
+  - https://lists.debian.org/debian-lts-announce/2019/09/msg00030.html
+  - https://lists.debian.org/debian-lts-announce/2020/10/msg00033.html
+  - https://www.cve.org/CVERecord?id=CVE-2019-1010174
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

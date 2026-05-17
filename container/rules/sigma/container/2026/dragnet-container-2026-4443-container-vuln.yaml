@@ -1,0 +1,49 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4443 — Vulnerable Base Image Pull'
+id: 6529fd06-efea-59e5-9914-f4a142be3080
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4443 (Tier 2, CVSS 9.8)
+  aom_dsp/noise_model.c in libaom in AOMedia before 2021-03-24 has a buffer overflow.
+references:
+  - https://aomedia.googlesource.com/aom/+/12adc723acf02633595a4d8da8345742729f46c0
+  - https://bugs.chromium.org/p/aomedia/issues/detail?id=2999
+  - https://lists.debian.org/debian-lts-announce/2023/09/msg00003.html
+  - https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZXCI33HXH6YSOGC2LPE2REQLMIDH6US4/
+  - https://security.gentoo.org/glsa/202401-32
+  - https://ubuntu.com/security/notices/USN-6447-1
+  - https://www.cve.org/CVERecord?id=CVE-2021-30475
+  - https://www.debian.org/security/2023/dsa-5490
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

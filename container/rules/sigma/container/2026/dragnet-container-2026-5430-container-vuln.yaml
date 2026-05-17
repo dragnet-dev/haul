@@ -1,0 +1,34 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5430 — Vulnerable Base Image Pull'
+id: e9b86259-428b-5c79-8859-45c83a4a442a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5430 (Tier 2, CVSS 10)
+  vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. Versions starting from 0.6.5 and prior to 0.8.5, having vLLM integration with mooncake, are vulnerable to remote code execution due to using pickle based serialization over unsecured ZeroMQ sockets. The vulnerable sockets were set to listen on all network interfaces, increasing the likelihood that an attacker is able to reach the vulnerable ZeroMQ sockets to carry out an attack. vLLM instances that do not make use of the mooncake integration are not vulnerable. This issue has been patched in version 0.8.5.
+references:
+  - https://access.redhat.com/security/cve/CVE-2025-32444
+  - https://github.com/pypa/advisory-database/tree/main/vulns/vllm/PYSEC-2025-42.yaml
+  - https://github.com/vllm-project/vllm
+  - https://github.com/vllm-project/vllm/blob/32b14baf8a1f7195ca09484de3008063569b43c5/vllm/distributed/kv_transfer/kv_pipe/mooncake_pipe.py#L179
+  - https://github.com/vllm-project/vllm/commit/a5450f11c95847cf51a17207af9a3ca5ab569b2c
+  - https://github.com/vllm-project/vllm/security/advisories/GHSA-hj4w-hm2g-p6w5
+  - https://github.com/vllm-project/vllm/security/advisories/GHSA-x3m8-f7g5-qhm7
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-32444
+  - https://www.cve.org/CVERecord?id=CVE-2025-32444
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'chainguard:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

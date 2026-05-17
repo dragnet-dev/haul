@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2268 — Event Log Clearing (frag)'
+id: 3e44d7c5-d5d6-575c-b481-debb6561e09d
+status: deprecated
+description: |
+  Detects event log clearing associated with frag ransomware.
+  Incident: dragnet-ransomware-2024-2268
+  Ransomware victim claim by frag: Red Credit solution, LLC; country: US; sector: Financial Services
+  First observed: 2024-10-15.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

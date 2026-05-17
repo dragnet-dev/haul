@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7807 — Event Log Clearing (weyhro)'
+id: 678b1457-d770-57a5-b1b8-57da98a6fe8b
+status: deprecated
+description: |
+  Detects event log clearing associated with weyhro ransomware.
+  Incident: dragnet-ransomware-2025-7807
+  Ransomware victim claim by weyhro: Fragola S.p.A; country: IT; sector: Manufacturing
+  First observed: 2025-02-26.
+references:
+  - http://xtxtpqpyaaek4p4525ksepyyy75gfvi47fptm2gftw7cn656rnfhzdqd.onion/leaks/fragolaspa
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

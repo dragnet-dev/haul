@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4894 — Vulnerable Base Image Pull'
+id: e65e4515-ea5a-5567-924f-9f2c26b38e3d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4894 (Tier 2, CVSS 9.8)
+  Gitea before 1.17.3 does not sanitize and escape refs in the git backend. Arguments to git commands are mishandled.
+references:
+  - https://access.redhat.com/security/cve/CVE-2022-42968
+  - https://github.com/advisories/GHSA-w8xw-7crf-h23x
+  - https://github.com/go-gitea/gitea
+  - https://github.com/go-gitea/gitea/pull/21463
+  - https://github.com/go-gitea/gitea/releases/tag/v1.17.3
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-42968
+  - https://security.gentoo.org/glsa/202210-14
+  - https://www.cve.org/CVERecord?id=CVE-2022-42968
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

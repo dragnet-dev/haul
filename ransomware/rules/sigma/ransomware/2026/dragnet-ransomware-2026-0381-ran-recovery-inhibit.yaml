@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0381 — Recovery Inhibition (aurora)'
+id: ba91703c-92b4-5e7f-ad3c-16d5c13e319a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with aurora ransomware.
+  Incident: dragnet-ransomware-2026-0381
+  Ransomware victim claim by aurora: Atlas Metal Industries Inc; country: CA; sector: Manufacturing
+  First observed: 2026-04-29.
+references:
+  - http://u6lieui2dakbctcjea2bz4r4q32r7t36nwljovqbv7mxs6o2smgxixid.onion/blog/atlas-metal-industries-inc-f3dae3da
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

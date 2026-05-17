@@ -1,0 +1,37 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4318 — Vulnerable Base Image Pull'
+id: 64e4d5d9-8436-5cec-bff1-81eabcb1a0be
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4318 (Tier 2, CVSS 9.8)
+  This affects the package nodemailer before 6.4.16. Use of crafted recipient email addresses may result in arbitrary command flag injection in sendmail transport for sending mails.
+references:
+  - https://github.com/nodemailer/nodemailer/blob/33b62e2ea6bc9215c99a9bb4bfba94e2fb27ebd0/lib/sendmail-transport/index.js#L75
+  - https://github.com/nodemailer/nodemailer/blob/33b62e2ea6bc9215c99a9bb4bfba94e2fb27ebd0/lib/sendmail-transport/index.js%23L75
+  - https://github.com/nodemailer/nodemailer/commit/ba31c64c910d884579875c52d57ac45acc47aa54
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-7769
+  - https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1039742
+  - https://snyk.io/vuln/SNYK-JS-NODEMAILER-1038834
+  - https://www.cve.org/CVERecord?id=CVE-2020-7769
+  - https://www.npmjs.com/package/nodemailer
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

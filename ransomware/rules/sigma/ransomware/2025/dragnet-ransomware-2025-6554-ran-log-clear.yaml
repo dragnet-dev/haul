@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-6554 — Event Log Clearing (reynolds)'
+id: 4c37c8cd-89d4-5a99-bab8-5f8527d4ee84
+status: deprecated
+description: |
+  Detects event log clearing associated with reynolds ransomware.
+  Incident: dragnet-ransomware-2025-6554
+  Ransomware victim claim by reynolds: falconmgt.com; country: US; sector: Business Services
+  First observed: 2025-11-13.
+references:
+  - http://bs2tlg32pfjwmclm22cyngqmoo24cdlhfxzbruwrdaxumisfeory32qd.onion/post/falconmgtcom/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

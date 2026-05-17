@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4220 — Vulnerable Base Image Pull'
+id: 3c8829ae-d478-5883-b967-35a9dd4283a0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4220 (Tier 2, CVSS 9.8)
+  The CivetWeb web library does not validate uploaded filepaths when running on an OS other than Windows, when using the built-in HTTP form-based file upload mechanism, via the mg_handle_form_request API. Web applications that use the file upload form handler, and use parts of the user-controlled filename in the output path, are susceptible to directory traversal
+references:
+  - https://access.redhat.com/security/cve/CVE-2020-27304
+  - https://cert-portal.siemens.com/productcert/pdf/ssa-222547.pdf
+  - https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf
+  - https://groups.google.com/g/civetweb/c/yPBxNXdGgJQ
+  - https://jfrog.com/blog/cve-2020-27304-rce-via-directory-traversal-in-civetweb-http-server/
+  - https://nvd.nist.gov/vuln/detail/CVE-2020-27304
+  - https://www.cve.org/CVERecord?id=CVE-2020-27304
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'azure linux:3.0'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'photon os:3.0'
+      - 'photon os:4.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

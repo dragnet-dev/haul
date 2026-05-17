@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0426 — Event Log Clearing (blackwater)'
+id: 6ec930e6-8575-5733-ba4f-9108b0629dcc
+status: deprecated
+description: |
+  Detects event log clearing associated with blackwater ransomware.
+  Incident: dragnet-ransomware-2026-0426
+  Ransomware victim claim by blackwater: Minidoka Memorial Hospital; country: US; sector: Healthcare
+  First observed: 2026-04-17.
+references:
+  - http://ejzl7cjxmkx7lzhiqwidmrwtfjv45pkczbc4fnyaut3t7gll3yaiq5id.onion/blog?uuid=9f470660-332d-37de-8914-393cc1603b4f
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

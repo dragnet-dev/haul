@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7714 — Event Log Clearing (VanHelsing)'
+id: b3346a36-fbec-56f5-8485-3f66ee7490bb
+status: deprecated
+description: |
+  Detects event log clearing associated with VanHelsing ransomware.
+  Incident: dragnet-ransomware-2025-7714
+  Ransomware victim claim by VanHelsing: Atos-racks.com; country: FR; sector: Technology
+  First observed: 2025-03-18.
+references:
+  - http://vanhelwmbf2bwzw7gmseg36qqm4ekc5uuhqbsew4eihzcahyq7sukzad.onion/blog/blog.php?id=14
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

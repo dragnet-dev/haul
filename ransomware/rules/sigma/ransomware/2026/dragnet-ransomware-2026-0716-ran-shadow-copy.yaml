@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-0716 — Shadow Copy Deletion (crypto24)'
+id: d08b02b8-022a-52e2-9fb1-f56bc33a245e
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with crypto24 ransomware.
+  Incident: dragnet-ransomware-2026-0716
+  Ransomware victim claim by crypto24: ActionPower; country: KR; sector: Not Found
+  First observed: 2026-03-27.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

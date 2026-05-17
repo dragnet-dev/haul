@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1722 — Event Log Clearing (dAn0n)'
+id: f6220877-bdb9-5ce9-bbdc-a529cee92833
+status: deprecated
+description: |
+  Detects event log clearing associated with dAn0n ransomware.
+  Incident: dragnet-ransomware-2024-1722
+  Ransomware victim claim by dAn0n: www.dunnsolutions.com; country: US; sector: Technology
+  First observed: 2024-08-09.
+references:
+  - http://2c7nd54guzi6xhjyqrj5kdkrq2ngm2u3e6oy4nfhn3wm3r54ul2utiqd.onion/y6rffpDgToU9HnpQYahFf7OCwhxqdIUQ5x-Sm1OE0iY/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,28 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4137 — Vulnerable Base Image Pull'
+id: 194de1a5-7753-546c-b4be-6dadbac4399c
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4137 (Tier 2, CVSS 9.8)
+  In nDPI through 3.2, ndpi_reset_packet_line_info in lib/ndpi_main.c omits certain reinitialization, leading to a use-after-free.
+references:
+  - https://github.com/ntop/nDPI/commit/6a9f5e4f7c3fd5ddab3e6727b071904d76773952
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-2249 — Event Log Clearing (fog)'
+id: 3b268bc2-f2aa-56ca-bb8a-504c72e116a2
+status: deprecated
+description: |
+  Detects event log clearing associated with fog ransomware.
+  Incident: dragnet-ransomware-2024-2249
+  Ransomware victim claim by fog: Weld Racing (weldracing.com); country: US; sector: Manufacturing
+  First observed: 2024-11-29.
+references:
+  - http://xbkv2qey6u3gd3qxcojynrt4h5sgrhkar6whuo74wo63hijnn677jnyd.onion/posts/6749a0b1ffa6d0708588cba5/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

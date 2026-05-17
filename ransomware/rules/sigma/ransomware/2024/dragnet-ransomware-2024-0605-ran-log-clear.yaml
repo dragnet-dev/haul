@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-0605 — Event Log Clearing (apos)'
+id: d4c5a30b-9816-5f3e-a335-f62ad88d81df
+status: deprecated
+description: |
+  Detects event log clearing associated with apos ransomware.
+  Incident: dragnet-ransomware-2024-0605
+  Ransomware victim claim by apos: Sunlux Group; country: FR; sector: Manufacturing
+  First observed: 2024-04-29.
+references:
+  - https://apos.blog/apos-raas/Sunlux-Group-50eda5d7962a4b2fabf3ea9bb30cfbe6
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,41 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2941 — Vulnerable Base Image Pull'
+id: b035f609-eb21-5b18-bbd5-d14a0fc34c95
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2941 (Tier 2, CVSS 9.8)
+  A stack-based buffer overflow vulnerability was found in NBD server implementation in qemu before 2.11 allowing a client to request an export name of size up to 4096 bytes, which in fact should be limited to 256 bytes, causing an out-of-bounds stack write in the qemu process. If NBD server requires TLS, the attacker cannot trigger the buffer overflow without first successfully negotiating TLS.
+references:
+  - http://www.openwall.com/lists/oss-security/2017/11/28/8
+  - http://www.securityfocus.com/bid/101975
+  - https://access.redhat.com/errata/RHSA-2018:1104
+  - https://access.redhat.com/security/cve/CVE-2017-15118
+  - https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2017-15118
+  - https://lists.gnu.org/archive/html/qemu-devel/2017-11/msg05045.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-15118
+  - https://ubuntu.com/security/notices/USN-3575-1
+  - https://usn.ubuntu.com/3575-1/
+  - https://www.cve.org/CVERecord?id=CVE-2017-15118
+  - https://www.exploit-db.com/exploits/43194/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

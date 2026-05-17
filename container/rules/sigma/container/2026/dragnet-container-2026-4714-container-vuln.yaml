@@ -1,0 +1,38 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4714 — Vulnerable Base Image Pull'
+id: 30606e34-7e6c-5c71-9e53-fe10db6adc6d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4714 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE. This issue is similar to GHSA-9pfh-r8x4-w26w. Possible buffer overread when parsing a certain STUN message. The vulnerability affects applications that uses STUN including PJNATH and PJSUA-LIB. The patch is available as commit in the master branch.
+references:
+  - https://github.com/pjsip/pjproject/commit/bc4812d31a67d5e2f973fbfaf950d6118226cf36
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-9pfh-r8x4-w26w
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-cxwq-5g9x-x7fr
+  - https://lists.debian.org/debian-lts-announce/2023/08/msg00038.html
+  - https://lists.debian.org/debian-lts-announce/2024/09/msg00030.html
+  - https://ubuntu.com/security/notices/USN-6422-1
+  - https://www.cve.org/CVERecord?id=CVE-2022-23547
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

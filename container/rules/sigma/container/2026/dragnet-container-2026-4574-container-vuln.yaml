@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4574 — Vulnerable Base Image Pull'
+id: fac7f8c4-6891-587a-acee-0b80d9109960
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4574 (Tier 2, CVSS 9.8)
+  iTextPDF in iText 7 and up to (excluding 4.4.13.3) 7.1.17 allows command injection via a CompareTool filename that is mishandled on the gs (aka Ghostscript) command line in GhostscriptHelper.java.
+references:
+  - https://github.com/itext/itext7
+  - https://github.com/itext/itext7/releases/tag/7.1.17
+  - https://github.com/itext/itextpdf/releases/tag/5.5.13.3
+  - https://lists.debian.org/debian-lts-announce/2023/01/msg00013.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-43113
+  - https://pastebin.com/BXnkY9YY
+  - https://www.debian.org/security/2023/dsa-5323
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

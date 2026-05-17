@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1968 — Vulnerable Base Image Pull'
+id: 0eec0259-d68b-55b6-8826-54d602b2140b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1968 (Tier 2, CVSS 10)
+  Module::Signature before 0.74 allows remote attackers to execute arbitrary shell commands via a crafted SIGNATURE file which is not properly handled when generating checksums from a signed manifest.
+references:
+  - http://ubuntu.com/usn/usn-2607-1
+  - http://www.debian.org/security/2015/dsa-3261
+  - http://www.openwall.com/lists/oss-security/2015/04/07/1
+  - http://www.openwall.com/lists/oss-security/2015/04/23/17
+  - https://access.redhat.com/security/cve/CVE-2015-3408
+  - https://github.com/audreyt/module-signature/commit/8a9164596fa5952d4fbcde5aa1c7d1c7bc85372f
+  - https://metacpan.org/changes/distribution/Module-Signature
+  - https://nvd.nist.gov/vuln/detail/CVE-2015-3408
+  - https://ubuntu.com/security/notices/USN-2607-1
+  - https://www.cve.org/CVERecord?id=CVE-2015-3408
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.10'
+      - 'ubuntu:15.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

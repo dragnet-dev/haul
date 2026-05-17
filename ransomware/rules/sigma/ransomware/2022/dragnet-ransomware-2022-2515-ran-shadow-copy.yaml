@@ -1,0 +1,37 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-2515 — Shadow Copy Deletion (lv)'
+id: 47b92d1d-34f1-5982-b6c9-9bf8665a90d3
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with lv ransomware.
+  Incident: dragnet-ransomware-2022-2515
+  Ransomware victim claim by lv: WARTSILA DATA - ATTENTION !!!; sector: Manufacturing
+  First observed: 2022-08-04.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

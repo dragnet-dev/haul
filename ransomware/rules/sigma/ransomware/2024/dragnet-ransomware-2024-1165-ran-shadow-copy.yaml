@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-1165 — Shadow Copy Deletion (blackout)'
+id: afd6699d-1041-5404-98c6-90496f7f6327
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with blackout ransomware.
+  Incident: dragnet-ransomware-2024-1165
+  Ransomware victim claim by blackout: nedamaritime.gr; country: GR; sector: Transportation/Logistics
+  First observed: 2024-12-10.
+references:
+  - http://black3gnkizshuynieigw6ejgpblb53mpasftzd6pydqpmq2vn2xf6yd.onion/post/12e5210f-b8a9-41ce-9f5a-c67750c13a87/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high

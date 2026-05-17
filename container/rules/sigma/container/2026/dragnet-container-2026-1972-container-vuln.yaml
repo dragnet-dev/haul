@@ -1,0 +1,32 @@
+title: 'Dragnet [Container]: dragnet-container-2026-1972 — Vulnerable Base Image Pull'
+id: 3219d8f8-78e4-59b7-9ba9-4b61467a75b0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-1972 (Tier 2, CVSS 9.8)
+  Integer overflow in the keycompare_mb function in sort.c in sort in GNU Coreutils through 8.23 might allow attackers to cause a denial of service (application crash) or possibly have unspecified other impact via long strings.
+references:
+  - http://openwall.com/lists/oss-security/2015/05/15/1
+  - https://access.redhat.com/security/cve/CVE-2015-4042
+  - https://github.com/pixelb/coreutils/commit/bea5e36cc876ed627bb5e0eca36fdfaa6465e940
+  - https://nvd.nist.gov/vuln/detail/CVE-2015-4042
+  - https://www.cve.org/CVERecord?id=CVE-2015-4042
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'photon os:2.0'
+      - 'photon os:3.0'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

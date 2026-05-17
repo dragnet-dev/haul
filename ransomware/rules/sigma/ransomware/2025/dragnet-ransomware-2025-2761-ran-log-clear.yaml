@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-2761 — Event Log Clearing (flocker)'
+id: 606b8c9c-54fc-52b7-8c95-e34355f8a105
+status: deprecated
+description: |
+  Detects event log clearing associated with flocker ransomware.
+  Incident: dragnet-ransomware-2025-2761
+  Ransomware victim claim by flocker: Punjab.gov.pk; country: PK; sector: Public Sector
+  First observed: 2025-01-31.
+references:
+  - http://flock4cvoeqm4c62gyohvmncx6ck2e7ugvyqgyxqtrumklhd5ptwzpqd.onion/?p=343
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

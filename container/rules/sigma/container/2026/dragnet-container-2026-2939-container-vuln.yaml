@@ -1,0 +1,52 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2939 — Vulnerable Base Image Pull'
+id: 43b5f537-71b8-58ef-b94a-c4aa2330492d
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2939 (Tier 2, CVSS 9.8)
+  A deserialization flaw was discovered in the jackson-databind in versions before 2.8.10 and 2.9.1, which could allow an unauthenticated user to perform code execution by sending the maliciously crafted input to the readValue method of the ObjectMapper. This issue extends the previous flaw CVE-2017-7525 by blacklisting more classes that could be used maliciously.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-15095
+  - https://github.com/FasterXML/jackson-databind
+  - https://github.com/FasterXML/jackson-databind/blob/7093008aa2afe8068e120df850189ae072dfa1b2/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java#L43
+  - https://github.com/FasterXML/jackson-databind/commit/3bfbb835
+  - https://github.com/FasterXML/jackson-databind/commit/a054585e2175ad0882f07bcafedecfac86230f1b
+  - https://github.com/FasterXML/jackson-databind/commit/a3939d36edcc755c8af55bdc1969e0fa8438f9db
+  - https://github.com/FasterXML/jackson-databind/commit/ddfddfba
+  - https://github.com/FasterXML/jackson-databind/commit/ddfddfba6414adbecaff99684ef66eebd3a92e92
+  - https://github.com/FasterXML/jackson-databind/commit/e865a7a4464da63ded9f4b1a2328ad85c9ded78b
+  - https://github.com/FasterXML/jackson-databind/commit/e8f043d1
+  - https://github.com/FasterXML/jackson-databind/commit/e8f043d1aac9b82eee907e0f0c3abbdea723a935
+  - https://github.com/FasterXML/jackson-databind/issues/1680
+  - https://github.com/FasterXML/jackson-databind/issues/1723
+  - https://github.com/FasterXML/jackson-databind/issues/1737
+  - https://github.com/tolbertam/jackson-databind/commit/80566a0f96b2003863f9d8f9ccc3b562001e147b
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'redhat/ubi9:'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.04'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

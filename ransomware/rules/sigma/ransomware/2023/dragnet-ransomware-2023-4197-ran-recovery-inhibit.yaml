@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4197 — Recovery Inhibition (noname)'
+id: c9d0f406-4b62-53e0-b493-06fdd49bddf2
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with noname ransomware.
+  Incident: dragnet-ransomware-2023-4197
+  Ransomware victim claim by noname: onyx-fire.com; country: US; sector: Business Services
+  First observed: 2023-09-12.
+references:
+  - http://noname2j6zkgnt7ftxsjju5tfd3s45s4i3egq5bqtl72kgum4ldc6qyd.onion/wp/onyx-fire-com/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

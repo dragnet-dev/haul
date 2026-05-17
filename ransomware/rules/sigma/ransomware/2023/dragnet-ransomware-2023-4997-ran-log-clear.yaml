@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-4997 — Event Log Clearing (siegedsec)'
+id: 5da127a2-3c7d-5bc4-b46e-43dfeb4ef1cc
+status: deprecated
+description: |
+  Detects event log clearing associated with siegedsec ransomware.
+  Incident: dragnet-ransomware-2023-4997
+  Ransomware victim claim by siegedsec: Idaho National Laboratory; sector: Energy
+  First observed: 2023-11-26.
+references:
+  - http://nv5p2mmpctvyqdyyi5zwh4gnifq2uxdx4etvnmaheqlrw6ordrjwxryd.onion/post/11.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

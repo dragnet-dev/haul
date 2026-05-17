@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3375 — Vulnerable Base Image Pull'
+id: b5e3e47a-5884-5a01-8ada-33053473db6b
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3375 (Tier 2, CVSS 9.1)
+  GIMP through 2.10.2 makes g_get_tmp_dir calls to establish temporary filenames, which may result in a filename that already exists, as demonstrated by the gimp_write_and_read_file function in app/tests/test-xcf.c. This might be leveraged by attackers to overwrite files or read file content that was intended to be private.
+references:
+  - https://access.redhat.com/security/cve/CVE-2018-12713
+  - https://github.com/GNOME/gimp/commit/c21eff4b031acb04fb4dfce8bd5fdfecc2b6524f
+  - https://gitlab.gnome.org/GNOME/gimp/issues/1689
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-12713
+  - https://www.cve.org/CVERecord?id=CVE-2018-12713
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:25.10'
+      - 'ubuntu:26.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

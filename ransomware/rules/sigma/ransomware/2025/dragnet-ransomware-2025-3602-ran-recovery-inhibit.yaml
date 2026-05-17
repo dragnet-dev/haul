@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3602 — Recovery Inhibition (interlock)'
+id: e7eebab3-fe71-537b-9624-148533835761
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3602
+  Ransomware victim claim by interlock: Pocono Farms Country Club; country: US; sector: Hospitality and Tourism
+  First observed: 2025-08-25.
+references:
+  - http://4k6hj4ash2oo5svymxxrsycex3mdv5dqzom5rlyoojpe6map2lqgmqad.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

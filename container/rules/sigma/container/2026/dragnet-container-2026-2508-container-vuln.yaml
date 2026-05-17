@@ -1,0 +1,53 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2508 — Vulnerable Base Image Pull'
+id: d730d3b0-bd2e-5afa-bcb7-feeb4467dc4a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2508 (Tier 2, CVSS 9.8)
+  The DCM reader in ImageMagick before 6.9.4-5 and 7.x before 7.0.1-7 allows remote attackers to have unspecified impact by leveraging lack of validation of (1) pixel.red, (2) pixel.green, and (3) pixel.blue.
+references:
+  - http://www.openwall.com/lists/oss-security/2016/06/14/5
+  - http://www.openwall.com/lists/oss-security/2016/06/17/3
+  - http://www.oracle.com/technetwork/topics/security/bulletinjul2016-3090568.html
+  - http://www.securityfocus.com/bid/91283
+  - https://access.redhat.com/security/cve/CVE-2016-5691
+  - https://blog.fuzzing-project.org/46-Various-invalid-memory-reads-in-ImageMagick-WPG%2C-DDS%2C-DCM.html
+  - https://blog.fuzzing-project.org/46-Various-invalid-memory-reads-in-ImageMagick-WPG,-DDS,-DCM.html
+  - https://github.com/ImageMagick/ImageMagick/blob/6.9.4-5/ChangeLog
+  - https://github.com/ImageMagick/ImageMagick/blob/7.0.1-7/ChangeLog
+  - https://github.com/ImageMagick/ImageMagick/commit/5511ef530576ed18fd636baa3bb4eda3d667665d
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-5691
+  - https://ubuntu.com/security/notices/USN-3131-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-5691
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.2'
+      - 'alpine:3.3'
+      - 'alpine:3.4'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3623 — Vulnerable Base Image Pull'
+id: ba72d3ec-2bc7-5930-90b7-f3903bf57a12
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3623 (Tier 2, CVSS 9.8)
+  Adminer through 4.3.1 has SSRF via the server parameter.
+references:
+  - http://hyp3rlinx.altervista.org/advisories/ADMINER-UNAUTHENTICATED-SERVER-SIDE-REQUEST-FORGERY.txt
+  - https://github.com/vrana/adminer/commit/35bfaa75
+  - https://github.com/vrana/adminer/security/advisories/GHSA-43f8-p5w3-5m25
+  - https://gusralph.info/adminer-ssrf-bypass-cve-2018-7667
+  - https://lists.debian.org/debian-lts-announce/2018/03/msg00014.html
+  - https://sourceforge.net/p/adminer/bugs-and-features/769
+  - https://www.cve.org/CVERecord?id=CVE-2018-7667
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

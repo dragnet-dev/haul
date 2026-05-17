@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5703 — Vulnerable Base Image Pull'
+id: 8b08f993-38ff-5445-b322-a9d3f7cf11b1
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5703 (Tier 2, CVSS 9.1)
+  A cached crafted response can cause an out-of-bounds read if custom Lua code calls getDomainListByAddress() or getAddressListByDomain() on a packet cache.
+references:
+  - https://www.dnsdist.org/security-advisories/powerdns-advisory-for-dnsdist-2026-04.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

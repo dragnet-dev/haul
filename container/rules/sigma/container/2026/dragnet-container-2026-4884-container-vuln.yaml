@@ -1,0 +1,45 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4884 — Vulnerable Base Image Pull'
+id: efe3ede5-531c-53b9-a3d5-c839f3ebd53f
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4884 (Tier 2, CVSS 9.8)
+  Those using java.sql.Statement or java.sql.PreparedStatement in hsqldb (HyperSQL DataBase) to process untrusted input may be vulnerable to a remote code execution attack. By default it is allowed to call any static method of any Java class in the classpath resulting in code execution. The issue can be prevented by updating to 2.7.1 or by setting the system property "hsqldb.method_class_names" to classes which are allowed to be called. For example, System.setProperty("hsqldb.method_class_names", "abc") or Java argument -Dhsqldb.method_class_names="abc" can be used. From version 2.7.1 all classes by default are not accessible except those in java.lang.Math and need to be manually enabled.
+references:
+  - http://hsqldb.org/doc/2.0/guide/sqlroutines-chapt.html#src_jrt_access_control
+  - https://access.redhat.com/security/cve/CVE-2022-41853
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=50212#c7
+  - https://github.com/advisories/GHSA-77xx-rxvh-q682
+  - https://linux.oracle.com/cve/CVE-2022-41853.html
+  - https://linux.oracle.com/errata/ELSA-2023-12103.html
+  - https://lists.debian.org/debian-lts-announce/2022/12/msg00020.html
+  - https://nvd.nist.gov/vuln/detail/CVE-2022-41853
+  - https://sourceforge.net/projects/hsqldb
+  - https://www.cve.org/CVERecord?id=CVE-2022-41853
+  - https://www.debian.org/security/2023/dsa-5313
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:6'
+      - 'oraclelinux:7'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3576 — Recovery Inhibition (interlock)'
+id: 5068a10c-049e-5054-aaeb-ff9a1faaf97b
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with interlock ransomware.
+  Incident: dragnet-ransomware-2025-3576
+  Ransomware victim claim by interlock: Epperson Law Group; country: US; sector: Business Services
+  First observed: 2025-08-12.
+references:
+  - http://dnyyuk3nevegj37tnv3xav57c5twomc7uqsfbjlkwto3p4spzfop47qd.onion/index.php?p=
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

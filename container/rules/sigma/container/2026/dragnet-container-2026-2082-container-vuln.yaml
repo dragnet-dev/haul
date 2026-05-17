@@ -1,0 +1,43 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2082 — Vulnerable Base Image Pull'
+id: 56c043bf-e617-5b52-b524-62756a99ca80
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2082 (Tier 2, CVSS 9.8)
+  The phar_convert_to_other function in ext/phar/phar_object.c in PHP before 5.4.43, 5.5.x before 5.5.27, and 5.6.x before 5.6.11 does not validate a file pointer before a close operation, which allows remote attackers to cause a denial of service (segmentation fault) or possibly have unspecified other impact via a crafted TAR archive that is mishandled in a Phar::convertToData call.
+references:
+  - http://git.php.net/?p=php-src.git%3Ba=commit%3Bh=bf58162ddf970f63502837f366930e44d6a992cf
+  - http://openwall.com/lists/oss-security/2015/07/18/1
+  - http://php.net/ChangeLog-5.php
+  - http://seclists.org/oss-sec/2015/q3/141
+  - http://www.debian.org/security/2015/dsa-3344
+  - http://www.securityfocus.com/bid/75974
+  - https://access.redhat.com/security/cve/CVE-2015-5589
+  - https://bugs.php.net/bug.php?id=69958
+  - https://nvd.nist.gov/vuln/detail/CVE-2015-5589
+  - https://ubuntu.com/security/notices/USN-2758-1
+  - https://www.cve.org/CVERecord?id=CVE-2015-5589
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'amazonlinux:1'
+      - 'debian:7'
+      - 'debian:8'
+      - 'redhat/ubi9:'
+      - 'ubuntu:12.04'
+      - 'ubuntu:14.04'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:15.04'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

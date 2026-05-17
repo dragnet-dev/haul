@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3721 — Event Log Clearing (madliberator)'
+id: 7bd2c4e0-437a-5e6d-9809-e8ddf5a01fe4
+status: deprecated
+description: |
+  Detects event log clearing associated with madliberator ransomware.
+  Incident: dragnet-ransomware-2024-3721
+  Ransomware victim claim by madliberator: zb.co.zw; country: ZW; sector: Financial Services
+  First observed: 2024-07-13.
+references:
+  - http://k67ivvik3dikqi4gy4ua7xa6idijl4si7k5ad5lotbaeirfcsx4sgbid.onion
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

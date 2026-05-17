@@ -1,0 +1,48 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5096 — Vulnerable Base Image Pull'
+id: 6b84d1d7-46a0-575b-b41d-e4b51c8a8304
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5096 (Tier 2, CVSS 9.8)
+  An issue was discovered in lldpd before 1.0.17. By crafting a CDP PDU packet with specific CDP_TLV_ADDRESSES TLVs, a malicious actor can remotely force the lldpd daemon to perform an out-of-bounds read on heap memory. This occurs in cdp_decode in daemon/protocols/cdp.c.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2023-41910
+  - https://github.com/lldpd/lldpd/commit/a9aeabdf879c25c584852a0bb5523837632f099b
+  - https://github.com/lldpd/lldpd/releases/tag/1.0.17
+  - https://access.redhat.com/errata/RHSA-2024:9158
+  - https://access.redhat.com/security/cve/CVE-2023-41910
+  - https://bugzilla.redhat.com/1921438
+  - https://bugzilla.redhat.com/2040388
+  - https://bugzilla.redhat.com/2237411
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1921438
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2040388
+  - https://bugzilla.redhat.com/show_bug.cgi?id=2237411
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27827
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-43612
+  - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-41910
+  - https://errata.almalinux.org/9/ALSA-2024-9158.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:9'
+      - 'cbl-mariner:2.0'
+      - 'debian:10'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'oraclelinux:9'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

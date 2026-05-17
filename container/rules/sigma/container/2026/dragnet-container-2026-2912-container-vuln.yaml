@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2912 — Vulnerable Base Image Pull'
+id: caf101db-2c20-5eb3-9d99-aac69f4551a5
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2912 (Tier 2, CVSS 9.1)
+  unrar 0.0.1 (aka unrar-free or unrar-gpl) suffers from a stack-based buffer over-read in unrarlib.c, related to ExtrFile and stricomp.
+references:
+  - http://www.openwall.com/lists/oss-security/2017/08/20/1
+  - https://bugs.debian.org/874060
+  - https://lists.debian.org/debian-lts-announce/2021/02/msg00026.html
+  - https://www.cve.org/CVERecord?id=CVE-2017-14122
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:9'
+      - 'ubuntu:14.04-ESM'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

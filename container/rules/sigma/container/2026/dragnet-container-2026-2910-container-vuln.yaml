@@ -1,0 +1,72 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2910 — Vulnerable Base Image Pull'
+id: e6d9d86a-d3c9-5c8e-8540-e7cbc3d2d58a
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2910 (Tier 2, CVSS 9.8)
+  Ruby through 2.2.7, 2.3.x through 2.3.4, and 2.4.x through 2.4.1 can expose arbitrary memory during a JSON.generate call. The issues lies in using strdup in ext/json/ext/generator/generator.c, which will stop after encountering a '\0' byte, returning a pointer to a string of length zero, which is not the length stored in space_len.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-14064
+  - https://github.com/flori/json/commit/8f782fd8e181d9cfe9387ded43a5ca9692266b85
+  - http://www.securityfocus.com/bid/100890
+  - http://www.securitytracker.com/id/1039363
+  - http://www.securitytracker.com/id/1042004
+  - https://access.redhat.com/errata/RHSA-2017:3485
+  - https://access.redhat.com/errata/RHSA-2018:0378
+  - https://access.redhat.com/errata/RHSA-2018:0583
+  - https://access.redhat.com/errata/RHSA-2018:0585
+  - https://access.redhat.com/security/cve/CVE-2017-14064
+  - https://bugs.ruby-lang.org/issues/13853
+  - https://hackerone.com/reports/209949
+  - https://linux.oracle.com/cve/CVE-2017-14064.html
+  - https://linux.oracle.com/errata/ELSA-2018-0378.html
+  - https://lists.debian.org/debian-lts-announce/2018/07/msg00012.html
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.10'
+      - 'alpine:3.11'
+      - 'alpine:3.12'
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine:3.3'
+      - 'alpine:3.4'
+      - 'alpine:3.5'
+      - 'alpine:3.6'
+      - 'alpine:3.7'
+      - 'alpine:3.8'
+      - 'alpine:3.9'
+      - 'alpine edge:'
+      - 'amazonlinux:1'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'ubuntu:14.04'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:17.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

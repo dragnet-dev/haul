@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-1116 — Recovery Inhibition (beast)'
+id: 1eea823a-372d-5be6-ae9a-cc7876d6b39a
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with beast ransomware.
+  Incident: dragnet-ransomware-2025-1116
+  Ransomware victim claim by beast: Outback Pharmacies; country: AU; sector: Healthcare
+  First observed: 2025-11-19.
+references:
+  - http://beast6azu4f7fxjakiayhnssybibsgjnmy77a6duufqw5afjzfjhzuqd.onion/card/outback_pharmacies
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

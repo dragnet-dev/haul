@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2023-2006 — Event Log Clearing (darkpower)'
+id: d58231d8-8bd1-5f99-bac6-0ff5c2099dc0
+status: deprecated
+description: |
+  Detects event log clearing associated with darkpower ransomware.
+  Incident: dragnet-ransomware-2023-2006
+  Ransomware victim claim by darkpower: onyx-pharma.dz; country: DZ; sector: Healthcare
+  First observed: 2023-03-11.
+references:
+  - http://powerj7kmpzkdhjg4szvcxxgktgk36ezpjxvtosylrpey7svpmrjyuyd.onion/27ffeae6d31d475f9f6a23413af968eb
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

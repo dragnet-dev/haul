@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2022-1284 — Event Log Clearing (hive)'
+id: 9bc2d98c-795d-5eea-b879-9297d57eefe7
+status: deprecated
+description: |
+  Detects event log clearing associated with hive ransomware.
+  Incident: dragnet-ransomware-2022-1284
+  Ransomware victim claim by hive: Northern Financial Services; sector: Financial Services
+  First observed: 2022-01-25.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-4018 — Vulnerable Base Image Pull'
+id: 41b90c89-5192-5db5-8693-1e680d2d5cc0
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-4018 (Tier 2, CVSS 9.1)
+  An issue was discovered in libmatio.a in matio (aka MAT File I/O Library) 1.5.13. There is a stack-based buffer over-read in the function InflateDimensions() in inflate.c when called from ReadNextCell in mat5.c.
+references:
+  - https://github.com/TeamSeri0us/pocs/tree/master/matio
+  - https://github.com/tbeu/matio/issues/103
+  - https://www.cve.org/CVERecord?id=CVE-2019-9028
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

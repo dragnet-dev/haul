@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2708 — Vulnerable Base Image Pull'
+id: 1a847458-9450-5293-b88f-e8dbe76d6da8
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2708 (Tier 2, CVSS 9.8)
+  Kubernetes version 1.5.0-1.5.4 is vulnerable to a privilege escalation in the PodSecurityPolicy admission plugin resulting in the ability to make use of any existing PodSecurityPolicy object.
+references:
+  - https://access.redhat.com/security/cve/CVE-2017-1000056
+  - https://github.com/kubernetes/kubernetes
+  - https://github.com/kubernetes/kubernetes/commit/7fef0a4f6a44ea36f166c39fdade5324eff2dd5e
+  - https://github.com/kubernetes/kubernetes/issues/43459
+  - https://nvd.nist.gov/vuln/detail/CVE-2017-1000056
+  - https://www.cve.org/CVERecord?id=CVE-2017-1000056
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'redhat/ubi9:'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

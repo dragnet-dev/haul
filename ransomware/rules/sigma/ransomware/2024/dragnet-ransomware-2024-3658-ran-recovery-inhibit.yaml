@@ -1,0 +1,28 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2024-3658 — Recovery Inhibition (lynx)'
+id: a5cd5766-ab5e-510c-9dd9-7d2d82465892
+status: deprecated
+description: |
+  Detects boot/recovery disabling associated with lynx ransomware.
+  Incident: dragnet-ransomware-2024-3658
+  Ransomware victim claim by lynx: New Age Micro; country: US; sector: Technology
+  First observed: 2024-12-02.
+references:
+  - http://lynxblog.net/leaks/674da7bee42beed9ed47fb9c
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: selection_bcdedit
+falsepositives:
+  - System administrators modifying boot configuration
+level: high

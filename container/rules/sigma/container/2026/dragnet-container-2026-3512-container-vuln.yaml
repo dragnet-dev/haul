@@ -1,0 +1,58 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3512 — Vulnerable Base Image Pull'
+id: 3e427bd1-14a5-54b8-8333-dcce183766b3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3512 (Tier 2, CVSS 9.8)
+  urllib3 before version 1.23 does not remove the Authorization HTTP header when following a cross-origin redirect (i.e., a redirect that differs in host, port, or scheme). This can allow for credentials in the Authorization header to be exposed to unintended hosts or transmitted in cleartext.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2018-20060
+  - https://github.com/pypa/advisory-database/tree/main/vulns/urllib3/PYSEC-2018-32.yaml
+  - https://github.com/urllib3/urllib3
+  - https://github.com/urllib3/urllib3/blob/master/CHANGES.rst
+  - https://github.com/urllib3/urllib3/commit/560bd227b90f74417ffaedebf5f8d05a8ee4f532
+  - https://github.com/urllib3/urllib3/issues/1316
+  - https://github.com/urllib3/urllib3/pull/1346
+  - http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00039.html
+  - https://access.redhat.com/errata/RHSA-2019:2272
+  - https://access.redhat.com/security/cve/CVE-2018-20060
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1643829
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1649153
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1659551
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1700824
+  - https://bugzilla.redhat.com/show_bug.cgi?id=1702473
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'almalinux:8'
+      - 'amazonlinux:1'
+      - 'amazonlinux:2'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:8'
+      - 'debian:9'
+      - 'oraclelinux:7'
+      - 'oraclelinux:8'
+      - 'photon os:1.0'
+      - 'photon os:2.0'
+      - 'redhat/ubi9:'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:18.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

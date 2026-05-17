@@ -1,0 +1,31 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5428 — Vulnerable Base Image Pull'
+id: 3765edd4-65ae-5d94-8c08-6cf686e641da
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5428 (Tier 2, CVSS 9.8)
+  A MongoDB server under specific conditions running on Linux with TLS and CRL revocation status checking enabled, fails to check the revocation status of the intermediate certificates in the peer's certificate chain. In cases of MONGODB-X509, which is not enabled by default, this may lead to improper authentication. This issue may also affect intra-cluster authentication. This issue affects MongoDB Server v5.0 versions prior to 5.0.31, MongoDB Server v6.0 versions prior to 6.0.20, MongoDB Server v7.0 versions prior to 7.0.16 and MongoDB Server v8.0 versions prior to 8.0.4.
+Required Configuration : MongoDB Server must be running on Linux Operating Systems and CRL revocation status checking must be enabled
+references:
+  - https://jira.mongodb.org/browse/SERVER-95445
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-3085
+  - https://www.cve.org/CVERecord?id=CVE-2025-3085
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

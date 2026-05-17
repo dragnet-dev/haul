@@ -1,0 +1,32 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2021-1154 — Event Log Clearing (marketo)'
+id: 81e4b398-9999-5dd8-a82c-a64a148abc24
+status: deprecated
+description: |
+  Detects event log clearing associated with marketo ransomware.
+  Incident: dragnet-ransomware-2021-1154
+  Ransomware victim claim by marketo: Luxottica Group S.p.A.; sector: Consumer Services
+  First observed: 2021-12-07.
+references:
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

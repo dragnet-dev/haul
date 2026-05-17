@@ -1,0 +1,40 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2343 — Vulnerable Base Image Pull'
+id: 540ff8d8-4c10-57cd-a0ed-eaba9fc87810
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2343 (Tier 2, CVSS 9.8)
+  LibreOffice before 2016-12-22 has an out-of-bounds write caused by a heap-based buffer overflow related to the EnhWMFReader::ReadEnhWMF function in vcl/source/filter/wmf/enhwmf.cxx.
+references:
+  - http://www.libreoffice.org/about-us/security/advisories/cve-2016-10327/
+  - http://www.securityfocus.com/bid/97668
+  - https://access.redhat.com/security/cve/CVE-2016-10327
+  - https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=313
+  - https://github.com/LibreOffice/core/commit/7485fc2a1484f31631f62f97e5c64c0ae74c6416
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-10327
+  - https://security.gentoo.org/glsa/201706-28
+  - https://ubuntu.com/security/notices/USN-3273-1
+  - https://www.cve.org/CVERecord?id=CVE-2016-10327
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.5'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04'
+      - 'ubuntu:16.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

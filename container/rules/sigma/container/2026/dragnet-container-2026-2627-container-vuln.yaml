@@ -1,0 +1,36 @@
+title: 'Dragnet [Container]: dragnet-container-2026-2627 — Vulnerable Base Image Pull'
+id: 444620a8-bff1-5110-849e-f97784bbb6dc
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-2627 (Tier 2, CVSS 9.8)
+  A buffer overflow in Redis 3.2.x prior to 3.2.4 causes arbitrary code execution when a crafted command is sent. An out of bounds write vulnerability exists in the handling of the client-output-buffer-limit option during the CONFIG SET command for the Redis data structure store. A crafted CONFIG SET command can lead to an out of bounds write potentially resulting in code execution.
+references:
+  - http://blog.talosintel.com/2016/09/redis-vulnerability.html
+  - http://www.securityfocus.com/bid/93283
+  - http://www.talosintelligence.com/reports/TALOS-2016-0206/
+  - https://access.redhat.com/security/cve/CVE-2016-8339
+  - https://github.com/antirez/redis/commit/6d9f8e2462fc2c426d48c941edeb78e5df7d2977
+  - https://nvd.nist.gov/vuln/detail/CVE-2016-8339
+  - https://security.gentoo.org/glsa/201702-16
+  - https://www.cve.org/CVERecord?id=CVE-2016-8339
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

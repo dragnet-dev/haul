@@ -1,0 +1,46 @@
+title: 'Dragnet [Container]: dragnet-container-2026-3201 — Vulnerable Base Image Pull'
+id: aebaa381-d040-5c15-890a-a82326df05fb
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-3201 (Tier 2, CVSS 9.8)
+  Heap-based buffer overflow in the PdfParser::ReadObjects function in base/PdfParser.cpp in PoDoFo 0.9.5 allows remote attackers to cause a denial of service (application crash) or possibly have unspecified other impact via vectors related to m_offsets.size.
+references:
+  - https://github.com/xiangxiaobo/poc_and_report/tree/master/podofo_heapoverflow_PdfParser.ReadObjects
+  - https://www.cve.org/CVERecord?id=CVE-2017-8378
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine:3.13'
+      - 'alpine:3.14'
+      - 'alpine:3.15'
+      - 'alpine:3.16'
+      - 'alpine:3.17'
+      - 'alpine:3.18'
+      - 'alpine:3.19'
+      - 'alpine:3.20'
+      - 'alpine:3.21'
+      - 'alpine:3.22'
+      - 'alpine:3.23'
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'debian:7'
+      - 'debian:8'
+      - 'debian:9'
+      - 'ubuntu:16.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

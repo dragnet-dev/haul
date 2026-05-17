@@ -1,0 +1,39 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5280 — Vulnerable Base Image Pull'
+id: 84f4e476-9913-5f30-b4ba-7160968bf247
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5280 (Tier 2, CVSS 9.8)
+  HTMLDOC before 1.9.19 has an out-of-bounds write in parse_paragraph in ps-pdf.cxx because of an attempt to strip leading whitespace from a whitespace-only node.
+references:
+  - https://github.com/michaelrsweet/htmldoc/blob/2d5b2ab9ddbf2aee2209010cebc11efdd1cab6e2/CHANGES.md
+  - https://github.com/michaelrsweet/htmldoc/commit/2d5b2ab9ddbf2aee2209010cebc11efdd1cab6e2
+  - https://github.com/michaelrsweet/htmldoc/issues/528
+  - https://ubuntu.com/security/notices/USN-7225-1
+  - https://www.cve.org/CVERecord?id=CVE-2024-45508
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+      - 'ubuntu:20.04-ESM'
+      - 'ubuntu:22.04'
+      - 'ubuntu:24.04'
+      - 'ubuntu:24.10'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-3547 — Event Log Clearing (insomnia)'
+id: bd75d4d6-6fe2-517e-941e-b79e2969d0ce
+status: deprecated
+description: |
+  Detects event log clearing associated with insomnia ransomware.
+  Incident: dragnet-ransomware-2025-3547
+  Ransomware victim claim by insomnia: Internal Medicine of Milford; country: US; sector: Healthcare
+  First observed: 2025-11-05.
+references:
+  - http://i62huw7ve22rpyw6lnq3kmfump2dmsg4xpveec3ere73njwatrz74gad.onion/Company/IMMCT/
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high

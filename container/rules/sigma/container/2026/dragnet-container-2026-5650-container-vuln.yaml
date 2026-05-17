@@ -1,0 +1,35 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5650 — Vulnerable Base Image Pull'
+id: c8e6d2a6-6c65-5c76-9e4a-cb379b138bf3
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5650 (Tier 2, CVSS 9.1)
+  Authlib is a Python library which builds OAuth and OpenID Connect servers. Prior to version 1.6.9, a JWK Header Injection vulnerability in authlib's JWS implementation allows an unauthenticated attacker to forge arbitrary JWT tokens that pass signature verification. When key=None is passed to any JWS deserialization function, the library extracts and uses the cryptographic key embedded in the attacker-controlled JWT jwk header field. An attacker can sign a token with their own private key, embed the matching public key in the header, and have the server accept the forged token as cryptographically valid — bypassing authentication and authorization entirely. This issue has been patched in version 1.6.9.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-27962
+  - https://github.com/authlib/authlib
+  - https://github.com/authlib/authlib/commit/a5d4b2d4c9e46bfa11c82f85fdc2bcc0b50ae681
+  - https://github.com/authlib/authlib/releases/tag/v1.6.9
+  - https://github.com/authlib/authlib/security/advisories/GHSA-wvwj-cvrp-7pv5
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-27962
+  - https://www.cve.org/CVERecord?id=CVE-2026-27962
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'debian:11'
+      - 'debian:12'
+      - 'debian:13'
+      - 'debian:14'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: critical

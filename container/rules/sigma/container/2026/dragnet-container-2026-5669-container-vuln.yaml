@@ -1,0 +1,33 @@
+title: 'Dragnet [Container]: dragnet-container-2026-5669 — Vulnerable Base Image Pull'
+id: 65aab6cd-b4f3-5952-b559-b8c118ace220
+status: deprecated
+description: |
+  Detects deployment of a container image known to contain a critical vulnerability.
+  Incident: dragnet-container-2026-5669 (Tier 2, CVSS 9.8)
+  PJSIP is a free and open source multimedia communication library written in C. Prior to version 2.17, there is a stack buffer overflow vulnerability when pjmedia-codec parses an RTP payload contain more frames than the caller-provided frames can hold. This issue has been patched in version 2.17.
+references:
+  - https://access.redhat.com/security/cve/CVE-2026-29068
+  - https://github.com/pjsip/pjproject/commit/6c9024511bf5307ff72efde1f90c9a2a226d8967
+  - https://github.com/pjsip/pjproject/security/advisories/GHSA-pqww-jrxr-457f
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-29068
+  - https://www.cve.org/CVERecord?id=CVE-2026-29068
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1610
+  - attack.t1611
+  - dragnet.cve
+logsource:
+  category: container_image_pull
+detection:
+  selection:
+    Image|contains:
+      - 'alpine edge:'
+      - 'debian:11'
+      - 'ubuntu:16.04-ESM'
+      - 'ubuntu:18.04-ESM'
+  condition: selection
+falsepositives:
+  - Cached images pulled before the vulnerability was published
+  - Internal image mirrors that have not been updated
+level: high

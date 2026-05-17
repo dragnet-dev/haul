@@ -1,0 +1,33 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2025-7563 — Event Log Clearing (termite)'
+id: 70703e63-d292-5d7e-b317-41b2c9c6c1c3
+status: deprecated
+description: |
+  Detects event log clearing associated with termite ransomware.
+  Incident: dragnet-ransomware-2025-7563
+  Ransomware victim claim by termite: London Belgravia; country: GB; sector: Financial Services
+  First observed: 2025-02-19.
+references:
+  - http://termiteuslbumdge2zmfmfcsrvmvsfe4gvyudc5j6cdnisnhtftvokid.onion/post/67b524739b91b4933324dabb
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1070.001
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Clear-EventLog'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate log maintenance scripts
+level: high
