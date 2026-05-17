@@ -1,0 +1,38 @@
+title: 'Dragnet [Ransomware]: dragnet-ransomware-2026-3479 — Shadow Copy Deletion (chaos)'
+id: 0edfb669-7983-5045-bf93-11b48757aea8
+status: deprecated
+description: |
+  Detects shadow copy deletion commands associated with chaos ransomware.
+  Incident: dragnet-ransomware-2026-3479
+  Ransomware victim claim by chaos: challenge-mfg.com; country: US; sector: Manufacturing
+  First observed: 2026-05-17.
+references:
+  - http://hptqq2o2qjva7lcaaq67w36jihzivkaitkexorauw7b2yul2z6zozpqd.onion/post/SP6HPs3K609iS8rmatQO9PbvAA3Ky4fT
+author: dragnet-bot
+date: 2026-05-17
+tags:
+  - attack.t1490
+  - dragnet.ransomware
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains: 'Get-WmiObject Win32_ShadowCopy'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup solution maintenance (rare)
+level: high
