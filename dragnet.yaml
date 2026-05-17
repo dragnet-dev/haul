@@ -21,9 +21,9 @@ modules:
       aikido:       true
       stepsecurity: true
       sonatype:     true
-      phylum:       true
+      phylum:       false   # blog.phylum.io dead post-Veracode acquisition; Veracode's blog feed is empty
       snyk:           true
-      deps_dev:       true
+      # deps_dev removed — endpoint retired (404); OSV bulk covers same set
       github_actions: true
       huggingface:    true
     ecosystems:
@@ -47,17 +47,19 @@ modules:
   malware:
     output_dir: malware
     sources:
-      polyswarm:    true
-      dfir_report:  true
-      elastic_labs: true
-      red_canary:   true
-      talos:        true
-      eset:         true
-      sekoia:       true
-      proofpoint:   true
-      malwarebytes: true
+      malware_bazaar: true    # gracefully skips without MALWARE_BAZAAR_AUTH_KEY env
+      urlhaus:        true    # abuse.ch malicious URLs (~2000 active per sync)
+      polyswarm:      false   # polyswarm.network is a React SPA now; no RSS feed
+      dfir_report:    true
+      elastic_labs:   true
+      red_canary:     true
+      talos:          true
+      eset:           true
+      sekoia:         true
+      proofpoint:     true
+      malwarebytes:   true
     automerge:
-      trusted_sources: [dfir_report, elastic_labs, eset]
+      trusted_sources: [dfir_report, elastic_labs, eset, malware_bazaar, urlhaus]
       min_iocs: 5
       delay_minutes: 120
 
@@ -65,32 +67,33 @@ modules:
     output_dir: ransomware
     sources:
       ransomware_live:  true
-      secureworks:      true
+      secureworks:      false  # Sophos acquisition killed the blog; URL redirects to HTML page
       emsisoft:         true
-      coveware:         true
+      coveware:         true   # squarespace RSS at www.coveware.com/blog?format=rss
       blackfog:         true
-      corvus:           true
+      corvus:           true   # fixed URL — www.corvusinsurance.com/blog/rss.xml
     automerge:
-      trusted_sources: [secureworks, emsisoft]
+      trusted_sources: [ransomware_live, emsisoft]
       min_iocs: 3
       delay_minutes: 60
 
   cve:
     output_dir: cve
     sources:
-      cisa:         true
-      nvd:          true
-      msrc:         true
+      cisa:         true   # full KEV catalog (~1.5k actively-exploited CVEs)
+      nvd:          true   # 2-year backfill of high/critical CVEs
+      # msrc removed — endpoint returned 404 for recent months and Microsoft
+      # CVEs are already in NVD.
       project_zero: true
-      rapid7:       true
-      attackerkb:   true
-      greynoise:    true
+      rapid7:       false  # blog feed truly removed; JS-rendered SPA now
+      attackerkb:   true   # gracefully skipped without ATTACKERKB_API_KEY
+      greynoise:    true   # fixed URL — www.greynoise.io/blog/rss.xml
       horizon3:     true
       watchtowr:    true
       tenable:      true
-      vulncheck:    true
+      # vulncheck removed — paid-only service; CISA+NVD cover same subset
     automerge:
-      trusted_sources: [cisa, msrc, project_zero]
+      trusted_sources: [cisa, nvd, project_zero]
       min_iocs: 1
       delay_minutes: 30
 
@@ -116,15 +119,15 @@ cross_enrichment:
   link_shared_actors: true
   link_shared_infrastructure: true
 
-multi_domain_sources:
-
-  # Common marketing / fluff terms reused across vendor blogs via YAML anchor.
-  # Posts whose title or categories contain any of these are dropped before
-  # routing. Keep this list conservative — anything here blocks ALL routing for
-  # the post, not just one module. Aim for terms that have zero legitimate
-  # threat-intel value (webinar invitations, product launches, "thought
-  # leadership" posts).
-  _shared_marketing_exclude: &marketing_exclude
+# Top-level anchor block — Go's yaml decoder ignores unknown top-level keys,
+# so we can park reusable lists here without polluting the typed config map.
+# Common marketing / fluff terms reused across vendor blogs. Posts whose
+# title or categories contain any of these are dropped before routing.
+# Keep this list conservative — anything here blocks ALL routing for the
+# post, not just one module. Aim for terms with zero legitimate threat-intel
+# value (webinar invites, product launches, "thought leadership" posts).
+shared_excludes:
+  marketing: &marketing_exclude
     - webinar
     - "[webinar]"
     - sponsored
@@ -156,8 +159,17 @@ multi_domain_sources:
 
   bleepingcomputer:
     feed: https://www.bleepingcomputer.com/feed/
-    global_exclude: [webinar, sponsored, "patch tuesday", "weekly recap",
-                     "us charges", "us indicts", arrested, sentenced]
+    # YAML anchor expansion in a sequence with extras produces a nested list,
+    # not a flat one — the Go decoder rejects it. Until the schema supports a
+    # merge field, blogs that need extras must inline the full term list.
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       "patch tuesday", "weekly recap", "us charges", "us indicts", arrested, sentenced]
     routing:
       - module: supply
         include: [npm, pypi, "cargo registry", maven, nuget, rubygems, "supply chain",
@@ -179,8 +191,14 @@ multi_domain_sources:
 
   the_hacker_news:
     feed: https://thehackernews.com/feeds/posts/default
-    global_exclude: [webinar, "[webinar]", sponsored, "weekly recap",
-                     "weekly cybersecurity"]
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       "weekly recap", "weekly cybersecurity"]
     routing:
       - module: supply
         include: [npm, pypi, cargo, maven, nuget, gem, rubygems, "supply chain",
@@ -200,7 +218,7 @@ multi_domain_sources:
 
   krebsonsecurity:
     feed: https://krebsonsecurity.com/feed/
-    global_exclude: [webinar, sponsored]
+    global_exclude: *marketing_exclude
     routing:
       - module: supply
         include: [npm, pypi, "supply chain", "open source", "malicious package"]
@@ -221,10 +239,13 @@ multi_domain_sources:
   microsoft_sec:
     feed: https://www.microsoft.com/en-us/security/blog/feed/
     global_exclude:
-      - *marketing_exclude
-      - "passkey day"
-      - "world password day"
-      - "awareness day"
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       "passkey day", "world password day", "awareness day"]
     routing:
       - module: malware
         include: [malware, trojan, infostealer, campaign, threat actor]
@@ -248,7 +269,14 @@ multi_domain_sources:
 
   securelist:
     feed: https://securelist.com/feed/
-    global_exclude: [webinar, sponsored, contest]
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       contest]
     routing:
       - module: supply
         include: ["supply chain", npm, pypi, cargo, maven, "open source package", "malicious package"]
@@ -304,7 +332,7 @@ multi_domain_sources:
                   typosquat, "dependency confusion"]
 
   protectai:
-    feed: https://protectai.com/blog/feed
+    feed: https://protectai.com/blog/rss.xml
     global_exclude: *marketing_exclude
     routing:
       - module: supply

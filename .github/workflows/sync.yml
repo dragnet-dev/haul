@@ -26,10 +26,13 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    # Engine has its own 5-min per-module deadline plus 90s per source, but a
+    # Engine has its own 5-min per-module deadline plus 150s per source, but a
     # workflow-level cap is the last line of defence in case something gets
-    # stuck below the engine layer (network, disk, runner).
-    timeout-minutes: 30
+    # stuck below the engine layer (network, disk, runner). 90 min covers the
+    # first-ever run (OSSF git clone ~3 min + container module sigma gen on
+    # 5k Tier-1/2/3 records ~30s + everything else ~10 min). Subsequent runs
+    # with caches restored complete in 10-15 min.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
@@ -70,12 +73,59 @@ jobs:
             echo "OSSF cache restored — skipping clone."
           fi
 
+      # Trivy is required by the container module's trivy_db source. Without
+      # it the source returns no CVEs (only EOL warnings) — silently.
+      - name: Install Trivy
+        run: |
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -qq
+          sudo apt-get install -y trivy
+          trivy --version
+
+      # Cache the Trivy vulnerability DB. First run downloads ~1 GB; cached
+      # runs skip the download (DB rotates ~every 6 h, so we key by day to
+      # avoid serving truly stale data while still benefitting from cache.).
+      - name: Cache Trivy DB
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4
+        with:
+          path: state/trivy_cache
+          key: trivy-db-${{ runner.os }}-${{ steps.week.outputs.value }}
+          restore-keys: |
+            trivy-db-${{ runner.os }}-
+
       - run: ./dragnet validate --module all
 
+      # API keys passed through env so sources can opt into authenticated
+      # endpoints: NVD raises rate limit from 5 to 50 req/30s + extends
+      # backfill from 1y to 2y; malware_bazaar unlocks the get_recent API
+      # (returns 401 without); attackerkb enables PoC tracking.
       - run: ./dragnet sync --module supply
+        env:
+          NVD_API_KEY:               ${{ secrets.NVD_API_KEY }}
+          MALWARE_BAZAAR_AUTH_KEY:   ${{ secrets.MALWARE_BAZAAR_AUTH_KEY }}
+          ATTACKERKB_API_KEY:        ${{ secrets.ATTACKERKB_API_KEY }}
       - run: ./dragnet sync --module malware
+        env:
+          NVD_API_KEY:               ${{ secrets.NVD_API_KEY }}
+          MALWARE_BAZAAR_AUTH_KEY:   ${{ secrets.MALWARE_BAZAAR_AUTH_KEY }}
+          ATTACKERKB_API_KEY:        ${{ secrets.ATTACKERKB_API_KEY }}
       - run: ./dragnet sync --module ransomware
+        env:
+          NVD_API_KEY:               ${{ secrets.NVD_API_KEY }}
+          MALWARE_BAZAAR_AUTH_KEY:   ${{ secrets.MALWARE_BAZAAR_AUTH_KEY }}
+          ATTACKERKB_API_KEY:        ${{ secrets.ATTACKERKB_API_KEY }}
       - run: ./dragnet sync --module cve
+        env:
+          NVD_API_KEY:               ${{ secrets.NVD_API_KEY }}
+          MALWARE_BAZAAR_AUTH_KEY:   ${{ secrets.MALWARE_BAZAAR_AUTH_KEY }}
+          ATTACKERKB_API_KEY:        ${{ secrets.ATTACKERKB_API_KEY }}
+      - run: ./dragnet sync --module container
+        env:
+          NVD_API_KEY:               ${{ secrets.NVD_API_KEY }}
+          MALWARE_BAZAAR_AUTH_KEY:   ${{ secrets.MALWARE_BAZAAR_AUTH_KEY }}
+          ATTACKERKB_API_KEY:        ${{ secrets.ATTACKERKB_API_KEY }}
 
       - run: ./dragnet enrich --cross-domain
 
@@ -94,7 +144,7 @@ jobs:
 
       - name: Open draft PRs
         run: |
-          for module in supply malware ransomware cve; do
+          for module in supply malware ransomware cve container; do
             for draft in "${module}/incidents/drafts/"*.yaml; do
               [ -f "$draft" ] || continue
               incident_name="$(basename "$draft" .yaml | tr -cd "[:alnum:]-")"
