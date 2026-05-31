@@ -1,0 +1,360 @@
+modules:
+
+  supply:
+    output_dir: supply
+    sources:
+      osv:          true
+      ghsa:         true
+      ossf:         true
+      npm_registry:  true
+      pypi:          true
+      cargo:         false   # 403 Forbidden; OSV bulk covers crates.io advisories
+      maven:         false   # Solr API unreliable; OSV bulk covers Maven advisories
+      nuget:         false   # Catalog API timeouts; OSV bulk covers NuGet advisories
+      rubygems:      true
+      go_modules:    true
+      hex:           true
+      packagist:     true
+      pub:           true
+      wiz:          true
+      socket:       true
+      aikido:       true
+      stepsecurity: true
+      sonatype:     true
+      phylum:       false   # blog.phylum.io dead post-Veracode acquisition; Veracode's blog feed is empty
+      snyk:           true
+      # deps_dev removed — endpoint retired (404); OSV bulk covers same set
+      github_actions: true
+      huggingface:    true
+    ecosystems:
+      - npm
+      - pypi
+      - cargo
+      - maven
+      - nuget
+      - rubygems
+      - go
+      - hex
+      - packagist
+      - pub
+      - github-actions
+      - huggingface
+    automerge:
+      trusted_sources: [wiz, socket, aikido, stepsecurity]
+      min_iocs: 3
+      delay_minutes: 60
+
+  malware:
+    output_dir: malware
+    sources:
+      malware_bazaar: true    # gracefully skips without MALWARE_BAZAAR_AUTH_KEY env
+      urlhaus:        true    # abuse.ch malicious URLs (~2000 active per sync)
+      polyswarm:      false   # polyswarm.network is a React SPA now; no RSS feed
+      dfir_report:    true
+      elastic_labs:   true
+      red_canary:     true
+      talos:          true
+      eset:           true
+      sekoia:         true
+      proofpoint:     true
+      malwarebytes:   true
+    automerge:
+      trusted_sources: [dfir_report, elastic_labs, eset, malware_bazaar, urlhaus]
+      min_iocs: 5
+      delay_minutes: 120
+
+  ransomware:
+    output_dir: ransomware
+    sources:
+      ransomware_live:  true
+      secureworks:      false  # Sophos acquisition killed the blog; URL redirects to HTML page
+      emsisoft:         true
+      coveware:         true   # squarespace RSS at www.coveware.com/blog?format=rss
+      blackfog:         true
+      corvus:           true   # fixed URL — www.corvusinsurance.com/blog/rss.xml
+    automerge:
+      trusted_sources: [ransomware_live, emsisoft]
+      min_iocs: 3
+      delay_minutes: 60
+
+  cve:
+    output_dir: cve
+    sources:
+      cisa:         true   # full KEV catalog (~1.5k actively-exploited CVEs)
+      nvd:          true   # 2-year backfill of high/critical CVEs
+      # msrc removed — endpoint returned 404 for recent months and Microsoft
+      # CVEs are already in NVD.
+      project_zero: true
+      rapid7:       false  # blog feed truly removed; JS-rendered SPA now
+      attackerkb:   true   # gracefully skipped without ATTACKERKB_API_KEY
+      greynoise:    true   # fixed URL — www.greynoise.io/blog/rss.xml
+      horizon3:     true
+      watchtowr:    true
+      tenable:      true
+      # vulncheck removed — paid-only service; CISA+NVD cover same subset
+    automerge:
+      trusted_sources: [cisa, nvd, project_zero]
+      min_iocs: 1
+      delay_minutes: 30
+
+  container:
+    output_dir: container
+    sources:
+      trivy_db:   true   # requires trivy binary on PATH
+      eol_date:   true
+      cisa:       true   # reuse existing CISA KEV source for Tier 1 flag
+      attackerkb: true   # reuse existing PoC source for Tier 3 flag
+    popular_image_threshold: 1000000  # minimum weekly pulls to be in scope
+    cvss_thresholds:
+      tier2: 9.0   # CVSS ≥ 9.0 → Tier 2 (no exploit required)
+      tier3: 7.0   # CVSS ≥ 7.0 + public PoC → Tier 3
+    automerge:
+      trusted_sources: [trivy_db, cisa]
+      min_iocs: 1
+      delay_minutes: 30
+
+  os-packages:
+    output_dir: os-packages
+    sources:
+      osv: true   # OSV bulk export covers Debian/Ubuntu/Alpine/RHEL advisories
+    ecosystems:
+      - debian
+      - ubuntu
+      - alpine
+      - rhel
+
+cross_enrichment:
+  enabled: true
+  confidence_boost_per_domain: 0.08
+  link_shared_actors: true
+  link_shared_infrastructure: true
+
+online_enrichment:
+  enabled: true
+  ripestat: true
+  shodan_internetdb: true
+  crtsh: true
+  crtsh_max_related: 20
+  cache_ttl_days: 30
+
+# Top-level anchor block — Go's yaml decoder ignores unknown top-level keys,
+# so we can park reusable lists here without polluting the typed config map.
+# Common marketing / fluff terms reused across vendor blogs. Posts whose
+# title or categories contain any of these are dropped before routing.
+# Keep this list conservative — anything here blocks ALL routing for the
+# post, not just one module. Aim for terms with zero legitimate threat-intel
+# value (webinar invites, product launches, "thought leadership" posts).
+shared_excludes:
+  marketing: &marketing_exclude
+    - webinar
+    - "[webinar]"
+    - sponsored
+    - whitepaper
+    - "white paper"
+    - ebook
+    - "e-book"
+    - "case study"
+    - "tune in"
+    - "the future of"
+    - "unlock the"
+    - "unlock new"
+    - "unlocking the"
+    - "convergence of"
+    - "introducing "
+    - "skills and"
+    - "one solution"
+    - "you can't trust"
+    - "now available"
+    - "is now available"
+    - "platform update"
+    - "product update"
+    - "new feature"
+    - "powered by ai"
+    - "ai-powered"
+    - "join us"
+    - "register now"
+    - "live demo"
+
+  bleepingcomputer:
+    feed: https://www.bleepingcomputer.com/feed/
+    # YAML anchor expansion in a sequence with extras produces a nested list,
+    # not a flat one — the Go decoder rejects it. Until the schema supports a
+    # merge field, blogs that need extras must inline the full term list.
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       "patch tuesday", "weekly recap", "us charges", "us indicts", arrested, sentenced]
+    routing:
+      - module: supply
+        include: [npm, pypi, "cargo registry", maven, nuget, rubygems, "supply chain",
+                  "malicious package", typosquat, "dependency confusion",
+                  "open source", gem, "package registry"]
+        exclude: [ransomware, "CVE-"]
+      - module: malware
+        include: [malware, trojan, infostealer, botnet, RAT, backdoor,
+                  loader, stealer, worm, dropper]
+        exclude: [ransomware, npm, pypi, gem]
+      - module: ransomware
+        include: [ransomware, LockBit, ALPHV, "Cl0p", "data encrypted",
+                  extortion, "ransom note", RaaS]
+        exclude: [npm, pypi]
+      - module: cve
+        include: ["CVE-", "zero-day", "actively exploited", vulnerability,
+                  "remote code execution", "privilege escalation", patch]
+        exclude: [ransomware, npm, pypi]
+
+  the_hacker_news:
+    feed: https://thehackernews.com/feeds/posts/default
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       "weekly recap", "weekly cybersecurity"]
+    routing:
+      - module: supply
+        include: [npm, pypi, cargo, maven, nuget, gem, rubygems, "supply chain",
+                  "malicious package", typosquat, "hugging face", "model poisoning",
+                  "package registry", "open source package"]
+        exclude: [ransomware, RAT, android, "app verification"]
+      - module: malware
+        include: [malware, infostealer, backdoor, RAT, botnet, stealer]
+        exclude: [ransomware, npm, pypi]
+      - module: ransomware
+        include: [ransomware, "data breach", extortion, LockBit, ALPHV]
+      - module: cve
+        include: ["CVE-", vulnerability, "actively exploited", "zero-day",
+                  "remote code execution", patch]
+        exclude: [webinar, sponsored, launches, "AI-powered", introduces,
+                  "product update", "new feature", "powered by AI"]
+
+  krebsonsecurity:
+    feed: https://krebsonsecurity.com/feed/
+    global_exclude: *marketing_exclude
+    routing:
+      - module: supply
+        include: [npm, pypi, "supply chain", "open source", "malicious package"]
+      - module: ransomware
+        include: [ransomware, extortion, "data breach", ransom]
+        exclude: [ddos]
+
+  unit42:
+    feed: https://unit42.paloaltonetworks.com/feed/
+    global_exclude: *marketing_exclude
+    routing:
+      - module: malware
+        include: [malware, trojan, infostealer, RAT, backdoor, campaign]
+        exclude: [ransomware]
+      - module: ransomware
+        include: [ransomware, LockBit, ALPHV, "Cl0p", extortion]
+
+  microsoft_sec:
+    feed: https://www.microsoft.com/en-us/security/blog/feed/
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       "passkey day", "world password day", "awareness day"]
+    routing:
+      - module: malware
+        include: [malware, trojan, infostealer, campaign, threat actor]
+        exclude: [ransomware, "CVE-"]
+      - module: ransomware
+        include: [ransomware, extortion]
+      - module: cve
+        include: ["CVE-", vulnerability, patch, "Security Update"]
+
+  mandiant:
+    feed: https://www.mandiant.com/resources/blog/rss.xml
+    global_exclude: *marketing_exclude
+    routing:
+      - module: malware
+        include: [malware, APT, campaign, backdoor, espionage]
+        exclude: [ransomware]
+      - module: ransomware
+        include: [ransomware, FIN, extortion]
+      - module: cve
+        include: ["CVE-", vulnerability, "zero-day", exploitation]
+
+  securelist:
+    feed: https://securelist.com/feed/
+    global_exclude:
+      [webinar, "[webinar]", sponsored, whitepaper, "white paper", ebook, "e-book",
+       "case study", "tune in", "the future of", "unlock the", "unlock new",
+       "unlocking the", "convergence of", "introducing ", "skills and",
+       "one solution", "you can't trust", "now available", "is now available",
+       "platform update", "product update", "new feature", "powered by ai",
+       "ai-powered", "join us", "register now", "live demo",
+       contest]
+    routing:
+      - module: supply
+        include: ["supply chain", npm, pypi, cargo, maven, "open source package", "malicious package"]
+      - module: malware
+        include: [malware, backdoor, RAT, trojan, infostealer, spyware, "apt reports",
+                  "great research", "targeted attacks", campaign, APT, wiper, dropper]
+        exclude: [ransomware]
+      - module: ransomware
+        include: [ransomware, extortion, ransom, LockBit, ALPHV, "Cl0p"]
+      - module: cve
+        include: ["CVE-", "zero-day", vulnerability, "remote code execution",
+                  "privilege escalation", "actively exploited"]
+
+  crowdstrike:
+    feed: https://www.crowdstrike.com/en-us/blog/feed
+    global_exclude: *marketing_exclude
+    routing:
+      - module: malware
+        include: ["threat hunting", adversary, malware, backdoor, campaign, infostealer,
+                  SPIDER, BEAR, PANDA, KITTEN, CHOLLIMA, "from the front lines", APT]
+        exclude: [ransomware, "Falcon Shield", "Falcon Complete", "Falcon Cloud"]
+      - module: ransomware
+        include: [ransomware, extortion, LockBit, ALPHV, SPIDER]
+        exclude: ["Falcon Shield", "Falcon Complete"]
+      - module: cve
+        include: ["CVE-", "patch tuesday", "zero-day", vulnerability,
+                  "remote code execution", "actively exploited"]
+
+  sentinelone:
+    feed: https://www.sentinelone.com/blog/feed/
+    global_exclude: *marketing_exclude
+    routing:
+      - module: supply
+        include: ["supply chain attack", "malicious package",
+                  "npm package", "pypi package", "package registry", typosquat]
+      - module: malware
+        include: [malware, APT, backdoor, infostealer, RAT, "credentials theft",
+                  campaign, trojan, wiper]
+        exclude: [ransomware]
+      - module: ransomware
+        include: [ransomware, extortion, ransom]
+      - module: cve
+        include: ["CVE-", "zero-day", vulnerability, "remote code execution"]
+
+  jfrog:
+    feed: https://jfrog.com/blog/feed/
+    global_exclude: *marketing_exclude
+    routing:
+      - module: supply
+        include: ["hugging face", HuggingFace, "model poisoning", "malicious model",
+                  safetensors, "AI supply chain", "ML security", huntr,
+                  "npm package", "pypi package", "supply chain attack", "malicious package",
+                  typosquat, "dependency confusion"]
+
+  protectai:
+    feed: https://protectai.com/blog/rss.xml
+    global_exclude: *marketing_exclude
+    routing:
+      - module: supply
+        include: ["hugging face", "model security", "ML supply chain",
+                  "model poisoning", "AI security", safetensors, huntr,
+                  "npm package", "pypi package", "supply chain attack",
+                  "malicious package"]

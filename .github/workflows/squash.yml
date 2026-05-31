@@ -1,0 +1,42 @@
+name: Weekly History Squash
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'  # 03:00 UTC every Sunday
+  workflow_dispatch:
+
+concurrency:
+  group: dragnet-sync   # same group as sync — never run alongside a sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  squash:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout haul
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0   # need full history to squash it
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Squash all history to one commit
+        run: |
+          git config user.name "dragnet-bot"
+          git config user.email "dragnet-bot@users.noreply.github.com"
+
+          TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          PREV_HEAD="$(git rev-parse HEAD)"
+
+          # Create an orphan branch with just the current tree, no parent commits.
+          git checkout --orphan squashed
+          git add -A
+          git commit --allow-empty -m "[dragnet-bot] history squash ${TIMESTAMP} (was ${PREV_HEAD})"
+
+          # Replace main with the squashed branch and force-push.
+          git branch -D main
+          git branch -m main
+          git push --force origin main
+          echo "Squashed to $(git rev-parse HEAD)"

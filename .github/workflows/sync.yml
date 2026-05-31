@@ -1,0 +1,331 @@
+name: Dragnet Sync
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'supply/incidents/**'
+      - 'malware/incidents/**'
+      - 'ransomware/incidents/**'
+      - 'cve/incidents/**'
+      - 'container/incidents/**'
+      - 'os-packages/incidents/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dragnet-sync
+  cancel-in-progress: false
+
+# Backend repos that receive compiled rules. haul-rules-sigma gets the sigma
+# YAML sources (written by sync); the rest get compiled outputs (written by
+# generate). To add a new backend, add its name here — the workflow loops over
+# this list for checkouts, generate, manifest, and pushes.
+env:
+  RULE_BACKENDS: "sigma kql sentinel splunk elastic wazuh chronicle suricata snort crowdstrike qradar"
+
+jobs:
+  sync:
+    runs-on: self-hosted
+    steps:
+      # ─── checkouts ──────────────────────────────────────────────────────
+      - name: Checkout haul (intel)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          path: haul
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Clone all per-backend rule repos in one step.
+      # PAT needed because GITHUB_TOKEN is scoped to this repo only.
+      # Self-hosted runners persist the workspace between runs — update an
+      # existing checkout rather than failing on a non-empty directory.
+      - name: Checkout rule satellite repos
+        env:
+          PAT: ${{ secrets.MULTI_REPO_PAT }}
+        run: |
+          for backend in $RULE_BACKENDS; do
+            dir="haul-rules-${backend}"
+            if [ -d "${dir}/.git" ]; then
+              git -C "$dir" remote set-url origin \
+                "https://x-access-token:${PAT}@github.com/dragnet-dev/haul-rules-${backend}.git"
+              git -C "$dir" fetch --depth 1 origin
+              git -C "$dir" reset --hard origin/main
+            else
+              rm -rf "$dir"
+              git clone --depth 1 \
+                "https://x-access-token:${PAT}@github.com/dragnet-dev/haul-rules-${backend}.git" \
+                "$dir"
+            fi
+          done
+
+      - name: Checkout haul-stix
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: dragnet-dev/haul-stix
+          path: haul-stix
+          token: ${{ secrets.MULTI_REPO_PAT }}
+
+      # ─── tools + binary ─────────────────────────────────────────────────
+      - name: Download latest Dragnet binary
+        run: |
+          gh release download \
+            --repo dragnet-dev/dragnet \
+            --pattern dragnet-linux-amd64 \
+            --output haul/dragnet
+          chmod +x haul/dragnet
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get week for cache key rotation
+        id: week
+        run: echo "value=$(date -u +'%Y-%U')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache OSSF malicious-packages repo
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+        with:
+          path: haul/state/ossf-cache
+          key: ossf-packages-${{ runner.os }}-${{ steps.week.outputs.value }}
+          restore-keys: |
+            ossf-packages-${{ runner.os }}-
+
+      - name: Pre-clone OSSF malicious-packages (primes the cache)
+        run: |
+          cd haul
+          if [ ! -d state/ossf-cache/.git ]; then
+            mkdir -p state
+            git clone --depth 1 https://github.com/ossf/malicious-packages state/ossf-cache
+          else
+            echo "OSSF cache restored — skipping clone."
+          fi
+
+      - name: Install Trivy
+        run: |
+          if ! command -v trivy &>/dev/null; then
+            sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+            wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+            echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
+            sudo apt-get update -qq
+            sudo apt-get install -y trivy
+          fi
+          trivy --version
+
+      - name: Cache Trivy DB
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+        with:
+          path: haul/state/trivy_cache
+          key: trivy-db-${{ runner.os }}-${{ steps.week.outputs.value }}
+          restore-keys: |
+            trivy-db-${{ runner.os }}-
+
+      # ─── engine pipeline ────────────────────────────────────────────────
+      - name: Update popular images snapshot
+        run: cd haul && ./dragnet update-popular --module container
+
+      - name: Validate incident YAMLs
+        run: cd haul && ./dragnet validate --module all
+
+      # ─── data quality migrations ─────────────────────────────────────────
+      # Both commands are idempotent — they find 0 issues once the data is
+      # clean and become no-ops on every subsequent run. Running them before
+      # sync ensures any regressions from a previous release are fixed before
+      # new data is written.
+      - name: Migrate false-positive package names
+        run: |
+          cd haul && ./dragnet migrate-packages --apply \
+            --modules supply,malware,cve,ransomware,container
+
+      - name: Migrate IOC quality issues
+        run: |
+          cd haul && ./dragnet migrate-iocs --apply \
+            --modules supply,malware,cve,ransomware,container
+
+      # sync writes sigma YAML sources to haul-rules-sigma.
+      # Run all modules in parallel — each writes to its own output directory
+      # so there are no shared-file conflicts. Failures are surfaced via exit
+      # code: if any background job fails, `wait` returns non-zero and the
+      # step fails, which blocks the downstream generate step.
+      - name: Sync all modules
+        run: |
+          cd haul
+          pids=()
+          for module in supply malware ransomware cve container os-packages; do
+            ./dragnet sync --module "$module" --rules-root ../haul-rules-sigma \
+              > "../sync-${module}.log" 2>&1 &
+            pids+=($!)
+          done
+          failed=0
+          for pid in "${pids[@]}"; do
+            wait "$pid" || failed=$((failed + 1))
+          done
+          for module in supply malware ransomware cve container os-packages; do
+            echo "=== sync ${module} ===" && cat "../sync-${module}.log"
+          done
+          [ "$failed" -eq 0 ]
+        env:
+          NVD_API_KEY:             ${{ secrets.NVD_API_KEY }}
+          MALWARE_BAZAAR_AUTH_KEY: ${{ secrets.MALWARE_BAZAAR_AUTH_KEY }}
+          ATTACKERKB_API_KEY:      ${{ secrets.ATTACKERKB_API_KEY }}
+
+      - name: Cross-domain enrichment
+        run: cd haul && ./dragnet enrich --cross-domain
+
+      - name: Online IOC enrichment
+        run: cd haul && ./dragnet enrich --online --cache-file state/enrichment-cache.json
+
+      - name: Exploit indicators enrichment
+        run: cd haul && ./dragnet enrich --exploit-indicators --exploit-cache-file state/exploit-indicators-cache.json
+
+      # Ransomware module data is victim notification only — no detection rules.
+      # Remove any previously-generated ransomware/ subtree from every rule
+      # satellite so stale rules don't accumulate. rm -rf is a no-op once
+      # clean, so this is safe to run every sync. Only the Sigma rule files
+      # are removed; incident shards, search index, and STIX are untouched.
+      - name: Purge stale ransomware Sigma rules
+        run: |
+          for backend in $RULE_BACKENDS; do
+            rm -rf "../haul-rules-${backend}/ransomware"
+          done
+          # One-time cleanup: remove non-network placeholder stubs from network-only
+          # backends. The generate step no longer writes them, but satellites may
+          # still have stale files from previous runs. rm -rf is idempotent once clean.
+          for backend in suricata snort; do
+            if [ -d "../haul-rules-${backend}" ]; then
+              for module in supply malware cve container os-packages; do
+                rm -rf "../haul-rules-${backend}/${module}"
+              done
+            fi
+          done
+
+      # generate reads sigma from haul-rules-sigma and writes each compiled
+      # backend to its own satellite: haul-rules-kql, haul-rules-sentinel, etc.
+      - name: Generate rules + STIX
+        run: |
+          cd haul && ./dragnet generate --module all --backends all --layers all \
+            --rules-root ../haul-rules-sigma \
+            --compiled-root-base ../haul-rules \
+            --stix-root ../haul-stix
+
+      # Regenerate the JSON Schema from the current struct definitions and write
+      # it into haul so third-party tools can reference it via raw GitHub URL:
+      # https://raw.githubusercontent.com/dragnet-dev/haul/main/schema/incident.schema.json
+      - name: Generate incident JSON Schema
+        run: cd haul && ./dragnet schema --output schema/incident.schema.json
+
+      # Manifest catalogs files across all repos. index.json lists every
+      # satellite so consumer tools discover raw-URL prefixes from one file.
+      - name: Manifest + orchestrator index
+        run: |
+          SATELLITES=""
+          for backend in $RULE_BACKENDS; do
+            SATELLITES="$SATELLITES --satellite rules-${backend}:../haul-rules-${backend}"
+          done
+          cd haul && ./dragnet manifest --root . \
+            $SATELLITES \
+            --satellite stix:../haul-stix
+
+      - name: Health check (cross-repo)
+        continue-on-error: true
+        run: |
+          cd haul && ./dragnet doctor --root . \
+            --check-rules ../haul-rules-sigma \
+            --check-stix ../haul-stix \
+            --fix-stale-rules \
+            --compiled-root-base ../haul-rules \
+            --backends "$RULE_BACKENDS"
+
+      # ─── commits + pushes ───────────────────────────────────────────────
+      - name: Commit + push haul (intel)
+        run: |
+          cd haul
+          git config user.name "dragnet-bot"
+          git config user.email "dragnet-bot@users.noreply.github.com"
+          for d in supply malware ransomware cve container os-packages actors feeds state schema; do
+            if [ -d "$d" ]; then
+              git add "$d/" || echo "[commit] git add $d failed (continuing)"
+            fi
+          done
+          git add index.json
+          git restore --staged -- '*/incidents/drafts/' 2>/dev/null || true
+          git diff --staged --quiet && { echo "No intel changes"; exit 0; }
+          git commit -m "[dragnet-bot] intel sync $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          # -X theirs: when replaying the bot's commit on top of remote, prefer
+          # the bot's freshly-written shard files over the remote base on conflict.
+          # JSONL shards can't be auto-merged by git — the bot's version is always
+          # the authoritative one since it was just produced from a full sync.
+          git pull --rebase -X theirs origin main || { echo "rebase failed — bailing"; exit 1; }
+          git push
+
+      # Push all per-backend rule repos. Best-effort — a transient failure on
+      # one backend doesn't block the others; next sync re-pushes anything missed.
+      - name: Commit + push rule satellites
+        continue-on-error: true
+        run: |
+          TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for backend in $RULE_BACKENDS; do
+            dir="haul-rules-${backend}"
+            cd "$dir"
+            git config user.name "dragnet-bot"
+            git config user.email "dragnet-bot@users.noreply.github.com"
+            git add .
+            if git diff --staged --quiet; then
+              echo "No ${backend} rule changes"
+            else
+              git commit -m "[dragnet-bot] ${backend} rules sync ${TIMESTAMP}"
+              git pull --rebase -X theirs origin main || { echo "rebase failed for ${backend} — skipping"; cd ..; continue; }
+              git push
+            fi
+            cd ..
+          done
+
+      - name: Commit + push haul-stix
+        continue-on-error: true
+        run: |
+          cd haul-stix
+          git config user.name "dragnet-bot"
+          git config user.email "dragnet-bot@users.noreply.github.com"
+          git add .
+          git diff --staged --quiet && { echo "No STIX changes"; exit 0; }
+          git commit -m "[dragnet-bot] stix sync $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase -X theirs origin main || { echo "rebase failed — bailing"; exit 1; }
+          git push
+
+      # Draft PRs target haul (intel) — drafts are incident YAMLs.
+      - name: Open draft PRs
+        run: |
+          cd haul
+          for module in supply malware ransomware cve container os-packages; do
+            for draft in "${module}/incidents/drafts/"*.yaml; do
+              [ -f "$draft" ] || continue
+              incident_name="$(basename "$draft" .yaml | tr -cd "[:alnum:]-")"
+              branch="draft-${incident_name}"
+
+              if git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+                echo "Branch $branch already exists — skipping"
+                continue
+              fi
+
+              if gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null | grep -q '^[0-9]'; then
+                echo "Open PR for $branch already exists — skipping"
+                continue
+              fi
+
+              git checkout -b "$branch"
+              git add "$draft"
+              git commit -m "[dragnet-bot] draft: ${incident_name}"
+              git push origin "$branch"
+              pr_body="$(./dragnet pr-body "$draft" 2>/dev/null || echo 'Auto-generated from blog intel. Review IOCs before merging.')"
+              gh pr create \
+                --title "Draft [${module}]: ${incident_name}" \
+                --body "$pr_body" \
+                --label "pending-triage,${module}" \
+                --base main
+              git checkout main
+            done
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
